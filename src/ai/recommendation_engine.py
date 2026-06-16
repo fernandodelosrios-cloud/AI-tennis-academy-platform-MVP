@@ -1,11 +1,14 @@
 """
-TennisIQ MVP — AI Recommendation Engine
+TennisIQ MVP — AI Recommendation Engine v2
+============================================
+Now includes ATP benchmark data from Jeff Sackmann dataset
+and recovery-performance correlation from Fernando's real data.
 """
 
 import os
 import re
 import json
-from datetime import date, timedelta
+from datetime import date
 from typing import Optional
 import anthropic
 from dotenv import load_dotenv
@@ -15,7 +18,16 @@ load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
-def build_prompt(player, today, history, psychology, nutrition, upcoming):
+def load_benchmarks(data_dir: str) -> dict:
+    """Load ATP benchmarks"""
+    try:
+        with open(f"{data_dir}/benchmarks.json") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def build_prompt(player, today, history, psychology, nutrition, upcoming, benchmarks=None):
     history_lines = []
     for d in history[-7:]:
         if d.get("match_played"):
@@ -31,6 +43,7 @@ def build_prompt(player, today, history, psychology, nutrition, upcoming):
     recent = history[-7:] if len(history) >= 7 else history
     avg_recovery = round(sum(d.get("recovery_score", 70) for d in recent) / max(len(recent), 1))
     avg_hrv = round(sum(d.get("hrv_ms", 55) for d in recent) / max(len(recent), 1), 1)
+    avg_sleep = round(sum(d.get("sleep_hours", 7) for d in recent) / max(len(recent), 1), 1)
 
     if len(history) >= 3:
         last3 = [d.get("recovery_score", 70) for d in history[-3:]]
@@ -50,21 +63,37 @@ PSYCHOLOGY: APSQ {psychology.get('apsq_average','?')}/5 - {psychology.get('strai
         nutr_section = f"""
 NUTRITION: {nutrition.get('total_calories_kcal','?')} kcal | Protein {nutrition.get('protein_g','?')}g | Hydration {nutrition.get('hydration_liters','?')}L"""
 
+    bench_section = ""
+    if benchmarks:
+        rec_perf = benchmarks.get("recovery_performance_correlation", {})
+        atp = benchmarks.get("atp_tour_averages", {})
+        targets = benchmarks.get("fernando_targets", {})
+        bench_section = f"""
+ATP BENCHMARKS (Jeff Sackmann dataset, 9500+ matches):
+  ATP first serve avg: {atp.get('first_serve_pct','63')}% | Fernando target: {targets.get('first_serve_pct_target','60')}%
+  ATP unforced errors: {atp.get('unforced_errors_per_player_per_match','21.8')}/match | Fernando target: {targets.get('unforced_errors_target','18')}
+  ATP winners/match: {atp.get('winners_per_player_per_match','28.4')}
+  Recovery-performance: wins {rec_perf.get('high_recovery_80plus',{}).get('win_rate',0.75)*100:.0f}% when recovery >80% vs {rec_perf.get('low_recovery_below_65',{}).get('win_rate',0.40)*100:.0f}% when <65%
+  Key insight: {rec_perf.get('insight','')}"""
+
     return f"""You are a sports science advisor for a tennis academy AI platform.
 Analyze this player data and generate a coaching recommendation.
+Use the ATP benchmarks to provide context where relevant.
 
-PLAYER: {player.get('name','?')}, Age {player.get('age','?')} | Level: {player.get('level','?')}
+PLAYER: {player.get('name','?')}, Age {player.get('age','?')} | Level: {player.get('level','?')} | Surface: {player.get('preferred_surface','clay')}
 
 TODAY {today.get('date','')}:
   Recovery: {today.get('recovery_score','?')}% (7-day avg: {avg_recovery}%)
   HRV: {today.get('hrv_ms','?')}ms (7-day avg: {avg_hrv}ms)
-  Sleep: {today.get('sleep_hours','?')}h
+  Sleep: {today.get('sleep_hours','?')}h (7-day avg: {avg_sleep}h)
+  Resting HR: {today.get('resting_hr_bpm','?')} bpm
   Trend: {trend}
 
 LAST 7 DAYS:
 {history_text}
 {psych_section}
 {nutr_section}
+{bench_section}
 
 SCHEDULE: Today: {upcoming.get('today','TBD')} | Next match: {upcoming.get('next_match','None')}
 
@@ -73,27 +102,32 @@ Respond in EXACTLY this format with no asterisks or markdown:
 STATUS: GREEN
 
 KEY FINDING:
-One sentence about the most important insight.
+One sentence about the most important insight from all data streams.
 
 TODAYS RECOMMENDATION:
-Specific actionable guidance for today. Maximum 3 sentences.
+Specific actionable guidance for today. Reference actual numbers from the data.
+Maximum 3 sentences.
 
 CROSS DATA INSIGHT:
-One insight combining multiple data streams. Maximum 2 sentences.
+One insight that combines recovery data with match performance or ATP benchmarks.
+Maximum 2 sentences.
 
 WATCH THIS WEEK:
-One metric to monitor with a specific threshold. Maximum 2 sentences."""
+One specific metric to monitor with a threshold and action. Maximum 2 sentences."""
 
 
 def generate_recommendation(player, today_data, history, psychology_data=None,
-                            nutrition_data=None, upcoming_schedule=None):
+                            nutrition_data=None, upcoming_schedule=None, data_dir=None):
     upcoming = upcoming_schedule or {
         "today": "Training session",
         "tomorrow": "TBD",
         "next_match": "No match scheduled"
     }
 
-    prompt = build_prompt(player, today_data, history, psychology_data, nutrition_data, upcoming)
+    benchmarks = load_benchmarks(data_dir) if data_dir else {}
+
+    prompt = build_prompt(player, today_data, history, psychology_data,
+                         nutrition_data, upcoming, benchmarks)
 
     try:
         message = client.messages.create(
@@ -134,6 +168,8 @@ def generate_recommendation(player, today_data, history, psychology_data=None,
             sources.append("psychology_apsq")
         if nutrition_data:
             sources.append("nutrition_log")
+        if benchmarks:
+            sources.append("atp_benchmarks")
 
         return {
             "player_id": player.get("player_id"),
@@ -178,7 +214,8 @@ def generate_morning_briefing(players_data):
             history=p["history"],
             psychology_data=p.get("psychology"),
             nutrition_data=p.get("nutrition"),
-            upcoming_schedule=p.get("upcoming")
+            upcoming_schedule=p.get("upcoming"),
+            data_dir=p.get("data_dir")
         )
         recommendations.append(rec)
 
