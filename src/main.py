@@ -545,3 +545,28 @@ async def whoop_callback(code: str):
             "status": "error",
             "detail": response.text
         }
+
+
+@app.get("/auth/whoop/callback")
+async def whoop_callback(code: str):
+    import httpx
+    response = httpx.post(
+        "https://api.prod.whoop.com/oauth/oauth2/token",
+        data={
+            "grant_type": "authorization_code",
+            "code": code,
+            "client_id": os.getenv("WHOOP_CLIENT_ID"),
+            "client_secret": os.getenv("WHOOP_CLIENT_SECRET"),
+            "redirect_uri": "https://ai-tennis-academy-platform-mvp.vercel.app/auth/whoop/callback"
+        }
+    )
+    if response.status_code == 200:
+        token_data = response.json()
+        return {
+            "status": "success",
+            "message": "Copy this access_token to Vercel environment variables as WHOOP_ACCESS_TOKEN",
+            "access_token": token_data.get("access_token"),
+            "refresh_token": token_data.get("refresh_token")
+        }
+    else:
+        return {"status": "error", "detail": response.text}
