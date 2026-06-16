@@ -244,3 +244,4 @@ tennisiq_mvp/
 4. Apply to VALD Hub API → add physical test results
 5. Build Playtomic integration → real match data
 6. Hire technical co-founder → scale infrastructure
+# TennisIQ MVP - AI Tennis Academy Platform
