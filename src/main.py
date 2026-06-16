@@ -512,3 +512,36 @@ if __name__ == "__main__":
 
 from mangum import Mangum
 handler = Mangum(app)
+
+
+@app.get("/auth/whoop/callback")
+async def whoop_callback(code: str):
+    """Handle Whoop OAuth callback and exchange code for access token"""
+    import httpx
+    
+    response = httpx.post(
+        "https://api.prod.whoop.com/oauth/oauth2/token",
+        data={
+            "grant_type": "authorization_code",
+            "code": code,
+            "client_id": os.getenv("WHOOP_CLIENT_ID"),
+            "client_secret": os.getenv("WHOOP_CLIENT_SECRET"),
+            "redirect_uri": "https://ai-tennis-academy-platform-mvp.vercel.app/auth/whoop/callback"
+        }
+    )
+    
+    if response.status_code == 200:
+        token_data = response.json()
+        access_token = token_data.get("access_token")
+        return {
+            "status": "success",
+            "message": "Copy this access token to your WHOOP_ACCESS_TOKEN environment variable",
+            "access_token": access_token,
+            "expires_in": token_data.get("expires_in"),
+            "refresh_token": token_data.get("refresh_token")
+        }
+    else:
+        return {
+            "status": "error",
+            "detail": response.text
+        }
