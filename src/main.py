@@ -1,18 +1,12 @@
+# -*- coding: utf-8 -*-
 """
-TennisIQ MVP — FastAPI Backend
-================================
-The REST API that powers the coach dashboard.
-Handles data ingestion, player management, and recommendation retrieval.
-
-Run: uvicorn src.main:app --reload --port 8000
-Docs: http://localhost:8000/docs (auto-generated Swagger UI)
+TennisIQ MVP — FastAPI Backend v2
 """
 
 import os
 import json
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Optional, List
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -21,128 +15,89 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Import our modules
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from src.ai.recommendation_engine import generate_recommendation, generate_morning_briefing
 from src.connectors.whoop_connector import WhoopConnector
 
-# ── App setup ─────────────────────────────────────────────────────────────────
-app = FastAPI(
-    title="TennisIQ MVP API",
-    description="AI-powered player intelligence platform for tennis academies",
-    version="0.1.0"
-)
+app = FastAPI(title="TennisIQ MVP API", version="0.2.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
+                   allow_methods=["*"], allow_headers=["*"])
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ── Data loading (synthetic for MVP) ──────────────────────────────────────────
 DATA_DIR = Path(__file__).parent.parent / "data" / "synthetic"
+
+DASHBOARD_HTML_CONTENT = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Orbis AI — Coach Dashboard</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">\n<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>\n<style>\n*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n\n:root {\n  --navy:      #1a2744;\n  --navy-mid:  #243258;\n  --navy-soft: #2d3d6b;\n  --lime:      #a8d130;\n  --lime-dark: #7fa020;\n  --lime-pale: #eef6cc;\n  --bg:        #f0f2f7;\n  --surface:   #ffffff;\n  --surface2:  #f7f8fc;\n  --border:    #e2e6ef;\n  --text:      #1a2744;\n  --text-2:    #4a5577;\n  --text-3:    #8a93aa;\n  --green:     #16a34a;\n  --green-bg:  #dcfce7;\n  --amber:     #d97706;\n  --amber-bg:  #fef3c7;\n  --red:       #dc2626;\n  --red-bg:    #fee2e2;\n  --radius:    10px;\n  --shadow:    0 1px 4px rgba(26,39,68,.08), 0 4px 16px rgba(26,39,68,.06);\n  --shadow-sm: 0 1px 3px rgba(26,39,68,.06);\n}\n\nbody {\n  background: var(--bg);\n  color: var(--text);\n  font-family: \'DM Sans\', system-ui, sans-serif;\n  min-height: 100vh;\n  font-size: 14px;\n  -webkit-font-smoothing: antialiased;\n}\n\n/* ── Header ──────────────────────────────── */\n.header {\n  background: var(--navy);\n  padding: 0 28px;\n  height: 58px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  position: sticky;\n  top: 0;\n  z-index: 100;\n  box-shadow: 0 2px 12px rgba(26,39,68,.25);\n}\n\n.logo {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n\n/* SVG logo inline */\n.logo-mark {\n  width: 32px;\n  height: 32px;\n  flex-shrink: 0;\n}\n\n.logo-wordmark {\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n}\n\n.logo-name {\n  font-size: 17px;\n  font-weight: 700;\n  color: #ffffff;\n  letter-spacing: -.01em;\n  line-height: 1;\n}\n.logo-name span { color: var(--lime); }\n\n.logo-tagline {\n  font-size: 9px;\n  color: rgba(255,255,255,.45);\n  letter-spacing: .15em;\n  text-transform: uppercase;\n  font-weight: 500;\n}\n\n.header-right {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n\n.date-chip {\n  font-size: 12px;\n  color: rgba(255,255,255,.55);\n  background: rgba(255,255,255,.08);\n  padding: 5px 12px;\n  border-radius: 20px;\n  border: 1px solid rgba(255,255,255,.12);\n}\n\n.btn-briefing {\n  background: var(--lime);\n  color: var(--navy);\n  border: none;\n  padding: 8px 20px;\n  border-radius: 6px;\n  font-size: 13px;\n  font-weight: 700;\n  cursor: pointer;\n  transition: background .15s, transform .1s;\n  letter-spacing: -.01em;\n}\n.btn-briefing:hover { background: #bde040; }\n.btn-briefing:active { transform: scale(.98); }\n.btn-briefing:disabled { opacity: .5; cursor: not-allowed; transform: none; }\n\n/* ── Main layout ─────────────────────────── */\n.main {\n  max-width: 1280px;\n  margin: 0 auto;\n  padding: 24px 24px 48px;\n}\n\n/* ── Player card ─────────────────────────── */\n.player-card {\n  background: var(--navy);\n  border-radius: var(--radius);\n  padding: 20px 24px;\n  margin-bottom: 20px;\n  display: flex;\n  align-items: center;\n  gap: 20px;\n  box-shadow: var(--shadow);\n  border-left: 4px solid var(--lime);\n}\n\n.player-avatar {\n  width: 52px; height: 52px;\n  border-radius: 50%;\n  background: var(--navy-soft);\n  border: 2px solid var(--lime);\n  display: flex; align-items: center; justify-content: center;\n  font-size: 20px;\n  flex-shrink: 0;\n  color: var(--lime);\n  font-weight: 700;\n  font-family: \'DM Mono\', monospace;\n}\n\n.player-info { flex: 1; }\n.player-name {\n  font-size: 18px; font-weight: 700; color: #fff;\n  letter-spacing: -.02em;\n}\n.player-meta { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }\n\n.status-pill {\n  display: flex; align-items: center; gap: 6px;\n  padding: 6px 14px;\n  border-radius: 20px;\n  font-size: 12px; font-weight: 700;\n  letter-spacing: .04em; text-transform: uppercase;\n}\n.status-pill.GREEN { background: var(--green-bg); color: var(--green); }\n.status-pill.AMBER { background: var(--amber-bg); color: var(--amber); }\n.status-pill.RED   { background: var(--red-bg);   color: var(--red);   }\n\n.status-dot {\n  width: 7px; height: 7px; border-radius: 50%;\n}\n.GREEN .status-dot { background: var(--green); }\n.AMBER .status-dot { background: var(--amber); }\n.RED   .status-dot { background: var(--red);   }\n\n.gen-label { font-size: 11px; color: rgba(255,255,255,.3); }\n\n/* ── Section grid ────────────────────────── */\n.grid-2 {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n  margin-bottom: 16px;\n}\n.grid-full { margin-bottom: 16px; }\n\n@media (max-width: 900px) {\n  .grid-2 { grid-template-columns: 1fr; }\n}\n\n/* ── Cards ───────────────────────────────── */\n.card {\n  background: var(--surface);\n  border-radius: var(--radius);\n  box-shadow: var(--shadow);\n  overflow: hidden;\n  border: 1px solid var(--border);\n}\n\n.card-header {\n  padding: 12px 18px;\n  border-bottom: 1px solid var(--border);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n\n.card-title {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 11px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .1em;\n  color: var(--navy);\n}\n\n.card-title-icon {\n  width: 24px; height: 24px;\n  background: var(--lime-pale);\n  border-radius: 6px;\n  display: flex; align-items: center; justify-content: center;\n  font-size: 12px;\n}\n\n.card-badge {\n  font-size: 10px;\n  font-weight: 600;\n  padding: 2px 8px;\n  border-radius: 20px;\n  background: var(--lime-pale);\n  color: var(--lime-dark);\n  letter-spacing: .04em;\n}\n\n.card-body { padding: 18px; }\n\n/* ── Metric trio ─────────────────────────── */\n.metric-trio {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 10px;\n  margin-bottom: 16px;\n}\n\n.metric-box {\n  background: var(--surface2);\n  border: 1px solid var(--border);\n  border-radius: 8px;\n  padding: 12px 14px;\n  position: relative;\n  overflow: hidden;\n}\n.metric-box::before {\n  content: \'\';\n  position: absolute;\n  top: 0; left: 0;\n  width: 3px; height: 100%;\n  background: var(--lime);\n}\n\n.metric-val {\n  font-size: 26px;\n  font-weight: 700;\n  line-height: 1;\n  font-family: \'DM Mono\', monospace;\n  letter-spacing: -.02em;\n  color: var(--navy);\n}\n.metric-val.good { color: var(--green); }\n.metric-val.warn { color: var(--amber); }\n.metric-val.bad  { color: var(--red);   }\n.metric-label {\n  font-size: 10px;\n  color: var(--text-3);\n  margin-top: 4px;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: .07em;\n}\n.metric-sub {\n  font-size: 10px;\n  color: var(--text-3);\n  margin-top: 1px;\n}\n\n/* ── Chart container ─────────────────────── */\n.chart-wrap { position: relative; height: 120px; }\n.chart-label {\n  font-size: 10px;\n  color: var(--text-3);\n  text-transform: uppercase;\n  letter-spacing: .08em;\n  font-weight: 600;\n  margin-bottom: 8px;\n}\n\n/* ── Comparison bars ─────────────────────── */\n.bench-section { margin-top: 16px; }\n.bench-label-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 10px;\n}\n.bench-title {\n  font-size: 10px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .08em;\n  color: var(--text-3);\n}\n.bench-legend {\n  display: flex; gap: 12px;\n  font-size: 10px; color: var(--text-3);\n}\n.bench-legend span {\n  display: flex; align-items: center; gap: 4px;\n}\n.ldot {\n  width: 8px; height: 8px;\n  border-radius: 50%;\n  display: inline-block;\n}\n\n.cmp-row {\n  display: grid;\n  grid-template-columns: 100px 1fr 64px;\n  align-items: center;\n  gap: 10px;\n  margin-bottom: 8px;\n}\n.cmp-label { font-size: 11px; color: var(--text-2); }\n.cmp-track {\n  height: 8px;\n  background: var(--border);\n  border-radius: 4px;\n  position: relative;\n  overflow: hidden;\n}\n.cmp-bar-you {\n  height: 100%;\n  background: var(--navy);\n  border-radius: 4px;\n  transition: width .9s cubic-bezier(.16,1,.3,1);\n}\n.cmp-bar-atp {\n  position: absolute;\n  top: 0;\n  height: 100%;\n  background: var(--lime);\n  opacity: .7;\n  border-radius: 4px;\n  transition: width .9s cubic-bezier(.16,1,.3,1);\n}\n.cmp-val {\n  font-size: 11px;\n  color: var(--text-2);\n  font-family: \'DM Mono\', monospace;\n  text-align: right;\n  white-space: nowrap;\n}\n\n/* ── APSQ psychology ─────────────────────── */\n.apsq-grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 6px;\n  margin-bottom: 14px;\n}\n.apsq-item {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 6px 8px;\n  background: var(--surface2);\n  border-radius: 6px;\n  border: 1px solid var(--border);\n}\n.apsq-name { font-size: 10px; color: var(--text-2); width: 80px; flex-shrink: 0; }\n.apsq-bar-wrap {\n  flex: 1;\n  height: 4px;\n  background: var(--border);\n  border-radius: 2px;\n  overflow: hidden;\n}\n.apsq-fill { height: 100%; border-radius: 2px; transition: width .8s ease; }\n.apsq-num {\n  font-size: 11px;\n  font-family: \'DM Mono\', monospace;\n  color: var(--text-2);\n  width: 22px;\n  text-align: right;\n}\n\n.psych-note {\n  background: var(--surface2);\n  border: 1px solid var(--border);\n  border-left: 3px solid var(--navy);\n  border-radius: 0 8px 8px 0;\n  padding: 10px 14px;\n}\n.psych-note-label { font-size: 10px; color: var(--text-3); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }\n.psych-note-text { font-size: 12px; color: var(--text); line-height: 1.5; }\n\n/* ── Court + match ───────────────────────── */\n.match-wrap {\n  display: grid;\n  grid-template-columns: 210px 1fr;\n  gap: 20px;\n  align-items: start;\n}\n\n@media (max-width: 700px) {\n  .match-wrap { grid-template-columns: 1fr; }\n}\n\n.court-container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 10px;\n}\n.court-title {\n  font-size: 10px; font-weight: 700;\n  text-transform: uppercase; letter-spacing: .1em;\n  color: var(--text-3);\n}\n\n.stat-table { width: 100%; }\n.stat-table-header {\n  display: grid;\n  grid-template-columns: 1fr auto auto;\n  gap: 12px;\n  padding: 6px 0;\n  border-bottom: 2px solid var(--border);\n  margin-bottom: 4px;\n}\n.sth { font-size: 10px; font-weight: 700; text-transform: uppercase;\n        letter-spacing: .08em; color: var(--text-3); }\n.sth:nth-child(2) { color: var(--navy); }\n.sth:nth-child(3) { color: var(--lime-dark); }\n\n.stat-row {\n  display: grid;\n  grid-template-columns: 1fr auto auto;\n  gap: 12px;\n  padding: 8px 0;\n  border-bottom: 1px solid var(--border);\n  align-items: center;\n}\n.stat-row:last-child { border-bottom: none; }\n.sn { font-size: 12px; color: var(--text-2); }\n.sv { font-size: 13px; font-family: \'DM Mono\', monospace; font-weight: 600; color: var(--navy); min-width: 60px; text-align: right; }\n.sb { font-size: 12px; font-family: \'DM Mono\', monospace; color: var(--lime-dark); min-width: 60px; text-align: right; }\n\n.match-mini-chart {\n  margin-top: 14px;\n  background: var(--surface2);\n  border: 1px solid var(--border);\n  border-radius: 8px;\n  padding: 12px 14px;\n}\n.chart-wrap-sm { position: relative; height: 70px; }\n\n/* ── AI Recommendation ───────────────────── */\n.rec-strip {\n  background: var(--navy);\n  border-radius: var(--radius);\n  overflow: hidden;\n  box-shadow: var(--shadow);\n  border-left: 4px solid var(--lime);\n}\n\n.rec-header {\n  padding: 14px 20px;\n  border-bottom: 1px solid rgba(255,255,255,.08);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.rec-header-title {\n  display: flex; align-items: center; gap: 10px;\n  font-size: 11px; font-weight: 700;\n  text-transform: uppercase; letter-spacing: .1em;\n  color: rgba(255,255,255,.7);\n}\n.rec-header-icon {\n  width: 28px; height: 28px;\n  background: var(--lime);\n  border-radius: 6px;\n  display: flex; align-items: center; justify-content: center;\n  font-size: 14px;\n}\n\n.rec-grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr 1fr;\n  gap: 0;\n}\n\n@media (max-width: 900px) {\n  .rec-grid { grid-template-columns: 1fr 1fr; }\n}\n\n.rec-block {\n  padding: 18px 20px;\n  border-right: 1px solid rgba(255,255,255,.07);\n}\n.rec-block:last-child { border-right: none; }\n.rec-block:nth-child(2) { border-top: none; }\n\n.rec-block-label {\n  font-size: 10px; font-weight: 700;\n  text-transform: uppercase; letter-spacing: .1em;\n  color: var(--lime);\n  margin-bottom: 8px;\n  display: flex; align-items: center; gap: 5px;\n}\n.rec-block-text {\n  font-size: 12px;\n  color: rgba(255,255,255,.8);\n  line-height: 1.6;\n}\n\n.rec-footer {\n  padding: 10px 20px;\n  border-top: 1px solid rgba(255,255,255,.07);\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.source-chip {\n  font-size: 10px;\n  padding: 3px 9px;\n  border-radius: 20px;\n  background: rgba(168,209,48,.15);\n  border: 1px solid rgba(168,209,48,.25);\n  color: var(--lime);\n  font-family: \'DM Mono\', monospace;\n  font-weight: 500;\n}\n\n/* ── Loading / error ─────────────────────── */\n.loading {\n  text-align: center;\n  padding: 64px 20px;\n  color: var(--text-3);\n}\n.spinner {\n  width: 28px; height: 28px;\n  border: 2px solid var(--border);\n  border-top-color: var(--navy);\n  border-radius: 50%;\n  animation: spin .7s linear infinite;\n  margin: 0 auto 16px;\n}\n@keyframes spin { to { transform: rotate(360deg); } }\n\n.error-box {\n  background: var(--red-bg);\n  border: 1px solid rgba(220,38,38,.3);\n  border-radius: 8px;\n  padding: 14px 18px;\n  color: var(--red);\n  font-size: 13px;\n}\n</style>\n</head>\n<body>\n\n<!-- ── Header ──────────────────────────────── -->\n\n<!-- Player Selector Screen -->\n<div id="selectorScreen" style="min-height:100vh;background:#f0f2f7;display:flex;flex-direction:column">\n\n  <!-- Academy header -->\n  <div style="background:var(--navy);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(26,39,68,.25)">\n    <div style="display:flex;align-items:center;gap:12px">\n      <svg width="32" height="32" viewBox="0 0 64 64" fill="none">\n        <ellipse cx="30" cy="34" rx="22" ry="22" fill="#a8d130"/>\n        <path d="M12 28 Q22 20 30 34 Q38 48 48 40" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>\n        <ellipse cx="34" cy="28" rx="26" ry="14" stroke="#1a2744" stroke-width="2.5" fill="none" transform="rotate(-20 34 28)"/>\n        <circle cx="54" cy="16" r="4" fill="#a8d130"/>\n        <circle cx="44" cy="22" r="2" fill="rgba(255,255,255,.6)"/>\n        <line x1="44" y1="22" x2="54" y2="16" stroke="rgba(255,255,255,.4)" stroke-width="1"/>\n      </svg>\n      <div>\n        <div style="font-size:17px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1">Orbis <span style="color:#a8d130">AI</span></div>\n        <div style="font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.15em;text-transform:uppercase;font-weight:500">Data · Insight · Elevate Your Game</div>\n      </div>\n    </div>\n    <div style="font-size:12px;color:rgba(255,255,255,.4)">Roger Lederer Academy</div>\n  </div>\n\n  <!-- Welcome panel -->\n  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px">\n    <div style="width:100%;max-width:680px">\n\n      <!-- Coach greeting -->\n      <div style="text-align:center;margin-bottom:36px">\n        <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#1a2744;border-radius:50%;border:2px solid #a8d130;font-size:22px;font-weight:700;color:#a8d130;font-family:\'DM Mono\',monospace;margin-bottom:14px">T</div>\n        <div style="font-size:22px;font-weight:700;color:#1a2744;letter-spacing:-.02em">Good morning, Coach Toni</div>\n        <div style="font-size:14px;color:#4a5577;margin-top:6px">Roger Lederer Academy · Select a player to view their morning briefing</div>\n        <div style="font-size:12px;color:#8a93aa;margin-top:4px" id="selectorDate">—</div>\n      </div>\n\n      <!-- Player cards -->\n      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">\n\n        <!-- Fernando — data available -->\n        <div onclick="selectPlayer(\'fernando\')" style="background:#fff;border-radius:12px;border:1.5px solid #a8d130;padding:24px 18px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(168,209,48,.15);position:relative;text-align:center"\n             onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 8px 28px rgba(168,209,48,.22)\'"\n             onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 4px 20px rgba(168,209,48,.15)\'">\n          <!-- Updated badge -->\n          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#a8d130;color:#1a2744;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.06em;white-space:nowrap">✓ DATA UPDATED</div>\n          <!-- Avatar -->\n          <div style="width:64px;height:64px;border-radius:50%;background:#1a2744;border:3px solid #a8d130;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#a8d130;font-family:\'DM Mono\',monospace;margin:10px auto 14px">F</div>\n          <!-- Name — highlighted -->\n          <div style="font-size:18px;font-weight:700;color:#1a2744;letter-spacing:-.02em">Fernando</div>\n          <div style="font-size:11px;color:#4a5577;margin-top:3px">Advanced recreational</div>\n          <!-- Stats preview -->\n          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e6ef;display:grid;grid-template-columns:1fr 1fr;gap:8px">\n            <div style="text-align:center">\n              <div style="font-size:16px;font-weight:700;color:#16a34a">84%</div>\n              <div style="font-size:9px;color:#8a93aa;text-transform:uppercase;letter-spacing:.06em">Recovery</div>\n            </div>\n            <div style="text-align:center">\n              <div style="font-size:16px;font-weight:700;color:#1a2744">57ms</div>\n              <div style="font-size:9px;color:#8a93aa;text-transform:uppercase;letter-spacing:.06em">HRV</div>\n            </div>\n          </div>\n          <div style="margin-top:12px;background:#1a2744;color:#fff;font-size:12px;font-weight:600;padding:8px;border-radius:6px">View Briefing →</div>\n        </div>\n\n        <!-- James — no data -->\n        <div style="background:#fff;border-radius:12px;border:1.5px solid #e2e6ef;padding:24px 18px;text-align:center;opacity:.6;cursor:not-allowed">\n          <div style="width:64px;height:64px;border-radius:50%;background:#f0f2f7;border:3px solid #e2e6ef;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#8a93aa;font-family:\'DM Mono\',monospace;margin:10px auto 14px">J</div>\n          <div style="font-size:18px;font-weight:700;color:#8a93aa;letter-spacing:-.02em">James</div>\n          <div style="font-size:11px;color:#a0a8bb;margin-top:3px">Intermediate</div>\n          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e6ef">\n            <div style="font-size:11px;color:#a0a8bb;padding:8px 0">No data connected yet</div>\n          </div>\n          <div style="margin-top:12px;background:#f0f2f7;color:#a0a8bb;font-size:12px;font-weight:600;padding:8px;border-radius:6px;cursor:not-allowed">Pending setup</div>\n        </div>\n\n        <!-- Jaime — no data -->\n        <div style="background:#fff;border-radius:12px;border:1.5px solid #e2e6ef;padding:24px 18px;text-align:center;opacity:.6;cursor:not-allowed">\n          <div style="width:64px;height:64px;border-radius:50%;background:#f0f2f7;border:3px solid #e2e6ef;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#8a93aa;font-family:\'DM Mono\',monospace;margin:10px auto 14px">J</div>\n          <div style="font-size:18px;font-weight:700;color:#8a93aa;letter-spacing:-.02em">Jaime</div>\n          <div style="font-size:11px;color:#a0a8bb;margin-top:3px">Competitive junior</div>\n          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e6ef">\n            <div style="font-size:11px;color:#a0a8bb;padding:8px 0">No data connected yet</div>\n          </div>\n          <div style="margin-top:12px;background:#f0f2f7;color:#a0a8bb;font-size:12px;font-weight:600;padding:8px;border-radius:6px;cursor:not-allowed">Pending setup</div>\n        </div>\n\n      </div>\n\n      <!-- Academy footer -->\n      <div style="text-align:center;margin-top:28px;font-size:11px;color:#a0a8bb">\n        Roger Lederer Academy · 3 players enrolled · 1 active data connection\n      </div>\n\n    </div>\n  </div>\n</div>\n\n<!-- Main Dashboard (hidden until player selected) -->\n<div id="mainDashboard" style="display:none">\n<header class="header">\n  <div class="logo">\n    <!-- Orbis AI inline SVG logo mark -->\n    <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">\n      <!-- Tennis ball shape -->\n      <ellipse cx="30" cy="34" rx="22" ry="22" fill="#a8d130"/>\n      <path d="M12 28 Q22 20 30 34 Q38 48 48 40" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>\n      <!-- Orbit ring -->\n      <ellipse cx="34" cy="28" rx="26" ry="14" stroke="#1a2744" stroke-width="2.5" fill="none" transform="rotate(-20 34 28)"/>\n      <!-- Data dot -->\n      <circle cx="54" cy="16" r="4" fill="#a8d130"/>\n      <!-- Network dots -->\n      <circle cx="44" cy="22" r="2" fill="rgba(255,255,255,.6)"/>\n      <circle cx="38" cy="18" r="1.5" fill="rgba(255,255,255,.5)"/>\n      <line x1="44" y1="22" x2="54" y2="16" stroke="rgba(255,255,255,.4)" stroke-width="1"/>\n      <line x1="38" y1="18" x2="44" y2="22" stroke="rgba(255,255,255,.3)" stroke-width="1"/>\n    </svg>\n    <div class="logo-wordmark">\n      <div class="logo-name">Orbis <span>AI</span></div>\n      <div class="logo-tagline">Data · Insight · Elevate Your Game</div>\n    </div>\n  </div>\n  <div class="header-right">\n    <div class="date-chip" id="todayDate">—</div>\n    <button class="btn-briefing" id="btnRefresh" onclick="loadAll()">Morning Briefing</button>\n  </div>\n</header>\n\n<!-- ── Main ────────────────────────────────── -->\n<main class="main">\n  <div id="loadingState" class="loading" style="display:none">\n    <div class="spinner"></div>\n    Aggregating data sources and generating AI coaching recommendation…\n  </div>\n  <div id="errorState" class="error-box" style="display:none"></div>\n\n  <div id="content" style="display:none">\n\n    <!-- Player card -->\n    <div class="player-card">\n      <div class="player-avatar" id="playerInitial">F</div>\n      <div class="player-info">\n        <div class="player-name" id="playerName">—</div>\n        <div class="player-meta" id="playerMeta">—</div>\n      </div>\n      <div class="status-pill" id="statusPill">\n        <div class="status-dot"></div>\n        <span id="statusText">—</span>\n      </div>\n      <div class="gen-label" id="genLabel">—</div>\n    </div>\n\n    <!-- Row 1: Physical + Psychology -->\n    <div class="grid-2">\n\n      <!-- Physical Readiness -->\n      <div class="card">\n        <div class="card-header">\n          <div class="card-title">\n            <div class="card-title-icon">💪</div>\n            Physical Readiness\n          </div>\n          <div class="card-badge">WHOOP</div>\n        </div>\n        <div class="card-body">\n          <div class="metric-trio">\n            <div class="metric-box">\n              <div class="metric-val" id="mRec">—</div>\n              <div class="metric-label">Recovery</div>\n              <div class="metric-sub" id="mRecSub">—</div>\n            </div>\n            <div class="metric-box">\n              <div class="metric-val" id="mHRV">—</div>\n              <div class="metric-label">HRV · ms</div>\n              <div class="metric-sub" id="mHRVSub">—</div>\n            </div>\n            <div class="metric-box">\n              <div class="metric-val" id="mSleep">—</div>\n              <div class="metric-label">Sleep · h</div>\n              <div class="metric-sub">Rec: ≥7.0h</div>\n            </div>\n          </div>\n\n          <div class="chart-label">14-day recovery trend</div>\n          <div class="chart-wrap">\n            <canvas id="recoveryChart"></canvas>\n          </div>\n\n          <div class="bench-section">\n            <div class="bench-label-row">\n              <div class="bench-title">vs ATP Benchmarks</div>\n              <div class="bench-legend">\n                <span><span class="ldot" style="background:var(--navy)"></span>Fernando</span>\n                <span><span class="ldot" style="background:var(--lime)"></span>ATP / Benchmark</span>\n              </div>\n            </div>\n            <div class="cmp-row">\n              <div class="cmp-label">First Serve %</div>\n              <div class="cmp-track">\n                <div class="cmp-bar-atp" id="barAtpServe" style="width:0"></div>\n                <div class="cmp-bar-you" id="barYouServe" style="width:0"></div>\n              </div>\n              <div class="cmp-val" id="valServe">—</div>\n            </div>\n            <div class="cmp-row">\n              <div class="cmp-label">Win Rate</div>\n              <div class="cmp-track">\n                <div class="cmp-bar-atp" id="barAtpWin" style="width:50%"></div>\n                <div class="cmp-bar-you" id="barYouWin" style="width:0"></div>\n              </div>\n              <div class="cmp-val" id="valWin">—</div>\n            </div>\n            <div class="cmp-row">\n              <div class="cmp-label">Resting HR</div>\n              <div class="cmp-track">\n                <div class="cmp-bar-atp" style="width:52%"></div>\n                <div class="cmp-bar-you" id="barYouRHR" style="width:0"></div>\n              </div>\n              <div class="cmp-val" id="valRHR">— bpm</div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- Psychology -->\n      <div class="card">\n        <div class="card-header">\n          <div class="card-title">\n            <div class="card-title-icon">🧠</div>\n            Psychology · APSQ\n          </div>\n          <div class="card-badge" id="strainBadge">—</div>\n        </div>\n        <div class="card-body">\n          <div class="metric-trio">\n            <div class="metric-box">\n              <div class="metric-val" id="mApsq">—</div>\n              <div class="metric-label">APSQ Score</div>\n              <div class="metric-sub">Lower = better</div>\n            </div>\n            <div class="metric-box">\n              <div class="metric-val" id="mAnxiety">—</div>\n              <div class="metric-label">Pre-match</div>\n              <div class="metric-sub">Anxiety /10</div>\n            </div>\n            <div class="metric-box">\n              <div class="metric-val" id="mSelfTalk">—</div>\n              <div class="metric-label">Self-Talk</div>\n              <div class="metric-sub">Quality /10</div>\n            </div>\n          </div>\n\n          <div class="apsq-grid" id="apsqGrid"></div>\n\n          <div class="psych-note">\n            <div class="psych-note-label">Coach notes</div>\n            <div class="psych-note-text" id="psychNotes">—</div>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <!-- Row 2: Match Performance -->\n    <div class="grid-full">\n      <div class="card">\n        <div class="card-header">\n          <div class="card-title">\n            <div class="card-title-icon">🏆</div>\n            Match Performance\n          </div>\n          <div class="card-badge" id="matchBadge">—</div>\n        </div>\n        <div class="card-body">\n          <!-- KPI strip -->\n            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">\n              <div class="metric-box">\n                <div class="metric-val good" id="kpiWinRate">60%</div>\n                <div class="metric-label">Win Rate</div>\n                <div class="metric-sub">vs 50% recreational</div>\n              </div>\n              <div class="metric-box">\n                <div class="metric-val good">75%</div>\n                <div class="metric-label">Win — High Recovery</div>\n                <div class="metric-sub">When recovery ≥80%</div>\n              </div>\n              <div class="metric-box">\n                <div class="metric-val warn">40%</div>\n                <div class="metric-label">Win — Low Recovery</div>\n                <div class="metric-sub">When recovery &lt;65%</div>\n              </div>\n              <div class="metric-box">\n                <div class="metric-val" id="kpiDuration">—</div>\n                <div class="metric-label">Avg Duration</div>\n                <div class="metric-sub">85 min rec. avg</div>\n              </div>\n            </div>\n\n            <!-- Court + Stats -->\n            <div style="display:grid;grid-template-columns:190px 1fr;gap:24px;align-items:start">\n\n              <!-- Court diagram -->\n              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">\n                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3)">Serve zones · deuce</div>\n                <svg width="180" height="300" viewBox="0 0 180 300" xmlns="http://www.w3.org/2000/svg">\n                  <rect width="180" height="300" fill="#2d5a3d" rx="6"/>\n                  <rect x="14" y="14" width="152" height="272" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.5"/>\n                  <line x1="90" y1="14" x2="90" y2="286" stroke="rgba(255,255,255,.45)" stroke-width="1"/>\n                  <line x1="14" y1="150" x2="166" y2="150" stroke="rgba(255,255,255,.9)" stroke-width="2"/>\n                  <circle cx="90" cy="150" r="2.5" fill="rgba(255,255,255,.8)"/>\n                  <line x1="14" y1="90" x2="166" y2="90" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>\n                  <line x1="14" y1="210" x2="166" y2="210" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>\n                  <rect x="15" y="91" width="50" height="58" fill="rgba(168,209,48,.22)" rx="2"/>\n                  <rect x="65" y="91" width="50" height="58" fill="rgba(168,209,48,.12)" rx="2"/>\n                  <rect x="115" y="91" width="50" height="58" fill="rgba(168,209,48,.35)" rx="2"/>\n                  <text x="40" y="125" fill="rgba(255,255,255,.75)" font-size="11" font-family="-apple-system,sans-serif" font-weight="500" text-anchor="middle">24%</text>\n                  <text x="90" y="125" fill="rgba(255,255,255,.65)" font-size="11" font-family="-apple-system,sans-serif" font-weight="500" text-anchor="middle">18%</text>\n                  <text x="140" y="119" fill="#a8d130" font-size="13" font-family="-apple-system,sans-serif" font-weight="700" text-anchor="middle">58%</text>\n                  <text x="140" y="132" fill="rgba(168,209,48,.7)" font-size="8.5" font-family="-apple-system,sans-serif" text-anchor="middle">1st in</text>\n                  <text x="40" y="87" fill="rgba(255,255,255,.4)" font-size="7.5" font-family="-apple-system,sans-serif" text-anchor="middle" font-weight="600">WIDE</text>\n                  <text x="90" y="87" fill="rgba(255,255,255,.4)" font-size="7.5" font-family="-apple-system,sans-serif" text-anchor="middle" font-weight="600">BODY</text>\n                  <text x="140" y="87" fill="rgba(255,255,255,.4)" font-size="7.5" font-family="-apple-system,sans-serif" text-anchor="middle" font-weight="600">T</text>\n                  <rect x="115" y="154" width="50" height="55" fill="rgba(22,163,74,.2)" rx="2"/>\n                  <text x="140" y="184" fill="rgba(22,163,74,.85)" font-size="9" font-family="-apple-system,sans-serif" font-weight="600" text-anchor="middle">Winners</text>\n                  <rect x="15" y="154" width="72" height="32" fill="rgba(220,38,38,.18)" rx="2"/>\n                  <text x="51" y="173" fill="rgba(220,38,38,.8)" font-size="9" font-family="-apple-system,sans-serif" font-weight="600" text-anchor="middle">Errors</text>\n                  <text x="90" y="10" fill="rgba(255,255,255,.3)" font-size="8" font-family="-apple-system,sans-serif" text-anchor="middle">OPPONENT</text>\n                  <text x="90" y="296" fill="rgba(255,255,255,.3)" font-size="8" font-family="-apple-system,sans-serif" text-anchor="middle">FERNANDO</text>\n                </svg>\n                <div style="font-size:10px;color:var(--text-3);text-align:center;line-height:1.6">\n                  <span style="display:inline-block;width:8px;height:8px;background:rgba(168,209,48,.6);border-radius:1px;margin-right:3px"></span>Serve zones<br>\n                  <span style="display:inline-block;width:8px;height:8px;background:rgba(22,163,74,.4);border-radius:1px;margin-right:3px"></span>Winners&nbsp;&nbsp;\n                  <span style="display:inline-block;width:8px;height:8px;background:rgba(220,38,38,.35);border-radius:1px;margin-right:3px"></span>Errors\n                </div>\n              </div>\n\n              <!-- Stats + chart column -->\n              <div style="display:flex;flex-direction:column;gap:16px">\n\n                <!-- Stat table -->\n                <div>\n                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">\n                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3)">Detailed stats</div>\n                    <div style="display:flex;gap:12px;font-size:10px;color:var(--text-3)">\n                      <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--navy);margin-right:3px"></span>Fernando</span>\n                      <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lime);margin-right:3px"></span>ATP benchmark</span>\n                    </div>\n                  </div>\n                  <div class="stat-table">\n                    <div class="stat-table-header">\n                      <div class="sth">Metric</div>\n                      <div class="sth">Fernando</div>\n                      <div class="sth">Benchmark</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">Matches played</div>\n                      <div class="sv" id="smMatches">—</div>\n                      <div class="sb">—</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">First serve %</div>\n                      <div class="sv" id="smFirstServe">58%</div>\n                      <div class="sb">63% ATP avg</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">Winners / match</div>\n                      <div class="sv" id="smWinners">12</div>\n                      <div class="sb">28.4 ATP avg</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">Unforced errors</div>\n                      <div class="sv" id="smErrors" style="color:var(--amber)">22</div>\n                      <div class="sb">21.8 ATP avg</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">Avg match duration</div>\n                      <div class="sv" id="smDuration">—</div>\n                      <div class="sb">85 min rec.</div>\n                    </div>\n                    <div class="stat-row">\n                      <div class="sn">Last match</div>\n                      <div class="sv" id="smLast" style="font-size:11px">—</div>\n                      <div class="sb"></div>\n                    </div>\n                  </div>\n                </div>\n\n                <!-- Recovery chart -->\n                <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">\n                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">\n                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3)">Recovery on match days</div>\n                    <div style="display:flex;gap:10px;font-size:10px;color:var(--text-3)">\n                      <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:3px"></span>Win</span>\n                      <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc2626;margin-right:3px"></span>Loss</span>\n                    </div>\n                  </div>\n                  <div class="chart-wrap-sm">\n                    <canvas id="matchChart" role="img" aria-label="Bar chart showing Fernando recovery on match days, green for wins and red for losses">Recovery on match days — wins tend to occur with higher recovery scores.</canvas>\n                  </div>\n                  <!-- Key insight strip -->\n                  <div style="margin-top:12px;padding:10px 12px;background:var(--surface);border-radius:0 6px 6px 0;border-left:3px solid var(--lime);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)">\n                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--lime-dark);margin-bottom:3px">Key pattern</div>\n                    <div style="font-size:12px;color:var(--text-2);line-height:1.5">Fernando wins 75% of matches when recovery ≥80% vs 40% when below 65%. Recovery is the most controllable performance variable.</div>\n                  </div>\n                </div>\n\n              </div>\n            </div>\n        </div>\n      </div>\n    </div>\n\n    <!-- Row 3: AI Recommendation -->\n    <div class="grid-full">\n      <div class="rec-strip">\n        <div class="rec-header">\n          <div class="rec-header-title">\n            <div class="rec-header-icon">🤖</div>\n            AI Coaching Recommendation · Orbis AI\n          </div>\n          <div style="font-size:11px;color:rgba(255,255,255,.3)" id="recModel">—</div>\n        </div>\n        <div class="rec-grid">\n          <div class="rec-block">\n            <div class="rec-block-label">⚡ Key Finding</div>\n            <div class="rec-block-text" id="recKey">—</div>\n          </div>\n          <div class="rec-block">\n            <div class="rec-block-label">🎾 Today\'s Recommendation</div>\n            <div class="rec-block-text" id="recToday">—</div>\n          </div>\n          <div class="rec-block">\n            <div class="rec-block-label">🔗 Cross-Data Insight</div>\n            <div class="rec-block-text" id="recCross">—</div>\n          </div>\n          <div class="rec-block">\n            <div class="rec-block-label">👀 Watch This Week</div>\n            <div class="rec-block-text" id="recWatch">—</div>\n          </div>\n        </div>\n        <div class="rec-footer" id="sourcesRow"></div>\n      </div>\n    </div>\n\n  </div><!-- /content -->\n</main>\n\n<script>\nconst APSQ_LABELS = {\n  q1_performance_worry:\'Performance worry\', q2_concentration:\'Concentration\',\n  q3_confidence:\'Confidence\', q4_irritability:\'Irritability\',\n  q5_sleep_worry:\'Sleep worry\', q6_motivation:\'Motivation\',\n  q7_external_coping:\'External coping\', q8_fatigue_mental:\'Mental fatigue\',\n  q9_enjoyment:\'Enjoyment\', q10_pressure:\'Pressure\'\n};\n\nlet chartR = null, chartM = null;\n\ndocument.getElementById(\'todayDate\').textContent =\n  new Date().toLocaleDateString(\'en-GB\',{weekday:\'short\',day:\'numeric\',month:\'short\',year:\'numeric\'});\n\nfunction rcol(v){ return v>=75?\'#16a34a\':v>=55?\'#d97706\':\'#dc2626\'; }\n\nasync function loadAll(){\n  const btn = document.getElementById(\'btnRefresh\');\n  btn.disabled = true; btn.textContent = \'Loading…\';\n  document.getElementById(\'content\').style.display=\'none\';\n  document.getElementById(\'errorState\').style.display=\'none\';\n  document.getElementById(\'loadingState\').style.display=\'block\';\n\n  try{\n    const [recR,recovR,matchR,psychR] = await Promise.all([\n      fetch(\'/api/recommendation/FER_001\'),\n      fetch(\'/api/player/FER_001/recovery?days=14\'),\n      fetch(\'/api/player/FER_001/matches?limit=10\'),\n      fetch(\'/api/player/FER_001/psychology?weeks=4\'),\n    ]);\n    const rec=await recR.json(), recov=await recovR.json(),\n          matches=await matchR.json(), psych=await psychR.json();\n    render(rec,recov,matches,psych);\n    document.getElementById(\'loadingState\').style.display=\'none\';\n    document.getElementById(\'content\').style.display=\'block\';\n  }catch(e){\n    document.getElementById(\'loadingState\').style.display=\'none\';\n    const el=document.getElementById(\'errorState\');\n    el.style.display=\'block\';\n    el.textContent=\'⚠️ \'+e.message+\' — Run: python scripts/generate_synthetic_data.py\';\n  }\n  btn.disabled=false; btn.textContent=\'Refresh\';\n}\n\nfunction render(rec,recov,matches,psych){\n  // ── Player header\n  const st=rec.status||\'GREEN\';\n  const pill=document.getElementById(\'statusPill\');\n  pill.className=\'status-pill \'+st;\n  document.getElementById(\'statusText\').textContent=st;\n  document.getElementById(\'playerName\').textContent=rec.player_name||\'Fernando\';\n  document.getElementById(\'playerMeta\').textContent=\'Age 35 · Clay specialist · Advanced recreational · Orbis AI pilot\';\n  document.getElementById(\'playerInitial\').textContent=(rec.player_name||\'F\')[0];\n  document.getElementById(\'genLabel\').textContent=\'Generated \'+( rec.generated_at||\'today\');\n\n  // ── Physical\n  const hist=recov.data||[];\n  const td=hist[hist.length-1]||{};\n  const rv=td.recovery_score||0, hv=td.hrv_ms||0, sl=td.sleep_hours||0;\n  const avg7=hist.slice(-7);\n  const avgRv=Math.round(avg7.reduce((a,d)=>a+(d.recovery_score||0),0)/Math.max(avg7.length,1));\n  const avgHrv=Math.round(avg7.reduce((a,d)=>a+(d.hrv_ms||0),0)/Math.max(avg7.length,1));\n\n  const mRec=document.getElementById(\'mRec\');\n  mRec.textContent=rv+\'%\'; mRec.className=\'metric-val \'+(rv>=75?\'good\':rv>=55?\'warn\':\'bad\');\n  document.getElementById(\'mRecSub\').textContent=\'7d avg: \'+avgRv+\'%\';\n\n  const mHRV=document.getElementById(\'mHRV\');\n  mHRV.textContent=Math.round(hv); mHRV.className=\'metric-val \'+(hv>=60?\'good\':hv>=45?\'warn\':\'bad\');\n  document.getElementById(\'mHRVSub\').textContent=\'7d avg: \'+avgHrv+\'ms\';\n\n  const mSl=document.getElementById(\'mSleep\');\n  mSl.textContent=sl.toFixed(1); mSl.className=\'metric-val \'+(sl>=7?\'good\':sl>=6?\'warn\':\'bad\');\n\n  // Recovery chart\n  const labels=hist.map(d=>d.date?d.date.slice(5):\'\');\n  const vals=hist.map(d=>d.recovery_score||0);\n  if(chartR) chartR.destroy();\n  chartR=new Chart(document.getElementById(\'recoveryChart\'),{\n    type:\'bar\',\n    data:{labels,datasets:[{\n      data:vals,\n      backgroundColor:vals.map(v=>rcol(v)+\'33\'),\n      borderColor:vals.map(v=>rcol(v)),\n      borderWidth:1.5, borderRadius:3\n    }]},\n    options:{\n      responsive:true, maintainAspectRatio:false,\n      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+\'% recovery\'}}},\n      scales:{\n        x:{ticks:{color:\'#8a93aa\',font:{size:9}},grid:{display:false},border:{display:false}},\n        y:{min:0,max:100,ticks:{color:\'#8a93aa\',font:{size:9},stepSize:25},\n           grid:{color:\'#e2e6ef\'},border:{display:false}}\n      }\n    }\n  });\n\n  // Benchmarks\n  const mData=matches.data||[];\n  const wins=mData.filter(m=>m.result===\'W\').length;\n  const tot=mData.length||1;\n  const wr=Math.round(wins/tot*100);\n  const rhr=td.resting_hr_bpm||56;\n\n  document.getElementById(\'barAtpServe\').style.width=\'63%\';\n  document.getElementById(\'barYouServe\').style.width=\'58%\';\n  document.getElementById(\'valServe\').textContent=\'58% / 63%\';\n  document.getElementById(\'barYouWin\').style.width=wr+\'%\';\n  document.getElementById(\'valWin\').textContent=wr+\'% / 50%\';\n  document.getElementById(\'barYouRHR\').style.width=Math.min(100,rhr)+\'%\';\n  document.getElementById(\'valRHR\').textContent=rhr+\' / 52 bpm\';\n\n  // ── Psychology\n  const pd=psych.data||[];\n  const lp=pd[pd.length-1]||{};\n  const apsq=lp.apsq_average||0;\n  const strain=lp.strain_level||\'LOW\';\n  const mAp=document.getElementById(\'mApsq\');\n  mAp.textContent=apsq.toFixed(2);\n  mAp.className=\'metric-val \'+(apsq<2?\'good\':apsq<3?\'warn\':\'bad\');\n  const badge=document.getElementById(\'strainBadge\');\n  badge.textContent=strain+\' STRAIN\';\n  badge.style.background=apsq<2?\'#dcfce7\':apsq<3?\'#fef3c7\':\'#fee2e2\';\n  badge.style.color=apsq<2?\'#16a34a\':apsq<3?\'#d97706\':\'#dc2626\';\n\n  const anx=lp.pre_match_anxiety_1_10||0;\n  const st2=lp.self_talk_quality_1_10||0;\n  const mAn=document.getElementById(\'mAnxiety\');\n  mAn.textContent=anx.toFixed(1); mAn.className=\'metric-val \'+(anx<=4?\'good\':anx<=6?\'warn\':\'bad\');\n  const mST=document.getElementById(\'mSelfTalk\');\n  mST.textContent=st2.toFixed(1); mST.className=\'metric-val \'+(st2>=7?\'good\':st2>=5?\'warn\':\'bad\');\n\n  const scores=lp.apsq_scores||{};\n  const grid=document.getElementById(\'apsqGrid\');\n  grid.innerHTML=\'\';\n  Object.entries(APSQ_LABELS).forEach(([k,lbl])=>{\n    const v=scores[k]||0;\n    const pct=(v/5)*100;\n    const col=v<=2?\'#16a34a\':v<=3?\'#d97706\':\'#dc2626\';\n    grid.innerHTML+=`<div class="apsq-item">\n      <div class="apsq-name">${lbl}</div>\n      <div class="apsq-bar-wrap"><div class="apsq-fill" style="width:${pct}%;background:${col}"></div></div>\n      <div class="apsq-num" style="color:${col}">${v.toFixed(1)}</div>\n    </div>`;\n  });\n  document.getElementById(\'psychNotes\').textContent=lp.coach_notes||\'No notes this week.\';\n\n  // ── Match stats\n  const avgDur=mData.length?Math.round(mData.reduce((a,m)=>a+(m.duration_minutes||85),0)/mData.length):85;\n  const lm=mData[mData.length-1];\n  function setEl(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}\n  setEl(\'smMatches\',tot);\n  setEl(\'smWinRate\',wr+\'%\');\n  setEl(\'smDuration\',avgDur+\' min\');\n  setEl(\'kpiWinRate\',wr+\'%\');\n  setEl(\'kpiDuration\',avgDur+\' min\');\n  setEl(\'matchBadge\',wins+\'W-\'+(tot-wins)+\'L\');\n  setEl(\'smLast\',lm?`${lm.result} ${lm.score||\'\'} vs ${lm.opponent||\'—\'}`:\'—\');\n\n  // Match recovery chart\n  const md8=mData.slice(-8);\n  if(chartM) chartM.destroy();\n  chartM=new Chart(document.getElementById(\'matchChart\'),{\n    type:\'bar\',\n    data:{\n      labels:md8.map(m=>m.date?m.date.slice(5):\'\'),\n      datasets:[{\n        data:md8.map(m=>m.recovery_on_match_day||0),\n        backgroundColor:md8.map(m=>m.result===\'W\'?\'rgba(22,163,74,.45)\':\'rgba(220,38,38,.35)\'),\n        borderColor:md8.map(m=>m.result===\'W\'?\'#16a34a\':\'#dc2626\'),\n        borderWidth:1.5, borderRadius:3\n      }]\n    },\n    options:{\n      responsive:true, maintainAspectRatio:false,\n      plugins:{legend:{display:false},tooltip:{callbacks:{\n        label:c=>`${c.parsed.y}% recovery — ${md8[c.dataIndex]?.result===\'W\'?\'WIN\':\'LOSS\'}`\n      }}},\n      scales:{\n        x:{ticks:{color:\'#8a93aa\',font:{size:9}},grid:{display:false},border:{display:false}},\n        y:{min:0,max:100,ticks:{color:\'#8a93aa\',font:{size:9}},\n           grid:{color:\'#e2e6ef\'},border:{display:false}}\n      }\n    }\n  });\n\n  // ── AI Recommendation\n  document.getElementById(\'recKey\').textContent=rec.key_finding||\'—\';\n  document.getElementById(\'recToday\').textContent=rec.today_recommendation||\'—\';\n  document.getElementById(\'recCross\').textContent=rec.cross_data_insight||\'—\';\n  document.getElementById(\'recWatch\').textContent=rec.watch_this_week||\'—\';\n  document.getElementById(\'recModel\').textContent=\'claude-sonnet-4-6 · \'+rec.generated_at;\n  document.getElementById(\'sourcesRow\').innerHTML=\n    (rec.data_sources_used||[]).map(s=>`<span class="source-chip">${s}</span>`).join(\'\');\n}\n\nloadAll();\n</script>\n</div><!-- /mainDashboard -->\n<script>\ndocument.getElementById(\'selectorDate\').textContent =\n  new Date().toLocaleDateString(\'en-GB\',{weekday:\'long\',day:\'numeric\',month:\'long\',year:\'numeric\'});\n\nfunction selectPlayer(id) {\n  if (id !== \'fernando\') return;\n  document.getElementById(\'selectorScreen\').style.display = \'none\';\n  document.getElementById(\'mainDashboard\').style.display = \'block\';\n  loadAll();\n}\n</script>\n</body>\n</html>'
+
 
 
 def load_synthetic_data():
-    """Load Fernando's synthetic data — used when real APIs are not connected"""
     try:
-        with open(DATA_DIR / "player_profile.json") as f:
-            player = json.load(f)
-        with open(DATA_DIR / "whoop_recovery.json") as f:
-            whoop = json.load(f)
-        with open(DATA_DIR / "match_results.json") as f:
-            matches = json.load(f)
-        with open(DATA_DIR / "psychology.json") as f:
-            psych = json.load(f)
-        with open(DATA_DIR / "nutrition.json") as f:
-            nutrition = json.load(f)
+        with open(DATA_DIR / "player_profile.json") as f: player = json.load(f)
+        with open(DATA_DIR / "whoop_recovery.json") as f: whoop = json.load(f)
+        with open(DATA_DIR / "match_results.json") as f: matches = json.load(f)
+        with open(DATA_DIR / "psychology.json") as f: psych = json.load(f)
+        with open(DATA_DIR / "nutrition.json") as f: nutrition = json.load(f)
         return player, whoop, matches, psych, nutrition
     except FileNotFoundError:
         return None, [], [], [], []
 
 
-# ── Pydantic models ───────────────────────────────────────────────────────────
-
 class MatchLogEntry(BaseModel):
-    player_id: str
-    date: str
-    opponent: str
-    result: str          # "W" or "L"
-    score: str           # "6-3 7-5"
-    surface: str
-    duration_minutes: int
-    physical_feeling: int  # 1-10
+    player_id: str; date: str; opponent: str; result: str
+    score: str; surface: str; duration_minutes: int; physical_feeling: int
 
 class PsychAssessment(BaseModel):
-    player_id: str
-    week_date: str
-    q1_performance_worry: float
-    q2_concentration: float
-    q3_confidence: float
-    q4_irritability: float
-    q5_sleep_worry: float
-    q6_motivation: float
-    q7_external_coping: float
-    q8_fatigue_mental: float
-    q9_enjoyment: float
-    q10_pressure: float
-    coach_notes: str = ""
-    pre_match_anxiety: float = 5.0
-    self_talk_quality: float = 5.0
-    goal_clarity: float = 5.0
+    player_id: str; week_date: str
+    q1_performance_worry: float; q2_concentration: float; q3_confidence: float
+    q4_irritability: float; q5_sleep_worry: float; q6_motivation: float
+    q7_external_coping: float; q8_fatigue_mental: float; q9_enjoyment: float
+    q10_pressure: float; coach_notes: str = ""; pre_match_anxiety: float = 5.0
+    self_talk_quality: float = 5.0; goal_clarity: float = 5.0
 
 class NutritionLog(BaseModel):
-    player_id: str
-    date: str
-    total_calories_kcal: int
-    protein_g: int
-    carbohydrates_g: int
-    fat_g: int
-    hydration_liters: float
-    pre_training_meal: str = ""
-    post_training_meal: str = ""
-    notes: str = ""
+    player_id: str; date: str; total_calories_kcal: int
+    protein_g: int; carbohydrates_g: int; fat_g: int
+    hydration_liters: float; post_training_meal: str = ""; notes: str = ""
 
-class UpcomingSchedule(BaseModel):
-    today: str = "Training session"
-    tomorrow: str = "TBD"
-    next_match: str = "No match scheduled"
-
-
-# ── Routes ────────────────────────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return """
-    <html><body style="font-family:sans-serif;padding:40px;background:#1c1c1e;color:#f5f2ec">
+    return """<html><body style="font-family:sans-serif;padding:40px;background:#111;color:#f0f0f0">
     <h1 style="color:#e07a5f">🎾 TennisIQ MVP</h1>
-    <p>AI-powered player intelligence for tennis academies</p>
-    <p><a href="/docs" style="color:#e07a5f">📖 API Documentation</a></p>
     <p><a href="/dashboard" style="color:#e07a5f">📊 Coach Dashboard</a></p>
-    <p><a href="/api/recommendation/FER_001" style="color:#e07a5f">🤖 Fernando's Recommendation (test)</a></p>
-    </body></html>
-    """
+    <p><a href="/docs" style="color:#e07a5f">📖 API Documentation</a></p>
+    </body></html>"""
 
 @app.get("/health")
 async def health():
-    return {
-        "status": "healthy",
-        "version": "0.1.0",
-        "anthropic_connected": bool(os.getenv("ANTHROPIC_API_KEY")),
-        "whoop_connected": bool(os.getenv("WHOOP_ACCESS_TOKEN")),
-        "synthetic_data_available": DATA_DIR.exists()
-    }
+    return {"status": "healthy", "version": "0.2.0",
+            "anthropic_connected": bool(os.getenv("ANTHROPIC_API_KEY")),
+            "whoop_connected": bool(os.getenv("WHOOP_ACCESS_TOKEN")),
+            "synthetic_data_available": DATA_DIR.exists()}
 
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard():
+    return DASHBOARD_HTML_CONTENT
 
-# ── Player endpoints ──────────────────────────────────────────────────────────
+@app.get("/auth/whoop/callback")
+async def whoop_callback(code: str):
+    import httpx
+    response = httpx.post(
+        "https://api.prod.whoop.com/oauth/oauth2/token",
+        data={"grant_type": "authorization_code", "code": code,
+              "client_id": os.getenv("WHOOP_CLIENT_ID"),
+              "client_secret": os.getenv("WHOOP_CLIENT_SECRET"),
+              "redirect_uri": "https://ai-tennis-academy-platform-mvp.vercel.app/auth/whoop/callback"})
+    if response.status_code == 200:
+        t = response.json()
+        return {"status": "success", "access_token": t.get("access_token"),
+                "refresh_token": t.get("refresh_token"),
+                "message": "Copy access_token to Vercel env as WHOOP_ACCESS_TOKEN"}
+    return {"status": "error", "detail": response.text}
 
 @app.get("/api/player/{player_id}")
 async def get_player(player_id: str):
-    """Get player profile"""
     player, _, _, _, _ = load_synthetic_data()
     if not player or player.get("player_id") != player_id:
         raise HTTPException(status_code=404, detail="Player not found")
@@ -150,398 +105,85 @@ async def get_player(player_id: str):
 
 @app.get("/api/player/{player_id}/recovery")
 async def get_recovery(player_id: str, days: int = 14):
-    """Get recovery history for a player"""
     _, whoop, _, _, _ = load_synthetic_data()
-
-    # Try real Whoop first
-    whoop_connector = WhoopConnector()
-    if whoop_connector.access_token:
-        end_date = date.today()
-        start_date = end_date - timedelta(days=days)
-        real_data = whoop_connector.get_recovery(start_date, end_date)
-        if real_data:
-            return {"source": "whoop_api", "data": real_data[-days:]}
-
-    # Fall back to synthetic
-    return {
-        "source": "synthetic",
-        "data": [d for d in whoop if d["player_id"] == player_id][-days:]
-    }
+    wc = WhoopConnector()
+    if wc.access_token:
+        rd = wc.get_recovery(date.today() - timedelta(days=days), date.today())
+        if rd: return {"source": "whoop_api", "data": rd[-days:]}
+    return {"source": "synthetic",
+            "data": [d for d in whoop if d["player_id"] == player_id][-days:]}
 
 @app.get("/api/player/{player_id}/matches")
 async def get_matches(player_id: str, limit: int = 10):
-    """Get match results for a player"""
     _, _, matches, _, _ = load_synthetic_data()
-    player_matches = [m for m in matches if m["player_id"] == player_id]
-    return {
-        "total": len(player_matches),
-        "data": player_matches[-limit:]
-    }
+    pm = [m for m in matches if m["player_id"] == player_id]
+    return {"total": len(pm), "data": pm[-limit:]}
 
 @app.get("/api/player/{player_id}/psychology")
 async def get_psychology(player_id: str, weeks: int = 4):
-    """Get psychology assessment history"""
     _, _, _, psych, _ = load_synthetic_data()
-    player_psych = [p for p in psych if p["player_id"] == player_id]
-    return {
-        "total_assessments": len(player_psych),
-        "data": player_psych[-weeks:]
-    }
+    pp = [p for p in psych if p["player_id"] == player_id]
+    return {"total_assessments": len(pp), "data": pp[-weeks:]}
 
 @app.get("/api/player/{player_id}/nutrition")
 async def get_nutrition(player_id: str, days: int = 7):
-    """Get nutrition log history"""
     _, _, _, _, nutrition = load_synthetic_data()
-    player_nutrition = [n for n in nutrition if n["player_id"] == player_id]
-    return {
-        "total": len(player_nutrition),
-        "data": player_nutrition[-days:]
-    }
-
-
-# ── Data ingestion endpoints ──────────────────────────────────────────────────
+    pn = [n for n in nutrition if n["player_id"] == player_id]
+    return {"total": len(pn), "data": pn[-days:]}
 
 @app.post("/api/log/match")
 async def log_match(entry: MatchLogEntry):
-    """Log a match result manually"""
-    # In production: save to PostgreSQL
-    # For MVP: append to JSON file
-    matches_file = DATA_DIR / "match_results.json"
+    mf = DATA_DIR / "match_results.json"
     try:
-        with open(matches_file) as f:
-            matches = json.load(f)
-    except FileNotFoundError:
-        matches = []
-
-    new_match = entry.dict()
-    new_match["match_id"] = f"M{str(len(matches)+1).zfill(3)}_manual"
-    new_match["source"] = "manual_entry"
-    matches.append(new_match)
-
-    with open(matches_file, "w") as f:
-        json.dump(matches, f, indent=2)
-
-    return {"status": "success", "match_id": new_match["match_id"]}
-
-@app.post("/api/log/psychology")
-async def log_psychology(assessment: PsychAssessment):
-    """Log a weekly psychology assessment (APSQ)"""
-    scores = {
-        k: v for k, v in assessment.dict().items()
-        if k.startswith("q") and "_" in k[:3]
-    }
-    apsq_scores = list(scores.values())
-    apsq_avg = round(sum(apsq_scores) / len(apsq_scores), 2) if apsq_scores else 0
-    strain_level = "LOW" if apsq_avg < 2.0 else "MODERATE" if apsq_avg < 3.0 else "ELEVATED"
-
-    record = {
-        **assessment.dict(),
-        "apsq_average": apsq_avg,
-        "strain_level": strain_level,
-        "source": "manual_entry"
-    }
-
-    psych_file = DATA_DIR / "psychology.json"
-    try:
-        with open(psych_file) as f:
-            psych_data = json.load(f)
-    except FileNotFoundError:
-        psych_data = []
-
-    psych_data.append(record)
-    with open(psych_file, "w") as f:
-        json.dump(psych_data, f, indent=2)
-
-    return {"status": "success", "strain_level": strain_level, "apsq_average": apsq_avg}
-
-@app.post("/api/log/nutrition")
-async def log_nutrition(log: NutritionLog):
-    """Log daily nutrition"""
-    nutrition_file = DATA_DIR / "nutrition.json"
-    try:
-        with open(nutrition_file) as f:
-            nutrition_data = json.load(f)
-    except FileNotFoundError:
-        nutrition_data = []
-
-    record = {**log.dict(), "source": "manual_entry"}
-    nutrition_data.append(record)
-    with open(nutrition_file, "w") as f:
-        json.dump(nutrition_data, f, indent=2)
-
-    return {"status": "success"}
-
-
-# ── AI Recommendation endpoints ───────────────────────────────────────────────
+        with open(mf) as f: matches = json.load(f)
+    except: matches = []
+    nm = entry.dict(); nm["match_id"] = f"M{len(matches)+1:03d}_manual"; nm["source"] = "manual"
+    matches.append(nm)
+    with open(mf, "w") as f: json.dump(matches, f, indent=2)
+    return {"status": "success", "match_id": nm["match_id"]}
 
 @app.get("/api/recommendation/{player_id}")
 async def get_recommendation(player_id: str):
-    """
-    Generate today's AI recommendation for a player.
-    Aggregates all available data sources and calls Claude.
-    """
     player, whoop_data, matches, psych_data, nutrition_data = load_synthetic_data()
-
     if not player:
         raise HTTPException(status_code=404, detail="No data found. Run: python scripts/generate_synthetic_data.py")
-
-    # Get today's data (last record)
-    player_whoop = [d for d in whoop_data if d["player_id"] == player_id]
-    if not player_whoop:
-        raise HTTPException(status_code=404, detail="No recovery data found for player")
-
-    today_data = player_whoop[-1].copy()
-
-    # Attach last match result if played recently
-    player_matches = [m for m in matches if m["player_id"] == player_id]
-    if player_matches:
-        last_match = player_matches[-1]
-        today_data["match_played"] = True
-        today_data["match_result"] = last_match["result"]
-        today_data["match_score"] = last_match["score"]
-
-    # Try real Whoop data if connected
-    whoop_connector = WhoopConnector()
-    if whoop_connector.access_token:
-        real_today = whoop_connector.get_daily_summary(date.today())
-        if real_today.get("recovery_score"):
-            today_data.update({k: v for k, v in real_today.items() if v is not None})
-            today_data["source"] = "whoop_api_live"
-
-    # Get history (last 14 days)
-    history = player_whoop[-14:]
-
-    # Get latest psychology and nutrition
-    player_psych = [p for p in psych_data if p["player_id"] == player_id]
-    latest_psych = player_psych[-1] if player_psych else None
-
-    player_nutrition = [n for n in nutrition_data if n["player_id"] == player_id]
-    latest_nutrition = player_nutrition[-2] if len(player_nutrition) >= 2 else None
-
-    # Generate recommendation
-    recommendation = generate_recommendation(
-        player=player,
-        today_data=today_data,
-        history=history,
-        psychology_data=latest_psych,
-        nutrition_data=latest_nutrition,
-        upcoming_schedule={
-            "today": "Training session (confirm with coach)",
-            "tomorrow": "TBD",
-            "next_match": "See tournament calendar"
-        }
-    )
-
-    return recommendation
-
+    pw = [d for d in whoop_data if d["player_id"] == player_id]
+    if not pw: raise HTTPException(status_code=404, detail="No recovery data")
+    today_data = pw[-1].copy()
+    pm = [m for m in matches if m["player_id"] == player_id]
+    if pm:
+        lm = pm[-1]; today_data.update({"match_played": True,
+                                         "match_result": lm["result"], "match_score": lm["score"]})
+    wc = WhoopConnector()
+    if wc.access_token:
+        rt = wc.get_daily_summary(date.today())
+        if rt.get("recovery_score"): today_data.update({k:v for k,v in rt.items() if v is not None})
+    pp = [p for p in psych_data if p["player_id"] == player_id]
+    pn = [n for n in nutrition_data if n["player_id"] == player_id]
+    return generate_recommendation(
+        player=player, today_data=today_data, history=pw[-14:],
+        psychology_data=pp[-1] if pp else None,
+        nutrition_data=pn[-2] if len(pn) >= 2 else None,
+        upcoming_schedule={"today": "Training session", "tomorrow": "TBD",
+                           "next_match": "See tournament calendar"},
+        data_dir=str(DATA_DIR))
 
 @app.get("/api/briefing/morning")
 async def morning_briefing():
-    """
-    Generate morning briefing for all players in the academy.
-    This would be called by the scheduler at 6am daily.
-    """
     player, whoop_data, matches, psych_data, nutrition_data = load_synthetic_data()
-    if not player:
-        raise HTTPException(status_code=404, detail="No data found")
-
-    # For MVP: one player (Fernando)
-    players_data = [{
-        "player": player,
-        "today": whoop_data[-1] if whoop_data else {},
+    if not player: raise HTTPException(status_code=404, detail="No data found")
+    return generate_morning_briefing([{
+        "player": player, "today": whoop_data[-1] if whoop_data else {},
         "history": whoop_data[-14:],
         "psychology": psych_data[-1] if psych_data else None,
         "nutrition": nutrition_data[-2] if len(nutrition_data) >= 2 else None,
-        "upcoming": {
-            "today": "Training session",
-            "tomorrow": "TBD",
-            "next_match": "See calendar"
-        }
-    }]
-
-    briefing = generate_morning_briefing(players_data)
-    return briefing
-
-
-# ── Dashboard endpoint ────────────────────────────────────────────────────────
-
-@app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard():
-    """Simple HTML dashboard for the coach"""
-    return """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TennisIQ — Coach Dashboard</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #1c1c1e; color: #f5f2ec; min-height: 100vh; }
-    .header { background: #2a1510; border-bottom: 2px solid #b84c2c; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-    .header h1 { font-size: 20px; color: #e07a5f; }
-    .header span { font-size: 13px; color: #888; }
-    .main { padding: 24px; max-width: 900px; margin: 0 auto; }
-    .btn { background: #b84c2c; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; }
-    .btn:hover { background: #e07a5f; }
-    .btn:disabled { background: #555; cursor: not-allowed; }
-    .card { background: #262626; border-radius: 10px; padding: 20px; margin-bottom: 16px; border: 1px solid #333; }
-    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .status-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .05em; }
-    .GREEN { background: #1a4a2e; color: #4ade80; }
-    .AMBER { background: #4a3a0a; color: #fbbf24; }
-    .RED { background: #4a1010; color: #f87171; }
-    .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
-    .value { font-size: 15px; color: #f5f2ec; line-height: 1.5; }
-    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 12px 0; }
-    .metric { background: #1c1c1e; padding: 10px 12px; border-radius: 6px; }
-    .metric-val { font-size: 22px; font-weight: 600; color: #e07a5f; }
-    .metric-label { font-size: 11px; color: #888; margin-top: 2px; }
-    .insight { background: #1a2a3a; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 8px 0; }
-    .sources { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-    .source-tag { background: #333; color: #aaa; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
-    .loading { color: #888; font-style: italic; padding: 20px 0; }
-    .section-title { font-size: 13px; font-weight: 600; color: #e07a5f; margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <span>🎾</span>
-    <h1>TennisIQ</h1>
-    <span>AI Player Intelligence — MVP Demo</span>
-  </div>
-  <div class="main">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div class="section-title">Morning Briefing</div>
-      <button class="btn" id="refreshBtn" onclick="loadRecommendation()">Generate Recommendation</button>
-    </div>
-
-    <div id="playerCard" class="card" style="display:none">
-      <div class="card-header">
-        <div id="statusEmoji" style="font-size:24px">⚪</div>
-        <div>
-          <div style="font-size:16px;font-weight:600" id="playerName">—</div>
-          <span class="status-badge" id="statusBadge">—</span>
-        </div>
-        <div style="margin-left:auto;font-size:12px;color:#888" id="genDate">—</div>
-      </div>
-
-      <div class="metrics" id="metricsGrid"></div>
-
-      <div class="label" style="margin-top:12px">Key Finding</div>
-      <div class="value" id="keyFinding">—</div>
-
-      <div class="label" style="margin-top:12px">Today's Recommendation</div>
-      <div class="value" id="todayRec">—</div>
-
-      <div class="insight" id="crossDataDiv" style="display:none">
-        <div class="label">Cross-Data Insight 🔗</div>
-        <div class="value" id="crossData">—</div>
-      </div>
-
-      <div class="label" style="margin-top:12px">Watch This Week 👀</div>
-      <div class="value" id="watchWeek">—</div>
-
-      <div class="sources" id="sources"></div>
-    </div>
-
-    <div id="loadingMsg" class="loading" style="display:none">🔄 Aggregating data sources and generating AI recommendation...</div>
-    <div id="errorMsg" style="display:none;color:#f87171;padding:12px"></div>
-  </div>
-
-  <script>
-    async function loadRecommendation() {
-      const btn = document.getElementById('refreshBtn');
-      btn.disabled = true;
-      btn.textContent = 'Generating...';
-      document.getElementById('playerCard').style.display = 'none';
-      document.getElementById('loadingMsg').style.display = 'block';
-      document.getElementById('errorMsg').style.display = 'none';
-
-      try {
-        const res = await fetch('/api/recommendation/FER_001');
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.detail || 'API error');
-        }
-        const data = await res.json();
-
-        // Populate card
-        document.getElementById('playerName').textContent = data.player_name || 'Fernando';
-        document.getElementById('statusEmoji').textContent = data.status_emoji || '⚪';
-        const badge = document.getElementById('statusBadge');
-        badge.textContent = data.status;
-        badge.className = 'status-badge ' + data.status;
-        document.getElementById('genDate').textContent = 'Generated: ' + (data.generated_at || 'now');
-        document.getElementById('keyFinding').textContent = data.key_finding || '—';
-        let rec = data.today_recommendation || '—'; if(rec.startsWith("'S RECOMMENDATION:")) rec = rec.replace("'S RECOMMENDATION:", '').trim(); document.getElementById('todayRec').textContent = rec;
-        document.getElementById('watchWeek').textContent = data.watch_this_week || '—';
-
-        if (data.cross_data_insight) {
-          document.getElementById('crossData').textContent = data.cross_data_insight;
-          document.getElementById('crossDataDiv').style.display = 'block';
-        }
-
-        // Sources
-        const srcDiv = document.getElementById('sources');
-        srcDiv.innerHTML = (data.data_sources_used || []).map(s =>
-          '<span class="source-tag">' + s + '</span>'
-        ).join('');
-
-        document.getElementById('loadingMsg').style.display = 'none';
-        document.getElementById('playerCard').style.display = 'block';
-      } catch (err) {
-        document.getElementById('loadingMsg').style.display = 'none';
-        document.getElementById('errorMsg').style.display = 'block';
-        document.getElementById('errorMsg').textContent = '⚠️ ' + err.message + 
-          ' — Make sure to run: python scripts/generate_synthetic_data.py first';
-      }
-
-      btn.disabled = false;
-      btn.textContent = 'Refresh';
-    }
-  </script>
-</body>
-</html>
-"""
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)
+        "upcoming": {"today": "Training", "tomorrow": "TBD", "next_match": "See calendar"},
+        "data_dir": str(DATA_DIR)
+    }])
 
 from mangum import Mangum
 handler = Mangum(app)
 
-
-@app.get("/auth/whoop/callback")
-async def whoop_callback(code: str):
-    """Handle Whoop OAuth callback and exchange code for access token"""
-    import httpx
-    
-    response = httpx.post(
-        "https://api.prod.whoop.com/oauth/oauth2/token",
-        data={
-            "grant_type": "authorization_code",
-            "code": code,
-            "client_id": os.getenv("WHOOP_CLIENT_ID"),
-            "client_secret": os.getenv("WHOOP_CLIENT_SECRET"),
-            "redirect_uri": "https://ai-tennis-academy-platform-mvp.vercel.app/auth/whoop/callback"
-        }
-    )
-    
-    if response.status_code == 200:
-        token_data = response.json()
-        access_token = token_data.get("access_token")
-        return {
-            "status": "success",
-            "message": "Copy this access token to your WHOOP_ACCESS_TOKEN environment variable",
-            "access_token": access_token,
-            "expires_in": token_data.get("expires_in"),
-            "refresh_token": token_data.get("refresh_token")
-        }
-    else:
-        return {
-            "status": "error",
-            "detail": response.text
-        }
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)
