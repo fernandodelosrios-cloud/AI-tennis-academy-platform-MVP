@@ -1,0 +1,1663 @@
+[
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-18",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3431,
+    "protein_g": 214,
+    "carbohydrates_g": 472,
+    "fat_g": 76,
+    "hydration_liters": 3.1,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-19",
+    "session_type": "technical",
+    "total_calories_kcal": 3169,
+    "protein_g": 198,
+    "carbohydrates_g": 436,
+    "fat_g": 70,
+    "hydration_liters": 1.9,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-20",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3635,
+    "protein_g": 227,
+    "carbohydrates_g": 500,
+    "fat_g": 81,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-21",
+    "session_type": "technical",
+    "total_calories_kcal": 2998,
+    "protein_g": 187,
+    "carbohydrates_g": 412,
+    "fat_g": 67,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-22",
+    "session_type": "technical",
+    "total_calories_kcal": 3015,
+    "protein_g": 188,
+    "carbohydrates_g": 415,
+    "fat_g": 67,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-23",
+    "session_type": "match",
+    "total_calories_kcal": 3462,
+    "protein_g": 216,
+    "carbohydrates_g": 476,
+    "fat_g": 77,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-24",
+    "session_type": "rest",
+    "total_calories_kcal": 2547,
+    "protein_g": 159,
+    "carbohydrates_g": 350,
+    "fat_g": 57,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-25",
+    "session_type": "technical",
+    "total_calories_kcal": 3102,
+    "protein_g": 194,
+    "carbohydrates_g": 427,
+    "fat_g": 69,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-26",
+    "session_type": "physical",
+    "total_calories_kcal": 3221,
+    "protein_g": 201,
+    "carbohydrates_g": 443,
+    "fat_g": 72,
+    "hydration_liters": 3.1,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-27",
+    "session_type": "match",
+    "total_calories_kcal": 3682,
+    "protein_g": 230,
+    "carbohydrates_g": 506,
+    "fat_g": 82,
+    "hydration_liters": 3.8,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-28",
+    "session_type": "technical",
+    "total_calories_kcal": 3175,
+    "protein_g": 198,
+    "carbohydrates_g": 437,
+    "fat_g": 71,
+    "hydration_liters": 2.3,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-29",
+    "session_type": "technical",
+    "total_calories_kcal": 3215,
+    "protein_g": 201,
+    "carbohydrates_g": 442,
+    "fat_g": 71,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-30",
+    "session_type": "physical",
+    "total_calories_kcal": 3225,
+    "protein_g": 202,
+    "carbohydrates_g": 443,
+    "fat_g": 72,
+    "hydration_liters": 3.0,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-03-31",
+    "session_type": "rest",
+    "total_calories_kcal": 2611,
+    "protein_g": 163,
+    "carbohydrates_g": 359,
+    "fat_g": 58,
+    "hydration_liters": 2.0,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-01",
+    "session_type": "match",
+    "total_calories_kcal": 3667,
+    "protein_g": 229,
+    "carbohydrates_g": 504,
+    "fat_g": 81,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-02",
+    "session_type": "technical",
+    "total_calories_kcal": 3108,
+    "protein_g": 194,
+    "carbohydrates_g": 427,
+    "fat_g": 69,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-03",
+    "session_type": "match",
+    "total_calories_kcal": 3687,
+    "protein_g": 230,
+    "carbohydrates_g": 507,
+    "fat_g": 82,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-04",
+    "session_type": "technical",
+    "total_calories_kcal": 3173,
+    "protein_g": 198,
+    "carbohydrates_g": 436,
+    "fat_g": 71,
+    "hydration_liters": 2.3,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-05",
+    "session_type": "physical",
+    "total_calories_kcal": 3651,
+    "protein_g": 228,
+    "carbohydrates_g": 502,
+    "fat_g": 81,
+    "hydration_liters": 3.7,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-06",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3495,
+    "protein_g": 218,
+    "carbohydrates_g": 481,
+    "fat_g": 78,
+    "hydration_liters": 2.4,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-07",
+    "session_type": "rest",
+    "total_calories_kcal": 2552,
+    "protein_g": 160,
+    "carbohydrates_g": 351,
+    "fat_g": 57,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-08",
+    "session_type": "technical",
+    "total_calories_kcal": 3045,
+    "protein_g": 190,
+    "carbohydrates_g": 419,
+    "fat_g": 68,
+    "hydration_liters": 2.3,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-09",
+    "session_type": "technical",
+    "total_calories_kcal": 2968,
+    "protein_g": 186,
+    "carbohydrates_g": 408,
+    "fat_g": 66,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-10",
+    "session_type": "recovery",
+    "total_calories_kcal": 2683,
+    "protein_g": 168,
+    "carbohydrates_g": 369,
+    "fat_g": 60,
+    "hydration_liters": 2.0,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-11",
+    "session_type": "technical",
+    "total_calories_kcal": 2907,
+    "protein_g": 182,
+    "carbohydrates_g": 400,
+    "fat_g": 65,
+    "hydration_liters": 2.3,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-12",
+    "session_type": "technical",
+    "total_calories_kcal": 3212,
+    "protein_g": 201,
+    "carbohydrates_g": 442,
+    "fat_g": 71,
+    "hydration_liters": 1.7,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-13",
+    "session_type": "technical",
+    "total_calories_kcal": 2944,
+    "protein_g": 184,
+    "carbohydrates_g": 405,
+    "fat_g": 65,
+    "hydration_liters": 2.3,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-14",
+    "session_type": "rest",
+    "total_calories_kcal": 2527,
+    "protein_g": 158,
+    "carbohydrates_g": 347,
+    "fat_g": 56,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-15",
+    "session_type": "match",
+    "total_calories_kcal": 3433,
+    "protein_g": 215,
+    "carbohydrates_g": 472,
+    "fat_g": 76,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-16",
+    "session_type": "match",
+    "total_calories_kcal": 3598,
+    "protein_g": 225,
+    "carbohydrates_g": 495,
+    "fat_g": 80,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-17",
+    "session_type": "physical",
+    "total_calories_kcal": 3534,
+    "protein_g": 221,
+    "carbohydrates_g": 486,
+    "fat_g": 79,
+    "hydration_liters": 3.0,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-18",
+    "session_type": "technical",
+    "total_calories_kcal": 2981,
+    "protein_g": 186,
+    "carbohydrates_g": 410,
+    "fat_g": 66,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-19",
+    "session_type": "physical",
+    "total_calories_kcal": 3553,
+    "protein_g": 222,
+    "carbohydrates_g": 489,
+    "fat_g": 79,
+    "hydration_liters": 3.9,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-20",
+    "session_type": "physical",
+    "total_calories_kcal": 3312,
+    "protein_g": 207,
+    "carbohydrates_g": 455,
+    "fat_g": 74,
+    "hydration_liters": 3.8,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-21",
+    "session_type": "rest",
+    "total_calories_kcal": 2632,
+    "protein_g": 164,
+    "carbohydrates_g": 362,
+    "fat_g": 58,
+    "hydration_liters": 2.4,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-22",
+    "session_type": "physical",
+    "total_calories_kcal": 3559,
+    "protein_g": 222,
+    "carbohydrates_g": 489,
+    "fat_g": 79,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-23",
+    "session_type": "physical",
+    "total_calories_kcal": 3590,
+    "protein_g": 224,
+    "carbohydrates_g": 494,
+    "fat_g": 80,
+    "hydration_liters": 3.2,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-24",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3670,
+    "protein_g": 229,
+    "carbohydrates_g": 505,
+    "fat_g": 82,
+    "hydration_liters": 3.9,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-25",
+    "session_type": "technical",
+    "total_calories_kcal": 2931,
+    "protein_g": 183,
+    "carbohydrates_g": 403,
+    "fat_g": 65,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-26",
+    "session_type": "technical",
+    "total_calories_kcal": 2984,
+    "protein_g": 186,
+    "carbohydrates_g": 410,
+    "fat_g": 66,
+    "hydration_liters": 1.6,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-27",
+    "session_type": "match",
+    "total_calories_kcal": 3359,
+    "protein_g": 210,
+    "carbohydrates_g": 462,
+    "fat_g": 75,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-28",
+    "session_type": "rest",
+    "total_calories_kcal": 2428,
+    "protein_g": 152,
+    "carbohydrates_g": 334,
+    "fat_g": 54,
+    "hydration_liters": 1.8,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-29",
+    "session_type": "technical",
+    "total_calories_kcal": 2967,
+    "protein_g": 185,
+    "carbohydrates_g": 408,
+    "fat_g": 66,
+    "hydration_liters": 2.0,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-04-30",
+    "session_type": "physical",
+    "total_calories_kcal": 3544,
+    "protein_g": 222,
+    "carbohydrates_g": 487,
+    "fat_g": 79,
+    "hydration_liters": 3.2,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-01",
+    "session_type": "physical",
+    "total_calories_kcal": 3330,
+    "protein_g": 208,
+    "carbohydrates_g": 458,
+    "fat_g": 74,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-02",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3616,
+    "protein_g": 226,
+    "carbohydrates_g": 497,
+    "fat_g": 80,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-03",
+    "session_type": "technical",
+    "total_calories_kcal": 2935,
+    "protein_g": 183,
+    "carbohydrates_g": 404,
+    "fat_g": 65,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-04",
+    "session_type": "physical",
+    "total_calories_kcal": 3593,
+    "protein_g": 225,
+    "carbohydrates_g": 494,
+    "fat_g": 80,
+    "hydration_liters": 3.2,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-05",
+    "session_type": "rest",
+    "total_calories_kcal": 2595,
+    "protein_g": 162,
+    "carbohydrates_g": 357,
+    "fat_g": 58,
+    "hydration_liters": 1.6,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-06",
+    "session_type": "recovery",
+    "total_calories_kcal": 2792,
+    "protein_g": 174,
+    "carbohydrates_g": 384,
+    "fat_g": 62,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-07",
+    "session_type": "technical",
+    "total_calories_kcal": 3234,
+    "protein_g": 202,
+    "carbohydrates_g": 445,
+    "fat_g": 72,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-08",
+    "session_type": "technical",
+    "total_calories_kcal": 3272,
+    "protein_g": 204,
+    "carbohydrates_g": 450,
+    "fat_g": 73,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-09",
+    "session_type": "technical",
+    "total_calories_kcal": 3052,
+    "protein_g": 191,
+    "carbohydrates_g": 420,
+    "fat_g": 68,
+    "hydration_liters": 1.8,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-10",
+    "session_type": "recovery",
+    "total_calories_kcal": 2717,
+    "protein_g": 170,
+    "carbohydrates_g": 374,
+    "fat_g": 60,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-11",
+    "session_type": "recovery",
+    "total_calories_kcal": 2679,
+    "protein_g": 167,
+    "carbohydrates_g": 368,
+    "fat_g": 60,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-12",
+    "session_type": "rest",
+    "total_calories_kcal": 2714,
+    "protein_g": 170,
+    "carbohydrates_g": 373,
+    "fat_g": 60,
+    "hydration_liters": 3.3,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-13",
+    "session_type": "technical",
+    "total_calories_kcal": 3023,
+    "protein_g": 189,
+    "carbohydrates_g": 416,
+    "fat_g": 67,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-14",
+    "session_type": "technical",
+    "total_calories_kcal": 3025,
+    "protein_g": 189,
+    "carbohydrates_g": 416,
+    "fat_g": 67,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-15",
+    "session_type": "technical",
+    "total_calories_kcal": 3019,
+    "protein_g": 189,
+    "carbohydrates_g": 415,
+    "fat_g": 67,
+    "hydration_liters": 1.8,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-16",
+    "session_type": "technical",
+    "total_calories_kcal": 3019,
+    "protein_g": 189,
+    "carbohydrates_g": 415,
+    "fat_g": 67,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-17",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3521,
+    "protein_g": 220,
+    "carbohydrates_g": 484,
+    "fat_g": 78,
+    "hydration_liters": 3.1,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-18",
+    "session_type": "technical",
+    "total_calories_kcal": 3053,
+    "protein_g": 191,
+    "carbohydrates_g": 420,
+    "fat_g": 68,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-19",
+    "session_type": "rest",
+    "total_calories_kcal": 2720,
+    "protein_g": 170,
+    "carbohydrates_g": 374,
+    "fat_g": 60,
+    "hydration_liters": 2.2,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-20",
+    "session_type": "technical",
+    "total_calories_kcal": 3076,
+    "protein_g": 192,
+    "carbohydrates_g": 423,
+    "fat_g": 68,
+    "hydration_liters": 1.9,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-21",
+    "session_type": "physical",
+    "total_calories_kcal": 3556,
+    "protein_g": 222,
+    "carbohydrates_g": 489,
+    "fat_g": 79,
+    "hydration_liters": 3.0,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-22",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3523,
+    "protein_g": 220,
+    "carbohydrates_g": 484,
+    "fat_g": 78,
+    "hydration_liters": 3.3,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-23",
+    "session_type": "technical",
+    "total_calories_kcal": 3137,
+    "protein_g": 196,
+    "carbohydrates_g": 431,
+    "fat_g": 70,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-24",
+    "session_type": "technical",
+    "total_calories_kcal": 3098,
+    "protein_g": 194,
+    "carbohydrates_g": 426,
+    "fat_g": 69,
+    "hydration_liters": 2.1,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-25",
+    "session_type": "physical",
+    "total_calories_kcal": 3369,
+    "protein_g": 211,
+    "carbohydrates_g": 463,
+    "fat_g": 75,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-26",
+    "session_type": "rest",
+    "total_calories_kcal": 2426,
+    "protein_g": 152,
+    "carbohydrates_g": 334,
+    "fat_g": 54,
+    "hydration_liters": 1.7,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-27",
+    "session_type": "technical",
+    "total_calories_kcal": 3093,
+    "protein_g": 193,
+    "carbohydrates_g": 425,
+    "fat_g": 69,
+    "hydration_liters": 2.1,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-28",
+    "session_type": "physical",
+    "total_calories_kcal": 3445,
+    "protein_g": 215,
+    "carbohydrates_g": 474,
+    "fat_g": 77,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-29",
+    "session_type": "match",
+    "total_calories_kcal": 3789,
+    "protein_g": 237,
+    "carbohydrates_g": 521,
+    "fat_g": 84,
+    "hydration_liters": 3.4,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-30",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3868,
+    "protein_g": 242,
+    "carbohydrates_g": 532,
+    "fat_g": 86,
+    "hydration_liters": 3.1,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-05-31",
+    "session_type": "technical",
+    "total_calories_kcal": 3103,
+    "protein_g": 194,
+    "carbohydrates_g": 427,
+    "fat_g": 69,
+    "hydration_liters": 2.8,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-01",
+    "session_type": "match",
+    "total_calories_kcal": 3573,
+    "protein_g": 223,
+    "carbohydrates_g": 491,
+    "fat_g": 79,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Rice with chicken",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-02",
+    "session_type": "rest",
+    "total_calories_kcal": 2584,
+    "protein_g": 162,
+    "carbohydrates_g": 355,
+    "fat_g": 57,
+    "hydration_liters": 1.9,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-03",
+    "session_type": "recovery",
+    "total_calories_kcal": 2969,
+    "protein_g": 186,
+    "carbohydrates_g": 408,
+    "fat_g": 66,
+    "hydration_liters": 2.4,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-04",
+    "session_type": "technical",
+    "total_calories_kcal": 3089,
+    "protein_g": 193,
+    "carbohydrates_g": 425,
+    "fat_g": 69,
+    "hydration_liters": 2.4,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Salmon with sweet potato",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-05",
+    "session_type": "recovery",
+    "total_calories_kcal": 2733,
+    "protein_g": 171,
+    "carbohydrates_g": 376,
+    "fat_g": 61,
+    "hydration_liters": 2.5,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-06",
+    "session_type": "technical",
+    "total_calories_kcal": 3051,
+    "protein_g": 191,
+    "carbohydrates_g": 420,
+    "fat_g": 68,
+    "hydration_liters": 2.6,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-07",
+    "session_type": "recovery",
+    "total_calories_kcal": 2855,
+    "protein_g": 178,
+    "carbohydrates_g": 393,
+    "fat_g": 63,
+    "hydration_liters": 2.7,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Turkey sandwich with salad",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-08",
+    "session_type": "recovery",
+    "total_calories_kcal": 2990,
+    "protein_g": 187,
+    "carbohydrates_g": 411,
+    "fat_g": 66,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Pasta with olive oil",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-09",
+    "session_type": "rest",
+    "total_calories_kcal": 2775,
+    "protein_g": 173,
+    "carbohydrates_g": 382,
+    "fat_g": 62,
+    "hydration_liters": 1.5,
+    "pre_training_meal": "Light breakfast",
+    "post_training_meal": "Normal lunch",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-10",
+    "session_type": "match",
+    "total_calories_kcal": 3386,
+    "protein_g": 212,
+    "carbohydrates_g": 466,
+    "fat_g": 75,
+    "hydration_liters": 3.5,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-11",
+    "session_type": "match_competitive",
+    "total_calories_kcal": 3668,
+    "protein_g": 229,
+    "carbohydrates_g": 504,
+    "fat_g": 82,
+    "hydration_liters": 3.6,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "creatine_5g",
+      "vitamin_d_2000iu",
+      "omega3_1g"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-12",
+    "session_type": "match",
+    "total_calories_kcal": 3691,
+    "protein_g": 231,
+    "carbohydrates_g": 508,
+    "fat_g": 82,
+    "hydration_liters": 3.4,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Chicken breast with quinoa and vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-13",
+    "session_type": "technical",
+    "total_calories_kcal": 2904,
+    "protein_g": 182,
+    "carbohydrates_g": 399,
+    "fat_g": 65,
+    "hydration_liters": 2.4,
+    "pre_training_meal": "Toast with eggs and avocado",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-14",
+    "session_type": "technical",
+    "total_calories_kcal": 3091,
+    "protein_g": 193,
+    "carbohydrates_g": 425,
+    "fat_g": 69,
+    "hydration_liters": 2.9,
+    "pre_training_meal": "Yogurt with granola and fruit",
+    "post_training_meal": "Protein shake + rice cakes",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": false,
+    "notes": ""
+  },
+  {
+    "player_id": "FER_001",
+    "date": "2026-06-15",
+    "session_type": "physical",
+    "total_calories_kcal": 3208,
+    "protein_g": 200,
+    "carbohydrates_g": 441,
+    "fat_g": 71,
+    "hydration_liters": 3.4,
+    "pre_training_meal": "Oats with banana and honey",
+    "post_training_meal": "Grilled fish with roasted vegetables",
+    "supplements": [
+      "vitamin_d_2000iu",
+      "omega3_1g",
+      "magnesium_400mg"
+    ],
+    "recovery_nutrition_adequate": true,
+    "notes": ""
+  }
+]

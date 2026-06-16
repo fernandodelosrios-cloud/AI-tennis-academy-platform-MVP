@@ -1,0 +1,16 @@
+{
+  "source": "Jeff Sackmann / Tennis Abstract (CC BY-NC-SA 4.0)",
+  "level": "ATP Tour reference (directional only)",
+  "note": "Fernando is advanced recreational \u2014 these are aspirational benchmarks",
+  "atp_avg_first_serve_pct": 63.0,
+  "atp_avg_serve_speed_1st_kmh": 196,
+  "atp_avg_winners_per_match": 28,
+  "atp_avg_unforced_errors_per_match": 22,
+  "recreational_advanced_benchmark": {
+    "first_serve_pct": 58.0,
+    "serve_speed_1st_kmh": 165,
+    "winners_per_match": 14,
+    "unforced_errors_per_match": 20,
+    "win_rate_vs_similar_level": 0.5
+  }
+}
