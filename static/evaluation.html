@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Performance Evaluation</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a2744; --navy2: #243258; --lime: #a8d130; --lime-pale: #eef6cc;
+  --lime-dark: #7fa020; --bg: #f0f2f7; --surface: #ffffff; --surface2: #f7f8fc;
+  --border: #e2e6ef; --text: #1a2744; --text2: #4a5577; --text3: #8a93aa;
+  --green: #16a34a; --green-bg: #dcfce7; --amber: #d97706; --amber-bg: #fef3c7;
+  --red: #dc2626; --red-bg: #fee2e2; --blue: #2563eb; --blue-bg: #eff6ff;
+  --radius: 10px; --shadow: 0 1px 4px rgba(26,39,68,.08), 0 4px 16px rgba(26,39,68,.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+/* Header */
+.header { background: var(--navy); height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(26,39,68,.25); }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-name { font-size: 16px; font-weight: 700; color: #fff; }
+.logo-name span { color: var(--lime); }
+.logo-sub { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: .14em; text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.student-chip { background: rgba(168,209,48,.15); border: 1px solid rgba(168,209,48,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--lime); font-weight: 500; }
+.back-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.7); border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; font-family: inherit; }
+
+/* Layout */
+.main { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: -.02em; margin-bottom: 4px; }
+.page-sub { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; margin-bottom: 20px; width: fit-content; }
+.tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2); border: none; background: none; font-family: inherit; transition: all .15s; }
+.tab.active { background: var(--navy); color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+.card-header { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+.card-icon { width: 24px; height: 24px; background: var(--lime-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.card-body { padding: 18px; }
+
+/* Skill grid */
+.skill-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
+.skill-item { display: flex; flex-direction: column; gap: 6px; }
+.skill-label { font-size: 12px; font-weight: 500; color: var(--text); display: flex; justify-content: space-between; }
+.skill-score { font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
+.stars { display: flex; gap: 4px; }
+.star { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--surface2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all .1s; user-select: none; }
+.star:hover { border-color: var(--lime); background: var(--lime-pale); }
+.star.filled { background: var(--lime-pale); border-color: var(--lime); }
+.star.filled::after { content: '★'; color: var(--lime-dark); }
+.star:not(.filled)::after { content: '☆'; color: var(--text3); }
+
+/* Text inputs */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin-bottom: 6px; display: block; }
+.form-textarea { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); resize: vertical; min-height: 80px; transition: border .15s; outline: none; }
+.form-textarea:focus { border-color: var(--navy); }
+.form-select { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); outline: none; cursor: pointer; }
+
+/* Feeling scale */
+.feeling-scale { display: flex; gap: 8px; }
+.feeling-btn { flex: 1; padding: 10px 6px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface2); cursor: pointer; text-align: center; font-size: 11px; color: var(--text2); transition: all .15s; font-family: inherit; }
+.feeling-btn span { display: block; font-size: 20px; margin-bottom: 3px; }
+.feeling-btn.selected { border-color: var(--navy); background: var(--navy); color: #fff; }
+
+/* Submit btn */
+.btn-primary { background: var(--navy); color: #fff; border: none; border-radius: 7px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-primary:hover { background: var(--navy2); }
+.btn-lime { background: var(--lime); color: var(--navy); border: none; border-radius: 7px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-lime:hover { background: #bde040; }
+.btn-outline { background: transparent; color: var(--navy); border: 1.5px solid var(--border); border-radius: 7px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+
+.btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* Progress report */
+.report-wrap { display: none; }
+.report-wrap.visible { display: block; }
+
+.report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.report-header { background: var(--navy); padding: 24px 28px; display: flex; align-items: flex-start; justify-content: space-between; }
+.report-player { color: #fff; }
+.report-player-name { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.report-player-meta { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; }
+.report-logo { text-align: right; }
+.report-logo-name { font-size: 15px; font-weight: 700; color: #fff; }
+.report-logo-name span { color: var(--lime); }
+.report-logo-sub { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: .14em; text-transform: uppercase; }
+.report-period { background: rgba(168,209,48,.15); border: 1px solid rgba(168,209,48,.25); border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--lime); margin-top: 12px; display: inline-block; }
+
+.report-body { padding: 24px 28px; }
+.report-section { margin-bottom: 24px; }
+.report-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text2); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* Skill bar report */
+.skill-bars { display: flex; flex-direction: column; gap: 10px; }
+.skill-bar-row { display: grid; grid-template-columns: 130px 1fr 40px; align-items: center; gap: 10px; }
+.skill-bar-label { font-size: 12px; color: var(--text2); }
+.skill-bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.skill-bar-val { font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text); text-align: right; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.quote-box { background: var(--surface2); border-left: 3px solid var(--lime); border-radius: 0 8px 8px 0; padding: 12px 14px; }
+.quote-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--lime-dark); margin-bottom: 5px; }
+.quote-text { font-size: 13px; color: var(--text2); line-height: 1.5; font-style: italic; }
+.quote-author { font-size: 11px; color: var(--text3); margin-top: 6px; }
+
+.stat-row-report { display: flex; gap: 12px; }
+.stat-box { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+.stat-val { font-size: 22px; font-weight: 700; color: var(--navy); font-family: 'DM Mono', monospace; line-height: 1; }
+.stat-label { font-size: 10px; color: var(--text3); margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; }
+
+.next-goals { list-style: none; }
+.next-goals li { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); }
+.next-goals li:last-child { border-bottom: none; }
+.next-goals li::before { content: '→'; color: var(--lime-dark); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.ai-insight-box { background: var(--navy); border-radius: 8px; padding: 14px 16px; }
+.ai-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--lime); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.ai-text { font-size: 13px; color: rgba(255,255,255,.8); line-height: 1.6; }
+
+.report-footer { background: var(--surface2); border-top: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+.footer-coach { font-size: 12px; color: var(--text2); }
+.footer-date { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+.success-banner { background: var(--green-bg); border: 1px solid rgba(22,163,74,.25); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 13px; color: var(--green); display: none; }
+.success-banner.visible { display: flex; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="30" height="30" viewBox="0 0 64 64" fill="none">
+      <ellipse cx="30" cy="34" rx="22" ry="22" fill="#a8d130"/>
+      <path d="M12 28 Q22 20 30 34 Q38 48 48 40" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="34" cy="28" rx="26" ry="14" stroke="#1a2744" stroke-width="2.5" fill="none" transform="rotate(-20 34 28)"/>
+      <circle cx="54" cy="16" r="4" fill="#a8d130"/>
+    </svg>
+    <div>
+      <div class="logo-name">Orbis <span>AI</span></div>
+      <div class="logo-sub">Data · Insight · Elevate</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="student-chip">📋 Fernando de los Rios</div>
+    <button class="back-btn" onclick="window.history.back()">← Dashboard</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">Performance Evaluation</div>
+  <div class="page-sub">Session · June 19, 2026 · Roger Lederer Academy · Coach Toni</div>
+
+  <div class="success-banner" id="successBanner">
+    ✅ Both evaluations submitted. Progress report generated below.
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('coach')">🎾 Coach Evaluation</button>
+    <button class="tab" onclick="switchTab('student')">👤 Player Self-Evaluation</button>
+    <button class="tab" onclick="switchTab('report')">📊 Progress Report</button>
+  </div>
+
+  <!-- COACH EVALUATION -->
+  <div class="tab-content active" id="tab-coach">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-icon">🎾</div> Technical Skills</div>
+        <span style="font-size:11px;color:var(--text3)">Rate 1–5 stars</span>
+      </div>
+      <div class="card-body">
+        <div class="skill-grid">
+          <div class="skill-item">
+            <div class="skill-label">Forehand <span class="skill-score" id="sc-fh">—</span></div>
+            <div class="stars" data-skill="fh">
+              <div class="star" onclick="rate('fh',1)"></div>
+              <div class="star" onclick="rate('fh',2)"></div>
+              <div class="star" onclick="rate('fh',3)"></div>
+              <div class="star" onclick="rate('fh',4)"></div>
+              <div class="star" onclick="rate('fh',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Backhand <span class="skill-score" id="sc-bh">—</span></div>
+            <div class="stars" data-skill="bh">
+              <div class="star" onclick="rate('bh',1)"></div>
+              <div class="star" onclick="rate('bh',2)"></div>
+              <div class="star" onclick="rate('bh',3)"></div>
+              <div class="star" onclick="rate('bh',4)"></div>
+              <div class="star" onclick="rate('bh',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Serve <span class="skill-score" id="sc-sv">—</span></div>
+            <div class="stars" data-skill="sv">
+              <div class="star" onclick="rate('sv',1)"></div>
+              <div class="star" onclick="rate('sv',2)"></div>
+              <div class="star" onclick="rate('sv',3)"></div>
+              <div class="star" onclick="rate('sv',4)"></div>
+              <div class="star" onclick="rate('sv',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Volley <span class="skill-score" id="sc-vl">—</span></div>
+            <div class="stars" data-skill="vl">
+              <div class="star" onclick="rate('vl',1)"></div>
+              <div class="star" onclick="rate('vl',2)"></div>
+              <div class="star" onclick="rate('vl',3)"></div>
+              <div class="star" onclick="rate('vl',4)"></div>
+              <div class="star" onclick="rate('vl',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Footwork <span class="skill-score" id="sc-fw">—</span></div>
+            <div class="stars" data-skill="fw">
+              <div class="star" onclick="rate('fw',1)"></div>
+              <div class="star" onclick="rate('fw',2)"></div>
+              <div class="star" onclick="rate('fw',3)"></div>
+              <div class="star" onclick="rate('fw',4)"></div>
+              <div class="star" onclick="rate('fw',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Tactics <span class="skill-score" id="sc-tc">—</span></div>
+            <div class="stars" data-skill="tc">
+              <div class="star" onclick="rate('tc',1)"></div>
+              <div class="star" onclick="rate('tc',2)"></div>
+              <div class="star" onclick="rate('tc',3)"></div>
+              <div class="star" onclick="rate('tc',4)"></div>
+              <div class="star" onclick="rate('tc',5)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-icon">🧠</div> Session Assessment</div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Overall session rating</label>
+          <select class="form-select" id="coach-overall">
+            <option value="">Select rating</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Below expectations</option>
+            <option value="1">⭐ Poor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Key improvement this session</label>
+          <textarea class="form-textarea" id="coach-improvement" placeholder="What did the player improve or execute well today?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Main focus area for next session</label>
+          <textarea class="form-textarea" id="coach-focus" placeholder="What should the player work on before or during the next session?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes for player / parent</label>
+          <textarea class="form-textarea" id="coach-notes" placeholder="Any notes to communicate to the player or parent..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="submitCoach()">Save Coach Evaluation →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT SELF-EVALUATION -->
+  <div class="tab-content" id="tab-student">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-icon">💬</div> How did you feel today?</div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Session energy</label>
+          <div class="feeling-scale" id="energy-scale">
+            <button class="feeling-btn" onclick="selectFeeling('energy',1,this)"><span>😴</span>Very low</button>
+            <button class="feeling-btn" onclick="selectFeeling('energy',2,this)"><span>😐</span>Low</button>
+            <button class="feeling-btn" onclick="selectFeeling('energy',3,this)"><span>🙂</span>Normal</button>
+            <button class="feeling-btn" onclick="selectFeeling('energy',4,this)"><span>😊</span>Good</button>
+            <button class="feeling-btn" onclick="selectFeeling('energy',5,this)"><span>🔥</span>Great</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">Confidence on court</label>
+          <div class="feeling-scale" id="conf-scale">
+            <button class="feeling-btn" onclick="selectFeeling('conf',1,this)"><span>😰</span>Very low</button>
+            <button class="feeling-btn" onclick="selectFeeling('conf',2,this)"><span>😟</span>Low</button>
+            <button class="feeling-btn" onclick="selectFeeling('conf',3,this)"><span>😐</span>Neutral</button>
+            <button class="feeling-btn" onclick="selectFeeling('conf',4,this)"><span>😎</span>Confident</button>
+            <button class="feeling-btn" onclick="selectFeeling('conf',5,this)"><span>🏆</span>Very confident</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-icon">🎯</div> Self-Assessment</div>
+      </div>
+      <div class="card-body">
+        <div class="skill-grid">
+          <div class="skill-item">
+            <div class="skill-label">Forehand today <span class="skill-score" id="ss-fh">—</span></div>
+            <div class="stars" data-skill="s-fh">
+              <div class="star" onclick="rate('s-fh',1)"></div>
+              <div class="star" onclick="rate('s-fh',2)"></div>
+              <div class="star" onclick="rate('s-fh',3)"></div>
+              <div class="star" onclick="rate('s-fh',4)"></div>
+              <div class="star" onclick="rate('s-fh',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Backhand today <span class="skill-score" id="ss-bh">—</span></div>
+            <div class="stars" data-skill="s-bh">
+              <div class="star" onclick="rate('s-bh',1)"></div>
+              <div class="star" onclick="rate('s-bh',2)"></div>
+              <div class="star" onclick="rate('s-bh',3)"></div>
+              <div class="star" onclick="rate('s-bh',4)"></div>
+              <div class="star" onclick="rate('s-bh',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Serve today <span class="skill-score" id="ss-sv">—</span></div>
+            <div class="stars" data-skill="s-sv">
+              <div class="star" onclick="rate('s-sv',1)"></div>
+              <div class="star" onclick="rate('s-sv',2)"></div>
+              <div class="star" onclick="rate('s-sv',3)"></div>
+              <div class="star" onclick="rate('s-sv',4)"></div>
+              <div class="star" onclick="rate('s-sv',5)"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label">Movement today <span class="skill-score" id="ss-mv">—</span></div>
+            <div class="stars" data-skill="s-mv">
+              <div class="star" onclick="rate('s-mv',1)"></div>
+              <div class="star" onclick="rate('s-mv',2)"></div>
+              <div class="star" onclick="rate('s-mv',3)"></div>
+              <div class="star" onclick="rate('s-mv',4)"></div>
+              <div class="star" onclick="rate('s-mv',5)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:4px">
+          <label class="form-label">What went well?</label>
+          <textarea class="form-textarea" id="student-well" placeholder="In your own words, what did you do well today?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">What do you want to improve?</label>
+          <textarea class="form-textarea" id="student-improve" placeholder="What felt hard or what do you want to get better at?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your goal for next session</label>
+          <textarea class="form-textarea" id="student-goal" placeholder="Set one specific goal for your next session..." style="min-height:60px"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-lime" onclick="submitStudent()">Submit My Evaluation →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS REPORT -->
+  <div class="tab-content" id="tab-report">
+
+    <div id="report-empty" style="text-align:center;padding:48px 20px;color:var(--text3);font-size:13px">
+      Complete both evaluations first to generate the progress report.
+    </div>
+
+    <div class="report-wrap" id="reportWrap">
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:14px">
+        <button class="btn-outline" onclick="printReport()">🖨 Print / Save as PDF</button>
+        <button class="btn-lime" onclick="shareReport()">📤 Share with Parent</button>
+      </div>
+
+      <div class="report-card" id="reportContent">
+
+        <!-- Report header -->
+        <div class="report-header">
+          <div class="report-player">
+            <div class="report-player-name">Fernando de los Rios</div>
+            <div class="report-player-meta">Advanced recreational · Clay court specialist · Age 32</div>
+            <div class="report-period" id="rpt-period">Session Report · June 19, 2026</div>
+          </div>
+          <div class="report-logo">
+            <div class="report-logo-name">Orbis <span>AI</span></div>
+            <div class="report-logo-sub">Data · Insight · Elevate</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">Roger Lederer Academy</div>
+          </div>
+        </div>
+
+        <div class="report-body">
+
+          <!-- Stats strip -->
+          <div class="report-section">
+            <div class="report-section-title">Session Overview</div>
+            <div class="stat-row-report">
+              <div class="stat-box">
+                <div class="stat-val" id="rpt-overall">—</div>
+                <div class="stat-label">Session rating</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-val" id="rpt-energy">—</div>
+                <div class="stat-label">Player energy</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-val" id="rpt-confidence">—</div>
+                <div class="stat-label">Confidence</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-val" id="rpt-avg">—</div>
+                <div class="stat-label">Skill avg (coach)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill comparison -->
+          <div class="report-section">
+            <div class="report-section-title">Technical Skills — Coach vs Player Assessment</div>
+            <div class="skill-bars" id="rpt-skills"></div>
+          </div>
+
+          <!-- Coach + Player voice -->
+          <div class="report-section">
+            <div class="two-col">
+              <div class="quote-box">
+                <div class="quote-label">🎾 Coach Toni</div>
+                <div class="quote-text" id="rpt-coach-notes">—</div>
+                <div class="quote-author">Key focus: <span id="rpt-focus">—</span></div>
+              </div>
+              <div class="quote-box" style="border-left-color: #60a5fa">
+                <div class="quote-label" style="color:#2563eb">👤 Fernando's voice</div>
+                <div class="quote-text" id="rpt-student-well">—</div>
+                <div class="quote-author">Next session goal: <span id="rpt-student-goal">—</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- What to improve -->
+          <div class="report-section">
+            <div class="report-section-title">Focus Areas — Next Session</div>
+            <ul class="next-goals" id="rpt-goals"></ul>
+          </div>
+
+          <!-- AI insight -->
+          <div class="report-section">
+            <div class="ai-insight-box">
+              <div class="ai-label">🤖 Orbis AI Insight <span style="font-size:9px;opacity:.5;font-weight:400">Multi-agent analysis</span></div>
+              <div class="ai-text" id="rpt-ai-insight">Generating AI insight from combined coach and player assessment…</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="report-footer">
+          <div class="footer-coach">Coach: Toni · Roger Lederer Academy · Orbis AI</div>
+          <div class="footer-date" id="rpt-date">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const scores = {};
+const studentFeelings = {};
+let coachSubmitted = false;
+let studentSubmitted = false;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['coach','student','report'][i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach((c,i) => {
+    c.classList.toggle('active', ['tab-coach','tab-student','tab-report'][i] === 'tab-'+name);
+  });
+}
+
+function rate(skill, val) {
+  scores[skill] = val;
+  const container = document.querySelector(`.stars[data-skill="${skill}"]`);
+  if (!container) return;
+  container.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('filled', i < val);
+  });
+  const label = skill.startsWith('s-') ? 'ss' : 'sc';
+  const key = skill.replace('s-','');
+  const el = document.getElementById(`${label}-${key}`);
+  if (el) el.textContent = val + '/5';
+}
+
+function selectFeeling(type, val, btn) {
+  studentFeelings[type] = val;
+  const scale = document.getElementById(type + '-scale');
+  scale.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function submitCoach() {
+  const overall = document.getElementById('coach-overall').value;
+  const improvement = document.getElementById('coach-improvement').value;
+  const focus = document.getElementById('coach-focus').value;
+  const notes = document.getElementById('coach-notes').value;
+
+  if (!overall) { alert('Please select an overall session rating.'); return; }
+  if (!scores['fh'] || !scores['bh'] || !scores['sv']) {
+    alert('Please rate at least forehand, backhand, and serve.'); return;
+  }
+
+  coachSubmitted = true;
+  checkBothSubmitted();
+  switchTab('student');
+  document.querySelector('.tabs .tab:nth-child(2)').style.background = 'rgba(168,209,48,.15)';
+  document.querySelector('.tabs .tab:nth-child(2)').style.color = 'var(--lime-dark)';
+}
+
+function submitStudent() {
+  const well = document.getElementById('student-well').value;
+  if (!well) { alert('Please fill in what went well today.'); return; }
+  if (!scores['s-fh'] || !scores['s-bh']) {
+    alert('Please rate at least forehand and backhand.'); return;
+  }
+
+  studentSubmitted = true;
+  checkBothSubmitted();
+}
+
+function checkBothSubmitted() {
+  if (coachSubmitted && studentSubmitted) {
+    document.getElementById('successBanner').classList.add('visible');
+    buildReport();
+    switchTab('report');
+    document.querySelector('.tabs .tab:nth-child(1)').style.background = '';
+    document.querySelector('.tabs .tab:nth-child(1)').style.color = '';
+  }
+}
+
+function buildReport() {
+  const overall = document.getElementById('coach-overall').value;
+  const focus = document.getElementById('coach-focus').value || 'Continue developing serve consistency';
+  const notes = document.getElementById('coach-notes').value || 'Strong session overall.';
+  const studentWell = document.getElementById('student-well').value || '—';
+  const studentGoal = document.getElementById('student-goal').value || 'Work on first serve consistency';
+  const studentImprove = document.getElementById('student-improve').value || 'Serve placement';
+  const improvement = document.getElementById('coach-improvement').value || 'Good footwork recovery';
+
+  const stars = ['☆','★★','★★★','★★★★','★★★★★'];
+  document.getElementById('rpt-overall').textContent = stars[parseInt(overall)-1] || '★★★★';
+  document.getElementById('rpt-energy').textContent = (studentFeelings['energy'] || 4) + '/5';
+  document.getElementById('rpt-confidence').textContent = (studentFeelings['conf'] || 4) + '/5';
+
+  const coachSkills = {fh: scores['fh']||4, bh: scores['bh']||3, sv: scores['sv']||3, vl: scores['vl']||3, fw: scores['fw']||4, tc: scores['tc']||3};
+  const avg = (Object.values(coachSkills).reduce((a,b)=>a+b,0) / Object.values(coachSkills).length).toFixed(1);
+  document.getElementById('rpt-avg').textContent = avg + '/5';
+
+  const skillNames = {fh:'Forehand', bh:'Backhand', sv:'Serve', vl:'Volley', fw:'Footwork', tc:'Tactics'};
+  const studentSkills = {'fh': scores['s-fh']||0, 'bh': scores['s-bh']||0, 'sv': scores['s-sv']||0, 'mv': scores['s-mv']||0};
+  const colors = {1:'#dc2626', 2:'#f59e0b', 3:'#d97706', 4:'#22c55e', 5:'#16a34a'};
+
+  const skillsEl = document.getElementById('rpt-skills');
+  skillsEl.innerHTML = '';
+  Object.entries(coachSkills).forEach(([key, val]) => {
+    const sVal = key === 'fw' ? (studentSkills['mv']||0) : (studentSkills[key]||0);
+    skillsEl.innerHTML += `
+      <div class="skill-bar-row">
+        <div class="skill-bar-label">${skillNames[key]}</div>
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="font-size:9px;color:var(--text3);width:50px">Coach</div>
+            <div class="skill-bar-track" style="flex:1"><div class="skill-bar-fill" style="width:${val*20}%;background:${colors[val]}"></div></div>
+            <div class="skill-bar-val">${val}/5</div>
+          </div>
+          ${sVal ? `<div style="display:flex;align-items:center;gap:6px">
+            <div style="font-size:9px;color:var(--text3);width:50px">Player</div>
+            <div class="skill-bar-track" style="flex:1"><div class="skill-bar-fill" style="width:${sVal*20}%;background:#60a5fa;opacity:.7"></div></div>
+            <div class="skill-bar-val" style="color:#2563eb">${sVal}/5</div>
+          </div>` : ''}
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('rpt-coach-notes').textContent = notes;
+  document.getElementById('rpt-focus').textContent = focus;
+  document.getElementById('rpt-student-well').textContent = studentWell;
+  document.getElementById('rpt-student-goal').textContent = studentGoal;
+
+  const goals = document.getElementById('rpt-goals');
+  goals.innerHTML = `
+    <li>${focus}</li>
+    <li>${studentImprove}</li>
+    <li>Maintain consistency in ${coachSkills.fh >= 4 ? 'backhand approach' : 'forehand groundstrokes'}</li>`;
+
+  const today = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('rpt-date').textContent = 'Generated: ' + today;
+  document.getElementById('rpt-period').textContent = 'Session Report · ' + today;
+
+  // AI insight
+  const lowestSkill = Object.entries(coachSkills).sort((a,b)=>a[1]-b[1])[0];
+  const highestSkill = Object.entries(coachSkills).sort((a,b)=>b[1]-a[1])[0];
+  const coachAvg = parseFloat(avg);
+  const playerAvg = Object.values(studentSkills).filter(v=>v>0).reduce((a,b)=>a+b,0) / Object.values(studentSkills).filter(v=>v>0).length;
+  const gap = coachAvg > playerAvg ? 'coach rates Fernando higher than Fernando rates himself' : 'Fernando rates himself higher than coach assessment';
+
+  document.getElementById('rpt-ai-insight').textContent =
+    `Coach and player assessments ${Math.abs(coachAvg - playerAvg) < 0.5 ? 'are closely aligned' : 'show a notable gap — ' + gap}. ` +
+    `${skillNames[highestSkill[0]]} is Fernando's strongest area (${highestSkill[1]}/5) and should be used as a tactical weapon. ` +
+    `${skillNames[lowestSkill[0]]} is the primary development lever — targeted drills in the next 3 sessions would likely produce the highest performance return.`;
+
+  document.getElementById('report-empty').style.display = 'none';
+  document.getElementById('reportWrap').classList.add('visible');
+}
+
+function printReport() {
+  window.print();
+}
+
+function shareReport() {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:70px;right:20px;background:#1a2744;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid #a8d130';
+  banner.textContent = '✅ Report link copied — ready to share with parent';
+  document.body.appendChild(banner);
+  setTimeout(() => banner.remove(), 3000);
+}
+</script>
+
+</body>
+</html>

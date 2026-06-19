@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Fernando Progress Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --navy:#1a2744;--navy2:#243258;--lime:#a8d130;--lime-pale:#eef6cc;--lime-dark:#7fa020;
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f7f8fc;--border:#e2e6ef;
+  --text:#1a2744;--text2:#4a5577;--text3:#8a93aa;
+  --green:#16a34a;--green-bg:#dcfce7;--amber:#d97706;--amber-bg:#fef3c7;
+  --red:#dc2626;--red-bg:#fee2e2;--blue:#2563eb;--blue-bg:#eff6ff;
+  --radius:10px;--shadow:0 1px 4px rgba(26,39,68,.08),0 4px 16px rgba(26,39,68,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* Header */
+.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(26,39,68,.25);}
+.logo-name{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;}
+.logo-name span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.btn-print{background:var(--lime);color:var(--navy);border:none;border-radius:6px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-share{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);border-radius:6px;padding:7px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+
+/* Layout */
+.main{max-width:860px;margin:0 auto;padding:24px 20px 60px;}
+
+/* Report card */
+.report{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+
+/* Report header */
+.rpt-header{background:var(--navy);padding:28px 32px;display:flex;align-items:flex-start;justify-content:space-between;}
+.player-name{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.03em;}
+.player-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.6;}
+.period-badge{background:rgba(168,209,48,.15);border:1px solid rgba(168,209,48,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--lime);display:inline-block;margin-top:10px;}
+.rpt-logo{text-align:right;}
+.rpt-logo-name{font-size:16px;font-weight:700;color:#fff;}
+.rpt-logo-name span{color:var(--lime);}
+.rpt-logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:2px;}
+.academy-name{font-size:11px;color:rgba(255,255,255,.35);margin-top:6px;}
+.coach-name{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* Body */
+.rpt-body{padding:28px 32px;}
+.section{margin-bottom:28px;}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.kpi{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.kpi.green::before{background:var(--green);}
+.kpi.amber::before{background:var(--amber);}
+.kpi.blue::before{background:var(--blue);}
+.kpi.lime::before{background:var(--lime);}
+.kpi.navy::before{background:var(--navy);}
+.kpi-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;color:var(--navy);}
+.kpi-val.good{color:var(--green);}
+.kpi-val.amber{color:var(--amber);}
+.kpi-label{font-size:10px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+
+/* Skill comparison */
+.skill-rows{display:flex;flex-direction:column;gap:10px;}
+.skill-row{display:grid;grid-template-columns:110px 1fr 56px;align-items:center;gap:12px;}
+.skill-name{font-size:12px;color:var(--text2);}
+.skill-bars-wrap{display:flex;flex-direction:column;gap:3px;}
+.bar-line{display:flex;align-items:center;gap:8px;}
+.bar-tag{font-size:9px;color:var(--text3);width:40px;flex-shrink:0;}
+.bar-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.bar-score{font-size:11px;font-family:'DM Mono',monospace;color:var(--text2);width:28px;text-align:right;}
+.skill-change{font-size:11px;font-weight:600;}
+.skill-change.up{color:var(--green);}
+.skill-change.same{color:var(--text3);}
+.skill-change.down{color:var(--red);}
+
+/* Trend chart */
+.chart-wrap{position:relative;height:160px;}
+
+/* Quote boxes */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.quote-box{background:var(--surface2);border-radius:0 8px 8px 0;padding:14px 16px;border-left:3px solid var(--lime);}
+.quote-box.blue{border-left-color:var(--blue);}
+.quote-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--lime-dark);margin-bottom:6px;}
+.quote-box.blue .quote-label{color:var(--blue);}
+.quote-text{font-size:13px;color:var(--text2);line-height:1.55;font-style:italic;}
+.quote-sub{font-size:11px;color:var(--text3);margin-top:8px;border-top:0.5px solid var(--border);padding-top:6px;}
+
+/* Goals */
+.goals-list{list-style:none;}
+.goals-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13px;color:var(--text2);line-height:1.4;}
+.goals-list li:last-child{border-bottom:none;}
+.goal-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;}
+.goal-icon.high{background:var(--red-bg);color:var(--red);}
+.goal-icon.med{background:var(--amber-bg);color:var(--amber);}
+.goal-icon.low{background:var(--green-bg);color:var(--green);}
+
+/* AI insight */
+.ai-box{background:var(--navy);border-radius:8px;padding:16px 18px;}
+.ai-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--lime);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ai-agents{display:flex;gap:6px;margin-bottom:10px;}
+.agent-chip{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.agent-chip.claude{background:rgba(224,122,95,.15);color:#e07a5f;border:1px solid rgba(224,122,95,.25);}
+.agent-chip.gemini{background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.25);}
+.agent-chip.synthesis{background:rgba(168,209,48,.15);color:var(--lime);border:1px solid rgba(168,209,48,.25);}
+.ai-consensus{display:inline-flex;align-items:center;gap:5px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.25);border-radius:20px;padding:3px 10px;font-size:10px;color:#4ade80;margin-bottom:10px;}
+.ai-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.ai-mini{background:rgba(255,255,255,.05);border-radius:6px;padding:10px 12px;}
+.ai-mini-label{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.ai-mini-text{font-size:11px;color:rgba(255,255,255,.7);line-height:1.4;}
+
+/* Overall verdict */
+.verdict-strip{display:flex;align-items:center;gap:14px;background:var(--lime-pale);border:1px solid rgba(168,209,48,.3);border-radius:8px;padding:14px 16px;margin-bottom:16px;}
+.verdict-circle{width:48px;height:48px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.verdict-text{font-size:13px;color:var(--text);line-height:1.5;}
+.verdict-text strong{color:var(--navy);}
+
+/* Footer */
+.rpt-footer{background:var(--surface2);border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.footer-left{font-size:11px;color:var(--text3);}
+.footer-right{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+
+/* Trend note */
+.trend-note{display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text3);}
+.trend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:1px;}
+
+@media print{
+  body{background:#fff;}
+  .header .btn-print,.header .btn-share{display:none;}
+  .main{padding:0;}
+  .report{box-shadow:none;border:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo-name">
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+        <ellipse cx="30" cy="34" rx="22" ry="22" fill="#a8d130"/>
+        <path d="M12 28 Q22 20 30 34 Q38 48 48 40" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="34" cy="28" rx="26" ry="14" stroke="#1a2744" stroke-width="2.5" fill="none" transform="rotate(-20 34 28)"/>
+        <circle cx="54" cy="16" r="4" fill="#a8d130"/>
+      </svg>
+      Orbis <span>AI</span>
+    </div>
+    <div class="logo-sub">Data · Insight · Elevate Your Game</div>
+  </div>
+  <div class="header-right">
+    <button class="btn-share" onclick="showShare()">📤 Share with Parent</button>
+    <button class="btn-print" onclick="window.print()">🖨 Save as PDF</button>
+  </div>
+</div>
+
+<div class="main">
+<div class="report">
+
+  <!-- Header -->
+  <div class="rpt-header">
+    <div>
+      <div class="player-name">Fernando de los Rios</div>
+      <div class="player-meta">
+        Advanced Recreational · Clay Court Specialist · Age 32<br>
+        Sessions this month: 8 · Attendance: 100%
+      </div>
+      <div class="period-badge">Monthly Progress Report · June 2026</div>
+    </div>
+    <div class="rpt-logo">
+      <div class="rpt-logo-name">Orbis <span>AI</span></div>
+      <div class="rpt-logo-sub">Performance Intelligence</div>
+      <div class="academy-name">Roger Lederer Academy</div>
+      <div class="coach-name">Coach: Toni Alcalá</div>
+    </div>
+  </div>
+
+  <div class="rpt-body">
+
+    <!-- Overall verdict -->
+    <div class="verdict-strip">
+      <div class="verdict-circle">🎾</div>
+      <div class="verdict-text">
+        <strong>Strong month overall.</strong> Fernando has made notable progress in serve consistency and footwork recovery patterns. The combination of high attendance (8/8 sessions) and improving recovery metrics from his Whoop data suggests excellent physical commitment. Main development lever remains backhand under pressure.
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section">
+      <div class="section-title">Session Overview — June 2026</div>
+      <div class="kpi-strip">
+        <div class="kpi lime">
+          <div class="kpi-val">8/8</div>
+          <div class="kpi-label">Sessions attended</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-val good">4.2</div>
+          <div class="kpi-label">Avg coach rating</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-val good">3.8</div>
+          <div class="kpi-label">Player self-rating</div>
+        </div>
+        <div class="kpi amber">
+          <div class="kpi-val amber">75%</div>
+          <div class="kpi-label">Recovery score avg</div>
+        </div>
+        <div class="kpi navy">
+          <div class="kpi-val">+0.4</div>
+          <div class="kpi-label">Skill improvement</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Skills -->
+    <div class="section">
+      <div class="section-title">
+        Technical Skills Assessment
+        <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">Coach vs Player rating · Out of 5</span>
+      </div>
+      <div class="skill-rows">
+        <!-- Forehand -->
+        <div class="skill-row">
+          <div class="skill-name">Forehand</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:88%;background:#16a34a"></div></div>
+              <div class="bar-score">4.4</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:80%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">4.0</div>
+            </div>
+          </div>
+          <div class="skill-change up">↑ +0.6</div>
+        </div>
+        <!-- Backhand -->
+        <div class="skill-row">
+          <div class="skill-name">Backhand</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:62%;background:#d97706"></div></div>
+              <div class="bar-score">3.1</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:56%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">2.8</div>
+            </div>
+          </div>
+          <div class="skill-change up">↑ +0.3</div>
+        </div>
+        <!-- Serve -->
+        <div class="skill-row">
+          <div class="skill-name">Serve</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:76%;background:#16a34a"></div></div>
+              <div class="bar-score">3.8</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:72%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">3.6</div>
+            </div>
+          </div>
+          <div class="skill-change up">↑ +0.5</div>
+        </div>
+        <!-- Volley -->
+        <div class="skill-row">
+          <div class="skill-name">Volley</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:66%;background:#d97706"></div></div>
+              <div class="bar-score">3.3</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:60%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">3.0</div>
+            </div>
+          </div>
+          <div class="skill-change same">→ 0.0</div>
+        </div>
+        <!-- Footwork -->
+        <div class="skill-row">
+          <div class="skill-name">Footwork</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:82%;background:#16a34a"></div></div>
+              <div class="bar-score">4.1</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:74%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">3.7</div>
+            </div>
+          </div>
+          <div class="skill-change up">↑ +0.8</div>
+        </div>
+        <!-- Tactics -->
+        <div class="skill-row">
+          <div class="skill-name">Tactics</div>
+          <div class="skill-bars-wrap">
+            <div class="bar-line">
+              <div class="bar-tag">Coach</div>
+              <div class="bar-track"><div class="bar-fill" style="width:70%;background:#d97706"></div></div>
+              <div class="bar-score">3.5</div>
+            </div>
+            <div class="bar-line">
+              <div class="bar-tag">Player</div>
+              <div class="bar-track"><div class="bar-fill" style="width:68%;background:#60a5fa;opacity:.8"></div></div>
+              <div class="bar-score">3.4</div>
+            </div>
+          </div>
+          <div class="skill-change up">↑ +0.2</div>
+        </div>
+      </div>
+      <div class="trend-note">
+        <span class="trend-dot" style="background:#16a34a"></span>Coach rating
+        <span class="trend-dot" style="background:#60a5fa;opacity:.8"></span>Player self-rating
+        <span class="trend-dot" style="background:var(--border)"></span>Scale: 1 (needs work) → 5 (excellent)
+      </div>
+    </div>
+
+    <!-- Skill trend chart -->
+    <div class="section">
+      <div class="section-title">4-Month Skill Trend</div>
+      <div class="chart-wrap">
+        <canvas id="trendChart" role="img" aria-label="Line chart showing Fernando's skill scores across forehand, serve, footwork improving over 4 months while backhand shows slower progress">Skill trend chart: forehand, serve, and footwork improving. Backhand showing slower improvement.</canvas>
+      </div>
+    </div>
+
+    <!-- Coach + Player voice -->
+    <div class="section">
+      <div class="section-title">Evaluations This Month</div>
+      <div class="two-col">
+        <div class="quote-box">
+          <div class="quote-label">🎾 Coach Toni</div>
+          <div class="quote-text">"Fernando has shown remarkable commitment this month. The serve improvement is real and measurable — first serve percentage is up from 54% to 61% over the last four sessions. His footwork recovery after wide balls has improved significantly, which is unlocking more aggressive court positioning."</div>
+          <div class="quote-sub">Key focus next month: Backhand slice under defensive pressure and approach shot selection at the net.</div>
+        </div>
+        <div class="quote-box blue">
+          <div class="quote-label">👤 Fernando's voice</div>
+          <div class="quote-text">"I feel like my serve is finally clicking. The toss adjustment Coach Toni suggested in week 2 made a huge difference. My backhand still feels inconsistent when I'm pushed wide — I know that's the area I need to work on most."</div>
+          <div class="quote-sub">Next session goal: Land 7 out of 10 cross-court backhands during drill practice.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Focus areas -->
+    <div class="section">
+      <div class="section-title">Development Focus — July 2026</div>
+      <ul class="goals-list">
+        <li>
+          <div class="goal-icon high">1</div>
+          <div><strong>Backhand under pressure</strong> — specifically the cross-court slice when pushed wide. Target: 65% consistency rate in drill conditions. Coach assessment: 3.1/5 — highest leverage improvement area.</div>
+        </li>
+        <li>
+          <div class="goal-icon med">2</div>
+          <div><strong>Approach shot selection</strong> — Fernando is winning the rally with the groundstroke but losing the point at net. Focus on inside-out forehand approach and closing footwork. 3 dedicated drills per session.</div>
+        </li>
+        <li>
+          <div class="goal-icon med">3</div>
+          <div><strong>Serve variety</strong> — first serve consistency is improving (4.4/5 coach rating) but second serve needs more kick to avoid predictable rallies. Introduce kick serve to the kicker drill rotation.</div>
+        </li>
+        <li>
+          <div class="goal-icon low">4</div>
+          <div><strong>Maintain</strong> — footwork and forehand are strong (4.1 and 4.4 respectively). Continue with current drill load. No need to change what is working.</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- AI Insight -->
+    <div class="section">
+      <div class="ai-box">
+        <div class="ai-label">
+          🤖 Orbis AI — Multi-Agent Coaching Insight
+        </div>
+        <div class="ai-agents">
+          <span class="agent-chip claude">Claude · Sports Science</span>
+          <span class="agent-chip gemini">Gemini · Pattern Recognition</span>
+          <span class="agent-chip synthesis">Synthesis · Final assessment</span>
+        </div>
+        <div class="ai-consensus">✓ Full agent consensus — HIGH confidence</div>
+        <div class="ai-text">
+          Fernando's coach and self-ratings are closely aligned (gap of 0.3–0.4 across all skills), indicating strong self-awareness — a predictor of faster skill acquisition. The data shows a clear two-speed development pattern: physical skills (footwork +0.8, forehand +0.6, serve +0.5) are improving faster than tactical and net skills (tactics +0.2, volley flat). This is consistent with his Whoop recovery data — the 14 padel and running sessions over the last 30 days have built physical base faster than on-court tactical repetitions. The recommendation: increase match-play practice relative to drill work in July to close the tactical gap. His 75% recovery average and 69% match win rate both support a higher training load without injury risk, provided sessions stay under 75 minutes and HRV stays above 54ms.
+        </div>
+        <div class="ai-grid">
+          <div class="ai-mini">
+            <div class="ai-mini-label">🎾 Sports Science (Claude)</div>
+            <div class="ai-mini-text">Recovery data supports increased load. HRV stable at 57ms avg. Sleep at 6.34h is the one limiting factor — each session over 75min with sleep below 6h increases injury probability by ~1.7x.</div>
+          </div>
+          <div class="ai-mini">
+            <div class="ai-mini-label">✨ Pattern Recognition (Gemini)</div>
+            <div class="ai-mini-text">Cross-referencing skill gaps with match win data: Fernando's 3 losses this month all featured extended backhand exchanges. Fixing the backhand has a direct, measurable path to a higher win rate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /rpt-body -->
+
+  <div class="rpt-footer">
+    <div class="footer-left">Coach Toni Alcalá · Roger Lederer Academy · Orbis AI Platform · Confidential</div>
+    <div class="footer-right">Generated: June 19, 2026</div>
+  </div>
+
+</div><!-- /report -->
+</div><!-- /main -->
+
+<script>
+// Trend chart
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: ['March', 'April', 'May', 'June'],
+    datasets: [
+      { label: 'Forehand', data: [3.5, 3.7, 4.1, 4.4], borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,.08)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+      { label: 'Backhand', data: [2.6, 2.7, 2.9, 3.1], borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,.06)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+      { label: 'Serve', data: [2.9, 3.1, 3.5, 3.8], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,.06)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+      { label: 'Footwork', data: [3.0, 3.3, 3.7, 4.1], borderColor: '#a8d130', backgroundColor: 'rgba(168,209,48,.06)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11, family: 'DM Sans' }, padding: 16, color: '#4a5577' } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '/5' } }
+    },
+    scales: {
+      x: { ticks: { color: '#8a93aa', font: { size: 11 } }, grid: { display: false }, border: { display: false } },
+      y: { min: 1, max: 5, ticks: { color: '#8a93aa', font: { size: 11 }, stepSize: 1, callback: v => v + '/5' }, grid: { color: '#e2e6ef' }, border: { display: false } }
+    }
+  }
+});
+
+function showShare() {
+  const b = document.createElement('div');
+  b.style.cssText = 'position:fixed;top:70px;right:20px;background:#1a2744;color:#fff;padding:14px 20px;border-radius:10px;font-size:13px;z-index:999;border-left:3px solid #a8d130;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:280px;line-height:1.5';
+  b.innerHTML = '✅ <strong>Report shared</strong><br><span style="opacity:.7;font-size:12px">Parent notification sent via WhatsApp to +34 612 345 678</span>';
+  document.body.appendChild(b);
+  setTimeout(() => b.remove(), 3500);
+}
+</script>
+</body>
+</html>
