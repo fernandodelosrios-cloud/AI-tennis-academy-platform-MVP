@@ -74,11 +74,82 @@ class NutritionLog(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return """<html><body style="font-family:sans-serif;padding:40px;background:#111;color:#f0f0f0">
-    <h1 style="color:#e07a5f">🎾 TennisIQ MVP</h1>
-    <p><a href="/dashboard" style="color:#e07a5f">📊 Coach Dashboard</a></p>
-    <p><a href="/docs" style="color:#e07a5f">📖 API Documentation</a></p>
-    </body></html>"""
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Tennis & Padel Coaching Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#f2f0f7;min-height:100vh;display:flex;flex-direction:column;}
+.header{background:#3d1a6e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(61,26,110,.25);}
+.logo-name{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;}
+.logo-name span{color:#3ecf7e;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;}
+.btn-nav{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);border-radius:6px;padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;}
+.btn-nav:hover{background:rgba(255,255,255,.15);}
+.btn-nav-lime{background:#3ecf7e;border:none;color:#3d1a6e;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;}
+.hero-badge{background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:5px 14px;font-size:12px;color:#3ecf7e;font-weight:500;margin-bottom:20px;display:inline-block;}
+.hero-title{font-size:40px;font-weight:700;color:#1a0a2e;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;max-width:580px;}
+.hero-title span{color:#3d1a6e;}
+.hero-sub{font-size:16px;color:#5a4a7a;line-height:1.6;max-width:460px;margin-bottom:36px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
+.btn-p{background:#3d1a6e;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;}
+.btn-p:hover{background:#4a2080;}
+.btn-s{background:#fff;color:#3d1a6e;border:1.5px solid #e2e6ef;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:600;text-decoration:none;}
+.btn-s:hover{border-color:#3d1a6e;}
+.btn-d{color:#5a4a7a;font-size:14px;text-decoration:none;padding:13px 8px;}
+.btn-d:hover{color:#3d1a6e;text-decoration:underline;}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;max-width:860px;width:100%;}
+.feat{background:#fff;border:1px solid #e2e6ef;border-radius:10px;padding:18px 20px;text-align:left;box-shadow:0 1px 4px rgba(61,26,110,.06);}
+.feat-icon{font-size:22px;margin-bottom:8px;}
+.feat-title{font-size:13px;font-weight:600;color:#1a0a2e;margin-bottom:4px;}
+.feat-desc{font-size:12px;color:#5a4a7a;line-height:1.5;}
+.footer{padding:20px;text-align:center;font-size:12px;color:#9a8aaa;}
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <div class="logo-name">
+      <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+        <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+        <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+        <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
+      </svg>
+      Orbis <span>AI</span>
+    </div>
+    <div class="logo-sub">Data · Insight · Elevate Your Game</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <a href="/dashboard" class="btn-nav">View demo</a>
+    <a href="/login" class="btn-nav">Sign in</a>
+    <a href="/register" class="btn-nav-lime">Get started free</a>
+  </div>
+</header>
+<main class="hero">
+  <div class="hero-badge">Tennis &amp; Padel Coaching Intelligence</div>
+  <h1 class="hero-title">Every data source.<br><span>One coaching intelligence.</span></h1>
+  <p class="hero-sub">Orbis AI helps tennis and padel coaches organize their students, track performance, and deliver better results — powered by Orbis Core AI.</p>
+  <div class="hero-btns">
+    <a href="/register" class="btn-p">Create coach account &rarr;</a>
+    <a href="/login" class="btn-s">Sign in</a>
+    <a href="/dashboard" class="btn-d">View demo first &rarr;</a>
+  </div>
+  <div class="features">
+    <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Student management</div><div class="feat-desc">Classes, attendance, payments and progress — all in one place.</div></div>
+    <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">Performance evaluations</div><div class="feat-desc">Coach and student dual evaluations generate data-driven progress reports.</div></div>
+    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Orbis Core AI</div><div class="feat-desc">Multi-agent AI grounded in ITF frameworks and sports science — via Telegram.</div></div>
+    <div class="feat"><div class="feat-icon">🏓</div><div class="feat-title">Tennis &amp; Padel</div><div class="feat-desc">The only platform built for both sports. First mover in padel coaching software.</div></div>
+  </div>
+</main>
+<footer class="footer">Orbis AI &middot; <a href="/docs" style="color:#9a8aaa">API docs</a> &middot; <a href="/dashboard" style="color:#9a8aaa">Demo</a></footer>
+</body>
+</html>"""
 
 @app.get("/health")
 async def health():
