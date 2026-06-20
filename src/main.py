@@ -29,6 +29,15 @@ from src.connectors.whoop_connector import WhoopConnector
 app = FastAPI(title="TennisIQ MVP API", version="0.2.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
+import traceback
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
+        content={"error": str(exc), "traceback": traceback.format_exc()}
+    )                   
 
 DATA_DIR = Path(__file__).parent.parent / "data" / "synthetic"
 
