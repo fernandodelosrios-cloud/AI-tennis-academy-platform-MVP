@@ -347,7 +347,7 @@ async def api_register(request: Request):
         sb.table("users").insert({
             "id": user_id,
             "academy_id": academy_id,
-            "role": "coach",
+            "role": body.get("role", "coach"),
             "full_name": body["full_name"],
             "email": body["email"]
         }).execute()
