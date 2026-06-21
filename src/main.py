@@ -758,7 +758,7 @@ function setLang(l){
   document.getElementById('upload-sub').textContent=t.upload_sub;
   document.getElementById('wearables-note').textContent=t.wearables_note;
   const name=localStorage.getItem('orbis_name')||'';
-  document.getElementById('w-title').textContent=(l==='en'?'Good morning, ':'Buenos días, ')+name.split(' ')[0]+' \u{1F44B}';
+  document.getElementById('w-title').textContent=(l==='en'?'Good morning, ':'Buenos días, ')+name.split(' ')[0]+' 👋';
 }
 
 function logout(){
@@ -821,7 +821,7 @@ function renderSessions(sessions){
 async function loadDashboard(){
   const name=localStorage.getItem('orbis_name')||'Student';
   document.getElementById('studentName').textContent=name;
-  document.getElementById('w-title').textContent='Good morning, '+name.split(' ')[0]+' \u{1F44B}';
+  document.getElementById('w-title').textContent='Good morning, '+name.split(' ')[0]+' 👋';
   const token=localStorage.getItem('orbis_token');
   if(!token){window.location.href='/login';return;}
   try{
