@@ -454,6 +454,451 @@ async def coach_stats(request: Request):
     except Exception as e:
         return {"students": 0, "sessions": 0, "pending_invites": 0}
 
+
+STUDENT_DASHBOARD_HTML = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:10px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-text{font-size:15px;font-weight:700;color:#fff;}.logo-text span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.student-chip{background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--lime);}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;}
+.lang-btn-sm{background:none;border:none;color:rgba(255,255,255,.4);font-size:11px;cursor:pointer;font-family:inherit;padding:4px;}
+.lang-btn-sm.active{color:var(--lime);font-weight:600;}
+.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
+.welcome{background:var(--navy);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;border-left:4px solid var(--lime);}
+.welcome-title{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.02em;}
+.welcome-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;line-height:1;}
+.kpi-val.lime{color:var(--lime-dark);}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
+.card-body{padding:16px;}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.qa-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:border-color .15s;text-decoration:none;display:block;}
+.qa-btn:hover{border-color:var(--navy);}
+.qa-icon{font-size:22px;margin-bottom:6px;}
+.qa-label{font-size:12px;font-weight:500;color:var(--text);}
+.qa-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.skill-row{margin-bottom:14px;}
+.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.skill-name{font-size:12px;font-weight:500;color:var(--text);}
+.skill-scores{display:flex;gap:8px;font-size:11px;}
+.score-coach{color:var(--navy);font-weight:600;}
+.score-self{color:var(--lime-dark);font-weight:600;}
+.skill-bar-bg{height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:hidden;}
+.skill-bar-coach{height:100%;background:var(--navy);border-radius:3px;transition:width .6s ease;}
+.skill-bar-self{height:3px;background:var(--lime);border-radius:3px;position:absolute;top:0;transition:width .6s ease;}
+.session-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.session-row:last-child{border-bottom:none;}
+.session-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);margin-top:4px;flex-shrink:0;}
+.session-date{font-size:11px;color:var(--text3);min-width:70px;}
+.session-text{font-size:12px;color:var(--text2);line-height:1.5;}
+.coach-card{display:flex;align-items:center;gap:14px;background:var(--bg);border-radius:8px;padding:14px;}
+.coach-avatar{width:44px;height:44px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--lime);flex-shrink:0;}
+.coach-name{font-size:13px;font-weight:600;color:var(--text);}
+.coach-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.next-session{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:8px;padding:14px 16px;color:#fff;}
+.next-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+.next-date{font-size:15px;font-weight:700;color:#fff;}
+.next-focus{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.empty-state{text-align:center;padding:28px 20px;color:var(--text3);}
+.empty-icon{font-size:28px;margin-bottom:8px;}
+.empty-text{font-size:12px;}
+.toast{position:fixed;top:70px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:280px;line-height:1.5;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.badge-green{background:var(--lime-pale);color:var(--lime-dark);}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.connect-btn{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .15s;width:100%;font-family:inherit;}
+.connect-btn:hover{border-color:var(--navy);}
+.connect-btn.connected{border-color:var(--lime);background:var(--lime-pale);}
+.connect-icon{font-size:18px;}
+.connect-name{font-size:12px;font-weight:500;color:var(--text);text-align:left;}
+.connect-status{font-size:10px;margin-top:1px;text-align:left;}
+.connect-status.on{color:var(--lime-dark);}
+.connect-status.off{color:var(--text3);}
+.upload-zone{border:1.5px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:10px;}
+.upload-zone:hover{border-color:var(--navy);}
+.upload-icon{font-size:24px;margin-bottom:6px;}
+.upload-label{font-size:12px;color:var(--text2);font-weight:500;}
+.upload-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.upload-list{display:flex;flex-direction:column;gap:6px;}
+.upload-item{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--text2);}
+.upload-item-icon{font-size:14px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
+    </svg>
+    <div>
+      <div class="logo-text">Orbis <span>AI</span></div>
+      <div class="logo-sub" id="h-sub">Student Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="lang-btn-sm active" onclick="setLang('en')" id="lb-en">EN</button>
+    <button class="lang-btn-sm" onclick="setLang('es')" id="lb-es">ES</button>
+    <div class="student-chip" id="studentName">Student</div>
+    <button class="btn-logout" onclick="logout()" id="h-logout">Sign out</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="main">
+
+  <div class="welcome">
+    <div class="welcome-title" id="w-title">Good morning &#x1F44B;</div>
+    <div class="welcome-sub" id="w-sub">Your personal performance hub — track your progress, connect your devices, and stay in sync with your coach.</div>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-val lime" id="k-level">&#8212;</div><div class="kpi-label" id="kl-level">Current level</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-sessions">0</div><div class="kpi-label" id="kl-sessions">Sessions logged</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-evals">0</div><div class="kpi-label" id="kl-evals">Evaluations</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-streak">0</div><div class="kpi-label" id="kl-streak">Week streak</div></div>
+  </div>
+
+  <div class="quick-actions">
+    <a class="qa-btn" href="/report/demo" target="_blank">
+      <div class="qa-icon">&#x1F4CA;</div>
+      <div class="qa-label" id="qa1">My progress report</div>
+      <div class="qa-sub" id="qa1s">Latest evaluation results</div>
+    </a>
+    <a class="qa-btn" href="/evaluation" target="_blank">
+      <div class="qa-icon">&#x1F4CB;</div>
+      <div class="qa-label" id="qa2">Self evaluation</div>
+      <div class="qa-sub" id="qa2s">Rate your last session</div>
+    </a>
+    <a class="qa-btn" href="#" onclick="showToast('Coming soon — Orbis Core on Telegram'); return false;">
+      <div class="qa-icon">&#x1F916;</div>
+      <div class="qa-label" id="qa3">Ask Orbis Core</div>
+      <div class="qa-sub" id="qa3s">AI coaching assistant</div>
+    </a>
+  </div>
+
+  <div class="grid2">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="ct-skills">My skills</div>
+        <span class="badge badge-green" id="skills-badge">Latest eval</span>
+      </div>
+      <div class="card-body" id="skillsBody">
+        <div class="empty-state">
+          <div class="empty-icon">&#x1F3BE;</div>
+          <div class="empty-text" id="es-skills">No evaluations yet. Your coach will run your first one soon.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="ct-coach">My coach</div>
+      </div>
+      <div class="card-body">
+        <div class="coach-card">
+          <div class="coach-avatar" id="coachInitials">&#8212;</div>
+          <div>
+            <div class="coach-name" id="coachFullName">Loading...</div>
+            <div class="coach-sub" id="coachAcademy">Academy</div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="next-session">
+            <div class="next-label" id="ns-label">Next session</div>
+            <div class="next-date" id="ns-date">&#8212;</div>
+            <div class="next-focus" id="ns-focus">No upcoming session scheduled</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid2">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="ct-wearables">My devices</div>
+        <span style="font-size:11px;color:var(--text3)" id="wearables-sub">Connect to share data</span>
+      </div>
+      <div class="card-body">
+        <div class="connect-grid">
+          <button class="connect-btn" id="btn-whoop" onclick="connectDevice('whoop')">
+            <span class="connect-icon">&#x231A;</span>
+            <div><div class="connect-name">Whoop</div><div class="connect-status off" id="status-whoop">Not connected</div></div>
+          </button>
+          <button class="connect-btn" id="btn-apple" onclick="connectDevice('apple')">
+            <span class="connect-icon">&#x1F34E;</span>
+            <div><div class="connect-name">Apple Health</div><div class="connect-status off" id="status-apple">Not connected</div></div>
+          </button>
+          <button class="connect-btn" id="btn-garmin" onclick="connectDevice('garmin')">
+            <span class="connect-icon">&#x1F9ED;</span>
+            <div><div class="connect-name">Garmin</div><div class="connect-status off" id="status-garmin">Not connected</div></div>
+          </button>
+          <button class="connect-btn" id="btn-fitbit" onclick="connectDevice('fitbit')">
+            <span class="connect-icon">&#x1F49A;</span>
+            <div><div class="connect-name">Fitbit</div><div class="connect-status off" id="status-fitbit">Not connected</div></div>
+          </button>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:var(--text3);text-align:center" id="wearables-note">V1: PDF export supported. API connections coming soon.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="ct-docs">My documents</div>
+        <span style="font-size:11px;color:var(--text3)">PDF · Excel · Word</span>
+      </div>
+      <div class="card-body">
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">&#x1F4C1;</div>
+          <div class="upload-label" id="upload-label">Upload a document</div>
+          <div class="upload-sub" id="upload-sub">Health report, training plan, nutrition guide</div>
+        </div>
+        <input type="file" id="fileInput" style="display:none" accept=".pdf,.xlsx,.xls,.csv,.docx,.doc" onchange="handleUpload(this)">
+        <div class="upload-list" id="uploadList"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" id="ct-history">Session history</div>
+      <span style="font-size:11px;color:var(--text3)" id="history-sub">Last 5 sessions</span>
+    </div>
+    <div class="card-body" id="sessionHistory">
+      <div class="empty-state">
+        <div class="empty-icon">&#x1F4C5;</div>
+        <div class="empty-text" id="es-history">No sessions logged yet.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const T = {
+  en:{
+    sub:'Student Dashboard',logout:'Sign out',
+    w_sub:'Your personal performance hub — track your progress, connect your devices, and stay in sync with your coach.',
+    kl_level:'Current level',kl_sessions:'Sessions logged',kl_evals:'Evaluations',kl_streak:'Week streak',
+    qa1:'My progress report',qa1s:'Latest evaluation results',qa2:'Self evaluation',qa2s:'Rate your last session',qa3:'Ask Orbis Core',qa3s:'AI coaching assistant',
+    ct_skills:'My skills',ct_coach:'My coach',ct_wearables:'My devices',ct_docs:'My documents',ct_history:'Session history',
+    es_skills:'No evaluations yet. Your coach will run your first one soon.',
+    es_history:'No sessions logged yet.',
+    ns_label:'Next session',
+    upload_label:'Upload a document',upload_sub:'Health report, training plan, nutrition guide',
+    wearables_note:'V1: PDF export supported. API connections coming soon.'
+  },
+  es:{
+    sub:'Panel del Estudiante',logout:'Cerrar sesión',
+    w_sub:'Tu hub de rendimiento personal — sigue tu progreso, conecta tus dispositivos y mantente sincronizado con tu entrenador.',
+    kl_level:'Nivel actual',kl_sessions:'Sesiones registradas',kl_evals:'Evaluaciones',kl_streak:'Racha semanal',
+    qa1:'Mi informe de progreso',qa1s:'Últimos resultados',qa2:'Autoevaluación',qa2s:'Valora tu última sesión',qa3:'Preguntar a Orbis Core',qa3s:'Asistente de IA',
+    ct_skills:'Mis habilidades',ct_coach:'Mi entrenador',ct_wearables:'Mis dispositivos',ct_docs:'Mis documentos',ct_history:'Historial de sesiones',
+    es_skills:'Sin evaluaciones aún. Tu entrenador hará la primera pronto.',
+    es_history:'Sin sesiones registradas aún.',
+    ns_label:'Próxima sesión',
+    upload_label:'Subir un documento',upload_sub:'Informe de salud, plan de entrenamiento, guía nutricional',
+    wearables_note:'V1: exportación PDF compatible. Conexiones API próximamente.'
+  }
+};
+
+let lang='en';
+function setLang(l){
+  lang=l;
+  document.getElementById('lb-en').classList.toggle('active',l==='en');
+  document.getElementById('lb-es').classList.toggle('active',l==='es');
+  const t=T[l];
+  document.getElementById('h-sub').textContent=t.sub;
+  document.getElementById('h-logout').textContent=t.logout;
+  document.getElementById('w-sub').textContent=t.w_sub;
+  document.getElementById('kl-level').textContent=t.kl_level;
+  document.getElementById('kl-sessions').textContent=t.kl_sessions;
+  document.getElementById('kl-evals').textContent=t.kl_evals;
+  document.getElementById('kl-streak').textContent=t.kl_streak;
+  document.getElementById('qa1').textContent=t.qa1;
+  document.getElementById('qa1s').textContent=t.qa1s;
+  document.getElementById('qa2').textContent=t.qa2;
+  document.getElementById('qa2s').textContent=t.qa2s;
+  document.getElementById('qa3').textContent=t.qa3;
+  document.getElementById('qa3s').textContent=t.qa3s;
+  document.getElementById('ct-skills').textContent=t.ct_skills;
+  document.getElementById('ct-coach').textContent=t.ct_coach;
+  document.getElementById('ct-wearables').textContent=t.ct_wearables;
+  document.getElementById('ct-docs').textContent=t.ct_docs;
+  document.getElementById('ct-history').textContent=t.ct_history;
+  document.getElementById('ns-label').textContent=t.ns_label;
+  document.getElementById('upload-label').textContent=t.upload_label;
+  document.getElementById('upload-sub').textContent=t.upload_sub;
+  document.getElementById('wearables-note').textContent=t.wearables_note;
+  const name=localStorage.getItem('orbis_name')||'';
+  document.getElementById('w-title').textContent=(l==='en'?'Good morning, ':'Buenos días, ')+name.split(' ')[0]+' \u{1F44B}';
+}
+
+function logout(){
+  localStorage.removeItem('orbis_token');
+  localStorage.removeItem('orbis_role');
+  localStorage.removeItem('orbis_name');
+  window.location.href='/login';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+function connectDevice(device){
+  showToast('API connection coming soon — upload a PDF export for now');
+}
+
+function handleUpload(input){
+  const file=input.files[0];
+  if(!file)return;
+  const icons={pdf:'📄',xlsx:'📊',xls:'📊',csv:'📊',docx:'📝',doc:'📝'};
+  const ext=file.name.split('.').pop().toLowerCase();
+  const icon=icons[ext]||'📎';
+  const list=document.getElementById('uploadList');
+  const item=document.createElement('div');
+  item.className='upload-item';
+  item.innerHTML=`<span class="upload-item-icon">${icon}</span><span>${file.name}</span><span style="margin-left:auto;color:var(--amber);font-size:10px">Uploading...</span>`;
+  list.appendChild(item);
+  showToast('Document received — backend upload coming soon');
+}
+
+function renderSkills(skills){
+  if(!skills||!skills.length)return;
+  document.getElementById('skillsBody').innerHTML=skills.map(s=>`
+    <div class="skill-row">
+      <div class="skill-header">
+        <div class="skill-name">${s.name}</div>
+        <div class="skill-scores"><span class="score-coach">Coach: ${s.coach_score}/5</span><span class="score-self">Self: ${s.self_score}/5</span></div>
+      </div>
+      <div class="skill-bar-bg">
+        <div class="skill-bar-coach" style="width:${(s.coach_score/5)*100}%"></div>
+        <div class="skill-bar-self" style="width:${(s.self_score/5)*100}%"></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSessions(sessions){
+  if(!sessions||!sessions.length)return;
+  document.getElementById('sessionHistory').innerHTML=sessions.map(s=>`
+    <div class="session-row">
+      <div class="session-dot"></div>
+      <div class="session-date">${s.date}</div>
+      <div class="session-text">${s.notes||'Session logged'}</div>
+    </div>`).join('');
+}
+
+async function loadDashboard(){
+  const name=localStorage.getItem('orbis_name')||'Student';
+  document.getElementById('studentName').textContent=name;
+  document.getElementById('w-title').textContent='Good morning, '+name.split(' ')[0]+' \u{1F44B}';
+  const token=localStorage.getItem('orbis_token');
+  if(!token){window.location.href='/login';return;}
+  try{
+    const res=await fetch('/api/student/dashboard',{headers:{'Authorization':'Bearer '+token}});
+    if(res.ok){
+      const data=await res.json();
+      document.getElementById('k-level').textContent=data.level||'\u2014';
+      document.getElementById('k-sessions').textContent=data.sessions_count||0;
+      document.getElementById('k-evals').textContent=data.evals_count||0;
+      document.getElementById('k-streak').textContent=data.streak||0;
+      if(data.coach_name){
+        const initials=data.coach_name.split(' ').map(w=>w[0]).join('').toUpperCase();
+        document.getElementById('coachInitials').textContent=initials;
+        document.getElementById('coachFullName').textContent=data.coach_name;
+        document.getElementById('coachAcademy').textContent=data.academy_name||'Academy';
+      }
+      if(data.next_session){
+        document.getElementById('ns-date').textContent=data.next_session.date;
+        document.getElementById('ns-focus').textContent=data.next_session.focus||'';
+      }
+      if(data.latest_skills)renderSkills(data.latest_skills);
+      if(data.sessions)renderSessions(data.sessions);
+    }
+  }catch(e){console.log('Dashboard not loaded');}
+}
+
+loadDashboard();
+</script>
+</body>
+</html>'''
+
+@app.get("/student/dashboard", response_class=HTMLResponse)
+async def student_dashboard():
+    return STUDENT_DASHBOARD_HTML
+
+@app.get("/api/student/dashboard")
+async def student_dashboard_api(request: Request):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+    sb = get_supabase()
+    try:
+        user_res = sb.auth.get_user(token)
+        student_id = user_res.user.id
+        profile = sb.table("student_profiles").select("*").eq("user_id", student_id).execute()
+        evals = sb.table("evaluations").select("*").eq("student_id", student_id).order("created_at", desc=True).limit(5).execute()
+        sessions = sb.table("sessions").select("*").eq("student_id", student_id).order("session_date", desc=True).limit(5).execute()
+        coach_data = {}
+        if profile.data and profile.data[0].get("coach_id"):
+            coach = sb.table("users").select("full_name,academy_id").eq("id", profile.data[0]["coach_id"]).execute()
+            if coach.data:
+                coach_data = coach.data[0]
+                if coach_data.get("academy_id"):
+                    acad = sb.table("academies").select("name").eq("id", coach_data["academy_id"]).execute()
+                    coach_data["academy_name"] = acad.data[0]["name"] if acad.data else ""
+        latest_skills = []
+        if evals.data:
+            ev = evals.data[0]
+            latest_skills = [
+                {"name": "Forehand", "coach_score": ev.get("forehand_coach", 0), "self_score": ev.get("forehand_self", 0)},
+                {"name": "Backhand", "coach_score": ev.get("backhand_coach", 0), "self_score": ev.get("backhand_self", 0)},
+                {"name": "Serve", "coach_score": ev.get("serve_coach", 0), "self_score": ev.get("serve_self", 0)},
+                {"name": "Movement", "coach_score": ev.get("movement_coach", 0), "self_score": ev.get("movement_self", 0)},
+                {"name": "Tactical", "coach_score": ev.get("tactical_coach", 0), "self_score": ev.get("tactical_self", 0)},
+            ]
+        return {
+            "level": profile.data[0].get("level", "—") if profile.data else "—",
+            "sessions_count": len(sessions.data),
+            "evals_count": len(evals.data),
+            "streak": 0,
+            "coach_name": coach_data.get("full_name", ""),
+            "academy_name": coach_data.get("academy_name", ""),
+            "latest_skills": latest_skills,
+            "sessions": [{"date": s["session_date"], "notes": s.get("notes", "")} for s in sessions.data]
+        }
+    except Exception as e:
+        return {"level": "—", "sessions_count": 0, "evals_count": 0, "streak": 0, "coach_name": "", "academy_name": "", "latest_skills": [], "sessions": []}
+
 from mangum import Mangum
 handler = Mangum(app)
 
