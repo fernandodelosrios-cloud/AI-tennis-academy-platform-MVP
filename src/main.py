@@ -281,10 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   <div class="hero-badge">&#x1F3BE; For tennis &amp; padel coaches</div>
   <h1 class="hero-title">Stop losing students.<br><span class="accent">Start coaching smarter.</span></h1>
   <p class="hero-sub">Orbis AI is your AI-powered assistant coach — track every student, personalize every session, and never drop the ball on follow-up again.</p>
-  <a href="#" class="btn-hero" href="/waitlist">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    Join waiting list
-  </a>
+  <a href="#" <a class="btn-hero" href="/waitlist">Join waiting list &rarr;</a>
   <p class="hero-note">Free early access &middot; No credit card &middot; Limited spots</p>
 </section>
 
