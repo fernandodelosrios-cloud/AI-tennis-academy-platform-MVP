@@ -1445,6 +1445,300 @@ new Chart(document.getElementById('wearableChart'),{type:'bar',data:{labels:l,da
 async def demo_student():
     return DEMO_STUDENT_HTML
 
+
+DEMO_VIDEO_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Video Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:10px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-text{font-size:15px;font-weight:700;color:#fff;}.logo-text span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.demo-badge{background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--lime);font-weight:600;}
+.btn-back{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;}
+.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
+.card-body{padding:16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.metric-row:last-child{border-bottom:none;}
+.metric-name{font-size:12px;color:var(--text2);}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.badge-green{background:var(--lime-pale);color:var(--lime-dark);}
+.badge-amber{background:#fef3c7;color:#92400e;}
+.badge-red{background:#fee2e2;color:#991b1b;}
+.upload-zone{border:1.5px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.upload-zone:hover{border-color:var(--navy);}
+.toast{position:fixed;top:70px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:280px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
+    </svg>
+    <div>
+      <div class="logo-text">Orbis <span>AI</span></div>
+      <div class="logo-sub">Video Analysis</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="demo-badge">Demo mode</span>
+    <a href="/coach" class="btn-back">&#x2190; Coach dashboard</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="main">
+
+  <!-- Header -->
+  <div style="background:var(--navy);border-radius:var(--radius);padding:20px 24px;margin-bottom:20px;border-left:4px solid var(--lime);display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:#fff;">Fernando — Backhand analysis</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;">Jun 20, 2026 · 1m 23s · Analyzed by Orbis Core</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="text-align:center;background:rgba(255,255,255,.08);border-radius:8px;padding:10px 16px;">
+        <div style="font-size:22px;font-weight:700;color:var(--lime);font-family:'DM Mono',monospace;">3.5</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Overall</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+
+    <!-- Left: Court snapshot with annotations -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Session snapshot</div>
+          <span style="font-size:11px;color:var(--text3);">Frame 00:14 — contact point</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <svg width="100%" viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg">
+            <!-- Court -->
+            <rect width="500" height="360" fill="#c17f3a"/>
+            <rect x="36" y="24" width="428" height="312" fill="none" stroke="white" stroke-width="2.5"/>
+            <line x1="250" y1="24" x2="250" y2="336" stroke="white" stroke-width="1.5"/>
+            <line x1="36" y1="180" x2="464" y2="180" stroke="white" stroke-width="3"/>
+            <line x1="36" y1="108" x2="464" y2="108" stroke="white" stroke-width="1.5"/>
+            <line x1="36" y1="252" x2="464" y2="252" stroke="white" stroke-width="1.5"/>
+            <!-- Net -->
+            <rect x="30" y="172" width="440" height="14" fill="#333" rx="2"/>
+            <line x1="30" y1="172" x2="470" y2="172" stroke="white" stroke-width="1"/>
+            <line x1="30" y1="186" x2="470" y2="186" stroke="white" stroke-width="1"/>
+            <rect x="24" y="152" width="10" height="56" fill="#555" rx="2"/>
+            <rect x="466" y="152" width="10" height="56" fill="#555" rx="2"/>
+
+            <!-- Player shadow -->
+            <ellipse cx="340" cy="304" rx="28" ry="8" fill="rgba(0,0,0,0.3)"/>
+            <!-- Legs -->
+            <line x1="326" y1="272" x2="314" y2="302" stroke="#2d4a8a" stroke-width="10" stroke-linecap="round"/>
+            <line x1="342" y1="270" x2="352" y2="300" stroke="#2d4a8a" stroke-width="10" stroke-linecap="round"/>
+            <!-- Shoes -->
+            <ellipse cx="312" cy="304" rx="12" ry="5" fill="#fff"/>
+            <ellipse cx="354" cy="302" rx="12" ry="5" fill="#fff"/>
+            <!-- Body -->
+            <rect x="322" y="232" width="34" height="44" rx="8" fill="#3d6abf"/>
+            <!-- Head -->
+            <circle cx="339" cy="218" r="18" fill="#f5c5a3"/>
+            <!-- Hair -->
+            <ellipse cx="339" cy="205" rx="17" ry="9" fill="#4a3520"/>
+            <!-- Left arm extended back -->
+            <line x1="324" y1="244" x2="282" y2="226" stroke="#3d6abf" stroke-width="9" stroke-linecap="round"/>
+            <line x1="282" y1="226" x2="252" y2="242" stroke="#f5c5a3" stroke-width="8" stroke-linecap="round"/>
+            <!-- Right arm follow through -->
+            <line x1="354" y1="244" x2="388" y2="228" stroke="#3d6abf" stroke-width="9" stroke-linecap="round"/>
+            <line x1="388" y1="228" x2="410" y2="244" stroke="#f5c5a3" stroke-width="8" stroke-linecap="round"/>
+            <!-- Racket -->
+            <line x1="252" y1="242" x2="230" y2="255" stroke="#8B6914" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="218" cy="263" rx="15" ry="20" fill="none" stroke="#8B6914" stroke-width="3"/>
+            <ellipse cx="218" cy="263" rx="10" ry="14" fill="none" stroke="#c8a830" stroke-width="1.5"/>
+            <line x1="207" y1="256" x2="229" y2="256" stroke="#c8a830" stroke-width="1"/>
+            <line x1="206" y1="262" x2="230" y2="262" stroke="#c8a830" stroke-width="1"/>
+            <line x1="207" y1="268" x2="229" y2="268" stroke="#c8a830" stroke-width="1"/>
+            <line x1="216" y1="248" x2="216" y2="278" stroke="#c8a830" stroke-width="1"/>
+            <line x1="220" y1="247" x2="220" y2="279" stroke="#c8a830" stroke-width="1"/>
+            <line x1="224" y1="248" x2="224" y2="278" stroke="#c8a830" stroke-width="1"/>
+            <!-- Tennis ball -->
+            <circle cx="194" cy="260" r="9" fill="#c8e620"/>
+            <path d="M186 257 Q194 251 202 257" fill="none" stroke="white" stroke-width="1.5"/>
+            <path d="M186 263 Q194 269 202 263" fill="none" stroke="white" stroke-width="1.5"/>
+
+            <!-- AI Annotations -->
+            <!-- Contact point - late (red/amber circle) -->
+            <circle cx="210" cy="260" r="24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3"/>
+            <line x1="234" y1="248" x2="270" y2="222" stroke="#f59e0b" stroke-width="1.5"/>
+            <rect x="270" y="206" width="148" height="22" rx="5" fill="rgba(61,26,110,0.9)"/>
+            <text x="278" y="220" fill="#f59e0b" font-size="11" font-family="sans-serif" font-weight="600">&#x26A0; Contact point late</text>
+
+            <!-- Hip rotation annotation -->
+            <circle cx="338" cy="258" r="20" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2"/>
+            <line x1="318" y1="258" x2="288" y2="278" stroke="#dc2626" stroke-width="1.5"/>
+            <rect x="200" y="278" width="100" height="22" rx="5" fill="rgba(61,26,110,0.9)"/>
+            <text x="208" y="292" fill="#dc2626" font-size="11" font-family="sans-serif" font-weight="600">&#x2717; Hip rotation</text>
+
+            <!-- Elbow - good (green) -->
+            <circle cx="284" cy="228" r="16" fill="none" stroke="#3ecf7e" stroke-width="2" stroke-dasharray="4 2"/>
+            <line x1="268" y1="222" x2="240" y2="200" stroke="#3ecf7e" stroke-width="1.5"/>
+            <rect x="160" y="182" width="86" height="22" rx="5" fill="rgba(61,26,110,0.9)"/>
+            <text x="168" y="196" fill="#3ecf7e" font-size="11" font-family="sans-serif" font-weight="600">Elbow high &#x2713;</text>
+
+            <!-- Footwork - good -->
+            <circle cx="334" cy="300" rx="20" r="20" fill="none" stroke="#3ecf7e" stroke-width="2" stroke-dasharray="4 2"/>
+            <line x1="334" y1="280" x2="334" y2="264" stroke="#3ecf7e" stroke-width="1.5"/>
+            <rect x="286" y="248" width="100" height="22" rx="5" fill="rgba(61,26,110,0.9)"/>
+            <text x="294" y="262" fill="#3ecf7e" font-size="11" font-family="sans-serif" font-weight="600">Stance &#x2713;</text>
+
+            <!-- Score badge -->
+            <rect x="36" y="30" width="80" height="34" rx="6" fill="rgba(61,26,110,0.9)"/>
+            <text x="76" y="44" fill="rgba(255,255,255,0.5)" font-size="9" font-family="sans-serif" text-anchor="middle">TECHNIQUE</text>
+            <text x="76" y="58" fill="#3ecf7e" font-size="14" font-family="sans-serif" font-weight="700" text-anchor="middle">3.5 / 5.0</text>
+
+            <!-- Orbis Core badge -->
+            <rect x="350" y="30" width="120" height="24" rx="6" fill="rgba(62,207,126,0.15)" stroke="rgba(62,207,126,0.4)" stroke-width="1"/>
+            <text x="410" y="45" fill="#3ecf7e" font-size="10" font-family="sans-serif" font-weight="600" text-anchor="middle">Orbis Core analyzed</text>
+
+            <!-- Timestamp -->
+            <rect x="36" y="322" width="60" height="18" rx="4" fill="rgba(0,0,0,0.6)"/>
+            <text x="66" y="334" fill="#fff" font-size="9" font-family="monospace" text-anchor="middle">00:14 / 01:23</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Upload new video -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Upload new video</div>
+        </div>
+        <div class="card-body">
+          <div class="upload-zone" onclick="showToast('Video upload — processing coming soon')">
+            <div style="font-size:28px;margin-bottom:8px;">&#x1F4F9;</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text2);">Drop video here or click to upload</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">MP4 · MOV · max 500MB</div>
+            <div style="margin-top:12px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:8px 20px;border-radius:7px;display:inline-block;">Analyze with Orbis Core</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Full analysis -->
+    <div>
+
+      <!-- Key finding -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Key finding</div>
+          <span style="background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.25);border-radius:20px;padding:2px 8px;font-size:10px;color:var(--lime-dark);font-weight:600;">Orbis Core</span>
+        </div>
+        <div class="card-body">
+          <div style="background:var(--navy);border-radius:8px;padding:14px 16px;border-left:3px solid var(--lime);">
+            <div style="font-size:13px;color:#fff;line-height:1.6;">Contact point is <strong style="color:var(--lime);">8-12cm too late</strong> on the backhand cross-court. Fernando is making contact behind his front hip rather than in front — reducing pace and causing directional errors under pressure.</div>
+          </div>
+          <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px 12px;border-left:3px solid var(--amber);">
+            <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:3px;">Impact on match stats</div>
+            <div style="font-size:12px;color:#78350f;line-height:1.5;">This explains 60-70% of his 22 unforced errors per match. Fixing contact point alone could reduce errors to 16-17/match — bringing him below the 18 target.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technique breakdown -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Technique breakdown</div>
+        </div>
+        <div class="card-body">
+          <div class="metric-row">
+            <span class="metric-name">Unit turn / preparation</span>
+            <span class="badge badge-green">&#x2713; Good</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Elbow position</span>
+            <span class="badge badge-green">&#x2713; Good</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Stance / footwork</span>
+            <span class="badge badge-green">&#x2713; Good</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Contact point</span>
+            <span class="badge badge-amber">&#x26A0; Late — 8-12cm</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Follow through</span>
+            <span class="badge badge-amber">&#x26A0; Shortened</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Hip rotation</span>
+            <span class="badge badge-red">&#x2717; Limited</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Racket head speed</span>
+            <span class="badge badge-amber">&#x26A0; Below potential</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITF drill recommendation -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Drill recommendation</div>
+          <span style="font-size:11px;color:var(--text3);">ITF Level 2 framework</span>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:var(--lime-pale);border-radius:8px;padding:12px 14px;border-left:3px solid var(--lime-dark);">
+              <div style="font-size:11px;font-weight:700;color:var(--lime-dark);margin-bottom:4px;">Drill 1 — Wall contact point fix</div>
+              <div style="font-size:12px;color:var(--text);line-height:1.5;">Stand 1m from wall. Hit backhand focusing on contact in front of hip. 3 sets of 20 reps. Immediate feedback from wall bounce confirms contact point.</div>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:12px 14px;border-left:3px solid var(--navy);">
+              <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px;">Drill 2 — Cone target backhand</div>
+              <div style="font-size:12px;color:var(--text);line-height:1.5;">Place cone 1m in front of baseline. Feed balls forcing Fernando to take contact early. 20 min cross-court drill at medium pace. ITF Level 2 — directional control progression.</div>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:12px 14px;border-left:3px solid var(--navy);">
+              <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px;">Drill 3 — Hip rotation activation</div>
+              <div style="font-size:12px;color:var(--text);line-height:1.5;">Shadow swing without ball — focus on hip turn leading the swing. 3 sets of 15 reps before court practice. Addresses root cause of shortened follow through.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coach note -->
+      <div style="background:var(--navy);border-radius:var(--radius);padding:16px 20px;border-left:4px solid var(--lime);">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--lime);margin-bottom:6px;">Orbis Core — Coach recommendation</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.6;">Thursday session (84% recovery — green light): Start with 15min wall drill, then 20min cone target backhand cross-court. Fernando's match win rate will increase from 69% toward 75%+ as contact point improves and unforced errors drop below 18/match.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+</script>
+</body>
+</html>"""
+
+
+@app.get("/demo/video", response_class=HTMLResponse)
+async def demo_video():
+    return DEMO_VIDEO_HTML
+
 from mangum import Mangum
 handler = Mangum(app)
 
