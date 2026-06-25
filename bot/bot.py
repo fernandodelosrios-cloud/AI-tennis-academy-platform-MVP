@@ -235,15 +235,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id not in user_sessions:
         user_sessions[user_id] = {"role": "student", "name": user_name, "history": []}
 
-    welcome = f"""👋 Hi {user_name}! I'm *Orbis Core*, the AI coaching intelligence for Roger Lederer Academy.
+    welcome = f"""👋 Hi {user_name}! I'm *Orbis Core*, your AI coaching assistant for Roger Lederer Academy.
 
-I'm connected to Fernando's real Whoop data, ITF coaching frameworks, FIP padel guidelines, and ATP benchmarks.
+I'm ready — just tell me who you are:
 
-*Who are you?*
 👨‍🏫 /coach — I'm Coach Toni
-🎾 /student — I'm Fernando
-
-Tell me your role and I'll give you the right context for your questions."""
+🎾 /student — I'm Fernando"""
 
     await update.message.reply_text(welcome, parse_mode="Markdown")
 
