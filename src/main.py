@@ -592,7 +592,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="qa-label" id="qa2">Self evaluation</div>
       <div class="qa-sub" id="qa2s">Rate your last session</div>
     </a>
-    <a class="qa-btn" href="#" onclick="showToast('Coming soon — Orbis Core on Telegram'); return false;">
+    <a class="qa-btn" href="#" onclick="window.open('https://t.me/orbiscoreai_bot', '_blank'); return false;">
       <div class="qa-icon">&#x1F916;</div>
       <div class="qa-label" id="qa3">Ask Orbis Core</div>
       <div class="qa-sub" id="qa3s">AI coaching assistant</div>
@@ -1026,7 +1026,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="qa-label">Progress report</div>
       <div class="qa-sub">Fernando's latest eval</div>
     </a>
-    <a class="qa-btn" href="#" onclick="showToast('Orbis Core on Telegram — coming soon'); return false;">
+    <a class="qa-btn" href="#" onclick="window.open('https://t.me/orbiscoreai_bot', '_blank'); return false;">
       <div class="qa-icon">&#x1F916;</div>
       <div class="qa-label">Ask Orbis Core</div>
       <div class="qa-sub">AI coaching agent</div>
@@ -1424,7 +1424,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">Ask Orbis Core</div>
         <div style="font-size:12px;color:rgba(255,255,255,.55);">Get AI coaching advice, drill suggestions, or mental prep tips — directly on Telegram.</div>
       </div>
-      <a href="#" onclick="showToast('Orbis Core Telegram bot — coming soon'); return false;" style="background:var(--lime);color:var(--navy);font-size:13px;font-weight:700;padding:10px 20px;border-radius:7px;text-decoration:none;white-space:nowrap;">Open Telegram</a>
+      <a href="#" onclick="window.open('https://t.me/orbiscoreai_bot', '_blank'); return false;" style="background:var(--lime);color:var(--navy);font-size:13px;font-weight:700;padding:10px 20px;border-radius:7px;text-decoration:none;white-space:nowrap;">Open Telegram</a>
     </div>
   </div>
 
