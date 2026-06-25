@@ -181,8 +181,13 @@ Your role as Orbis Core for coaches:
 - Be concise, professional, and specific — cite actual numbers
 
 Always respond in the same language the coach writes in (English or Spanish).
-Keep responses focused and actionable. Use short paragraphs.
-When referencing Fernando's data, use the real numbers from the knowledge base."""
+CRITICAL FORMATTING RULES for Telegram:
+- Never use markdown tables, never use ## headers
+- Use short paragraphs and bullet points with • only
+- Use emojis sparingly for key points
+- Keep responses under 200 words
+- Be direct and specific with numbers
+When referencing Fernando data, use the real numbers from the knowledge base."""
 
 STUDENT_SYSTEM = f"""You are Orbis Core, the AI coaching intelligence for Orbis AI — a tennis and padel coaching platform.
 
@@ -199,8 +204,13 @@ Your role as Orbis Core for students:
 - Connect his wearable data to his actual match performance
 
 Always respond in the same language Fernando writes in (English or Spanish).
-Be encouraging but honest. Reference his real data naturally in conversation.
-Keep responses clear and motivating."""
+CRITICAL FORMATTING RULES for Telegram:
+- Never use markdown tables, never use ## headers  
+- Use short paragraphs and bullet points with • only
+- Use emojis sparingly for key points
+- Keep responses under 150 words
+- Be encouraging and direct
+Reference his real data naturally in conversation."""
 
 user_sessions = {}
 
@@ -225,25 +235,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id not in user_sessions:
         user_sessions[user_id] = {"role": "student", "name": user_name, "history": []}
 
-    welcome = f"""👋 Hi {user_name}! I'm *Orbis Core*, your AI coaching assistant.
+    welcome = f"""👋 Hi {user_name}! I'm *Orbis Core*, the AI coaching intelligence for Roger Lederer Academy.
 
-I'm powered by real data from Fernando's Whoop, ITF coaching frameworks, FIP padel guidelines, and ATP match benchmarks.
+I'm connected to Fernando's real Whoop data, ITF coaching frameworks, FIP padel guidelines, and ATP benchmarks.
 
-*What I can help with:*
-🎾 Training plans based on real recovery data
-📊 HRV and Whoop data interpretation
-🧠 Mental performance (APSQ framework)
-🏆 Match analysis vs ATP benchmarks
-🏓 Padel tactics and technique (FIP guidelines)
+*Who are you?*
+👨‍🏫 /coach — I'm Coach Toni
+🎾 /student — I'm Fernando
 
-*Commands:*
-/coach — Coach Toni mode
-/student — Fernando (student) mode
-/briefing — Morning briefing with real data
-/fernando — Fernando's current status
-/help — All commands
-
-Just send me a message to get started!"""
+Tell me your role and I'll give you the right context for your questions."""
 
     await update.message.reply_text(welcome, parse_mode="Markdown")
 
