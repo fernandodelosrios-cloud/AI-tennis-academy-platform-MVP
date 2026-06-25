@@ -8,6 +8,7 @@ import json
 from datetime import date, timedelta
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -29,6 +30,7 @@ from src.connectors.whoop_connector import WhoopConnector
 app = FastAPI(title="TennisIQ MVP API", version="0.2.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
+app.mount("/static", StaticFiles(directory=str(Path(__file__).parent.parent / "static")), name="static")
 
 from fastapi.responses import JSONResponse
 import traceback
@@ -1549,8 +1551,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
           <div class="card-title">Session snapshot</div>
           <span style="font-size:11px;color:var(--text3);">Frame 00:14 — contact point</span>
         </div>
-        <div class="card-body" style="padding:0;">
-          <svg width="100%" viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg">
+        <div class="card-body" style="padding:0;position:relative;">
+          <div style="position:relative;display:inline-block;width:100%;">
+            <img src="/static/forehand.webp" style="width:100%;display:block;border-radius:0 0 var(--radius) var(--radius);" alt="Fernando forehand analysis"/>
+            <svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 1300 867" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="16" width="110" height="44" rx="8" fill="rgba(61,26,110,0.88)"/>
+              <text x="75" y="34" fill="rgba(255,255,255,0.6)" font-size="11" font-family="sans-serif" text-anchor="middle">TECHNIQUE</text>
+              <text x="75" y="52" fill="#3ecf7e" font-size="18" font-family="sans-serif" font-weight="700" text-anchor="middle">3.5 / 5.0</text>
+              <rect x="1050" y="16" width="230" height="32" rx="8" fill="rgba(62,207,126,0.18)" stroke="rgba(62,207,126,0.5)" stroke-width="1.5"/>
+              <text x="1165" y="36" fill="#3ecf7e" font-size="13" font-family="sans-serif" font-weight="700" text-anchor="middle">Orbis Core analyzed</text>
+              <circle cx="1050" cy="290" r="55" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="8 4"/>
+              <line x1="1000" y1="268" x2="900" y2="210" stroke="#f59e0b" stroke-width="2"/>
+              <rect x="680" y="185" width="225" height="34" rx="6" fill="rgba(61,26,110,0.92)"/>
+              <text x="692" y="207" fill="#f59e0b" font-size="14" font-family="sans-serif" font-weight="700">&#x26A0; Contact point early</text>
+              <circle cx="570" cy="360" r="45" fill="none" stroke="#3ecf7e" stroke-width="3" stroke-dasharray="7 3"/>
+              <line x1="525" y1="345" x2="440" y2="300" stroke="#3ecf7e" stroke-width="2"/>
+              <rect x="260" y="276" width="185" height="34" rx="6" fill="rgba(61,26,110,0.92)"/>
+              <text x="272" y="298" fill="#3ecf7e" font-size="14" font-family="sans-serif" font-weight="700">Balance arm &#x2713;</text>
+              <circle cx="820" cy="660" r="50" fill="none" stroke="#3ecf7e" stroke-width="3" stroke-dasharray="7 3"/>
+              <line x1="820" y1="610" x2="820" y2="560" stroke="#3ecf7e" stroke-width="2"/>
+              <rect x="700" y="530" width="240" height="34" rx="6" fill="rgba(61,26,110,0.92)"/>
+              <text x="712" y="552" fill="#3ecf7e" font-size="14" font-family="sans-serif" font-weight="700">Good knee bend &#x2713;</text>
+              <circle cx="780" cy="490" r="45" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 3"/>
+              <line x1="735" y1="490" x2="640" y2="490" stroke="#dc2626" stroke-width="2"/>
+              <rect x="440" y="472" width="202" height="34" rx="6" fill="rgba(61,26,110,0.92)"/>
+              <text x="452" y="494" fill="#dc2626" font-size="14" font-family="sans-serif" font-weight="700">&#x2717; Hip rotation limited</text>
+              <rect x="20" y="822" width="100" height="26" rx="5" fill="rgba(0,0,0,0.65)"/>
+              <text x="70" y="839" fill="#fff" font-size="12" font-family="monospace" text-anchor="middle">00:14 / 01:23</text>
+              <rect x="1160" y="822" width="120" height="26" rx="5" fill="rgba(61,26,110,0.8)"/>
+              <text x="1220" y="839" fill="#3ecf7e" font-size="11" font-family="sans-serif" text-anchor="middle">Jun 20, 2026</text>
+            </svg>
+          </div>
             <!-- Court -->
             <rect width="500" height="360" fill="#c17f3a"/>
             <rect x="36" y="24" width="428" height="312" fill="none" stroke="white" stroke-width="2.5"/>
