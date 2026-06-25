@@ -254,12 +254,9 @@ I'm ready — just tell me who you are:
 
 async def set_coach(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    user_name = update.effective_user.first_name or "Coach"
-    if user_id not in user_sessions:
-        user_sessions[user_id] = {"role": "coach", "name": user_name, "history": []}
-    else:
-        user_sessions[user_id]["role"] = "coach"
-    await update.message.reply_text(f"✅ Switched to *Coach Toni mode*. I have access to Fernando's full Whoop data, APSQ scores, and match analytics. What do you need?", parse_mode="Markdown")
+    user_sessions[user_id] = user_sessions.get(user_id, {"role": "student", "name": "", "history": []})
+    user_sessions[user_id]["pending_coach_auth"] = True
+    await update.message.reply_text("🔐 Coach access requires a code. Please enter your coach code:", parse_mode="Markdown")
 
 async def set_student(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -370,7 +367,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     user_message = update.message.text
-    role = get_user_role(user_id)
+    user_name = update.effective_user.first_name or "Coach"
 
     if user_id not in user_sessions:
         user_sessions[user_id] = {
@@ -378,6 +375,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "name": update.effective_user.first_name or "",
             "history": []
         }
+
+    # Handle pending coach authentication
+    if user_sessions[user_id].get("pending_coach_auth"):
+        if user_message.strip() == "123":
+            user_sessions[user_id]["role"] = "coach"
+            user_sessions[user_id]["name"] = user_name
+            user_sessions[user_id]["pending_coach_auth"] = False
+            await update.message.reply_text(f"✅ Coach access granted, {user_name}! I have access to Fernando's full Whoop data, APSQ scores, and match analytics. What do you need?", parse_mode="Markdown")
+        else:
+            user_sessions[user_id]["pending_coach_auth"] = False
+            await update.message.reply_text("❌ Incorrect code. Use /coach to try again or /student to continue as a student.")
+        return
+
+    role = get_user_role(user_id)
 
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
 
