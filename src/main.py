@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
       <a href="#why" class="nav-link">Why Orbis</a>
       <a href="/demo/coach" class="nav-link">Demo</a>
       <a href="/login" class="nav-link">Sign in</a>
-      <a href="#" class="btn-waitlist" href="/waitlist">Join waiting list</a>
+      <a href="/waitlist" class="btn-waitlist">Join waiting list</a>
     </div>
   </div>
 </nav>
