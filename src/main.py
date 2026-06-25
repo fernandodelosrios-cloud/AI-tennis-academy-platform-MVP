@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
       <a href="#why" class="nav-link">Why Orbis</a>
       <a href="/demo/coach" class="nav-link">Demo</a>
       <a href="/login" class="nav-link">Sign in</a>
-      <a href="#" class="btn-waitlist" onclick="showModal();return false;">Join waiting list</a>
+      <a href="#" class="btn-waitlist" id="navBtn">Join waiting list</a>
     </div>
   </div>
 </nav>
@@ -281,7 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   <div class="hero-badge">&#x1F3BE; For tennis &amp; padel coaches</div>
   <h1 class="hero-title">Stop losing students.<br><span class="accent">Start coaching smarter.</span></h1>
   <p class="hero-sub">Orbis AI is your AI-powered assistant coach — track every student, personalize every session, and never drop the ball on follow-up again.</p>
-  <a href="#" class="btn-hero" onclick="showModal();return false;">
+  <a href="#" class="btn-hero" id="heroBtn">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     Join waiting list
   </a>
@@ -623,6 +623,13 @@ function showTab(id){
 }
 function showModal(){document.getElementById("modalOverlay").classList.add("open");}
 function openModal(){showModal();}
+document.addEventListener("DOMContentLoaded",function(){
+  var hb=document.getElementById("heroBtn");
+  var nb=document.getElementById("navBtn");
+  var mo=document.getElementById("modalOverlay");
+  if(hb)hb.addEventListener("click",function(e){e.preventDefault();mo.classList.add("open");});
+  if(nb)nb.addEventListener("click",function(e){e.preventDefault();mo.classList.add("open");});
+});
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
 function closeOnOverlay(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 
