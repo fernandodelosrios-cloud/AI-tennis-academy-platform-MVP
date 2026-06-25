@@ -1553,7 +1553,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         </div>
         <div class="card-body" style="padding:0;position:relative;">
           <div style="position:relative;display:inline-block;width:100%;">
-            <img src="/static/forehand.webp" style="width:100%;display:block;border-radius:0 0 var(--radius) var(--radius);" alt="Fernando forehand analysis"/>
+            <img src="/static/forehand man.jpg" style="width:100%;display:block;border-radius:0 0 var(--radius) var(--radius);" alt="Fernando forehand analysis"/>
             <svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 1300 867" xmlns="http://www.w3.org/2000/svg">
               <rect x="20" y="16" width="110" height="44" rx="8" fill="rgba(61,26,110,0.88)"/>
               <text x="75" y="34" fill="rgba(255,255,255,0.6)" font-size="11" font-family="sans-serif" text-anchor="middle">TECHNIQUE</text>
