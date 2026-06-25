@@ -1143,6 +1143,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </div>
   </div>
 
+  <!-- Video Analysis Card -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-header">
+      <div class="card-title">&#x1F4F9; Video analysis</div>
+      <span style="font-size:11px;color:var(--lime-dark);font-weight:600;">Orbis Core powered</span>
+    </div>
+    <div class="card-body" style="display:flex;align-items:center;gap:16px;">
+      <div style="flex-shrink:0;width:120px;height:80px;border-radius:8px;overflow:hidden;background:#1a1a2e;position:relative;">
+        <svg width="120" height="80" viewBox="0 0 120 80"><rect width="120" height="80" fill="#c17f3a"/><rect x="8" y="6" width="104" height="68" fill="none" stroke="white" stroke-width="1.5"/><line x1="60" y1="6" x2="60" y2="74" stroke="white" stroke-width="1"/><line x1="8" y1="40" x2="112" y2="40" stroke="white" stroke-width="2"/><rect x="7" y="37" width="106" height="6" fill="#333" rx="1"/><circle cx="82" cy="52" r="6" fill="#f5c5a3"/><line x1="78" y1="56" x2="74" y2="68" stroke="#2d4a8a" stroke-width="4" stroke-linecap="round"/><line x1="84" y1="56" x2="88" y2="68" stroke="#2d4a8a" stroke-width="4" stroke-linecap="round"/><rect x="74" y="44" width="16" height="14" rx="4" fill="#3d6abf"/><line x1="76" y1="48" x2="62" y2="44" stroke="#3d6abf" stroke-width="4" stroke-linecap="round"/><line x1="62" y1="44" x2="54" y2="50" stroke="#f5c5a3" stroke-width="3" stroke-linecap="round"/><ellipse cx="49" cy="53" rx="5" ry="7" fill="none" stroke="#8B6914" stroke-width="1.5"/><circle cx="43" cy="52" r="3" fill="#c8e620"/><circle cx="50" cy="52" r="8" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2 1"/><rect x="7" y="7" width="34" height="12" rx="3" fill="rgba(61,26,110,0.85)"/><text x="24" y="16" fill="#3ecf7e" font-size="6" font-family="sans-serif" font-weight="700" text-anchor="middle">3.5/5.0</text></svg>
+        <div style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:monospace;">00:14</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Fernando — Backhand analysis</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Jun 20, 2026 · Orbis Core analyzed</div>
+        <div style="font-size:12px;color:var(--text2);background:var(--bg);border-radius:6px;padding:6px 10px;border-left:3px solid var(--amber);">&#x26A0; Contact point 8-12cm late — main correction area</div>
+      </div>
+      <a href="/demo/video" style="flex-shrink:0;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:8px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;">View full analysis &#x2192;</a>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1409,7 +1429,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <span style="font-size:11px;color:var(--text3)">Last 5 sessions</span>
     </div>
     <div class="card-body">
-      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 20, 2026</div><div class="session-text">Serve and volley drills — 90 min. Recovery 88%. Coach: strong net approach, work on backhand volley placement.</div></div>
+      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 20, 2026</div><div class="session-text">Serve and volley drills — 90 min. Recovery 88%. Coach: strong net approach, work on backhand volley placement. <a href="/demo/video" style="color:var(--lime-dark);font-weight:600;font-size:11px;">&#x1F4F9; View backhand analysis &#x2192;</a></div></div>
       <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 17, 2026</div><div class="session-text">Match play vs. James — 75 min. Won 6-3 6-4. Recovery 85%. Backhand under pressure improved vs last week.</div></div>
       <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 15, 2026</div><div class="session-text">Evaluation session — 60 min. Full skill assessment completed. Coach notes: tactical awareness is main improvement area.</div></div>
       <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 12, 2026</div><div class="session-text">Baseline and cross-court patterns — 90 min. Recovery 79%. Focus on inside-out forehand execution.</div></div>
