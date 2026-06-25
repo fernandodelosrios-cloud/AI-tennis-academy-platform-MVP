@@ -899,6 +899,552 @@ async def student_dashboard_api(request: Request):
     except Exception as e:
         return {"level": "—", "sessions_count": 0, "evals_count": 0, "streak": 0, "coach_name": "", "academy_name": "", "latest_skills": [], "sessions": []}
 
+
+DEMO_COACH_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Coach Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:10px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-text{font-size:15px;font-weight:700;color:#fff;}.logo-text span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.demo-badge{background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--lime);font-weight:600;}
+.btn-back{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;}
+.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
+.welcome{background:var(--navy);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;border-left:4px solid var(--lime);}
+.welcome-title{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.02em;}
+.welcome-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;line-height:1;}
+.kpi-val.lime{color:var(--lime-dark);}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
+.card-body{padding:16px;}
+.student-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background .1s;}
+.student-row:last-child{border-bottom:none;}
+.student-row:hover{background:var(--bg);margin:0 -16px;padding:11px 16px;}
+.student-avatar{width:38px;height:38px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--lime-dark);flex-shrink:0;}
+.student-avatar.pending{background:#f2f0f7;border-color:var(--border);color:var(--text3);}
+.student-info{flex:1;}
+.student-name{font-size:13px;font-weight:500;color:var(--text);}
+.student-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.student-stats{display:flex;gap:12px;align-items:center;}
+.stat-pill{font-size:11px;font-family:'DM Mono',monospace;font-weight:600;}
+.stat-pill.green{color:var(--green);}
+.stat-pill.amber{color:var(--amber);}
+.stat-pill.muted{color:var(--text3);}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.status-dot.active{background:var(--green);}
+.status-dot.pending{background:var(--amber);}
+.skill-row{margin-bottom:12px;}
+.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.skill-name{font-size:12px;font-weight:500;color:var(--text);}
+.skill-scores{display:flex;gap:8px;font-size:11px;}
+.score-coach{color:var(--navy);font-weight:600;}
+.score-self{color:var(--lime-dark);font-weight:600;}
+.skill-bar-bg{height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:hidden;}
+.skill-bar-coach{height:100%;background:var(--navy);border-radius:3px;}
+.skill-bar-self{height:3px;background:var(--lime);border-radius:3px;position:absolute;top:0;}
+.rec-strip{background:var(--navy);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border-left:4px solid var(--lime);margin-top:16px;}
+.rec-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;}
+.rec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.7);}
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.rec-block{padding:14px 16px;border-right:1px solid rgba(255,255,255,.07);}
+.rec-block:nth-child(2){border-right:none;}
+.rec-block:nth-child(3){border-right:1px solid rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.07);}
+.rec-block:nth-child(4){border-top:1px solid rgba(255,255,255,.07);}
+.rec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--lime);margin-bottom:6px;}
+.rec-text{font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;}
+.orbis-panel{background:var(--navy);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.qa-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:border-color .15s;text-decoration:none;display:block;}
+.qa-btn:hover{border-color:var(--navy);}
+.qa-icon{font-size:22px;margin-bottom:6px;}
+.qa-label{font-size:12px;font-weight:500;color:var(--text);}
+.qa-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.chart-wrap{position:relative;height:100px;}
+.toast{position:fixed;top:70px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:280px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
+    </svg>
+    <div>
+      <div class="logo-text">Orbis <span>AI</span></div>
+      <div class="logo-sub">Coach Dashboard</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="demo-badge">Demo mode</span>
+    <a href="/" class="btn-back">Back to home</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="main">
+
+  <div class="welcome">
+    <div class="welcome-title">Good morning, Coach Toni 👋</div>
+    <div class="welcome-sub">Roger Lederer Academy — 3 students enrolled · Orbis Core active · Demo data</div>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-val">3</div><div class="kpi-label">Students</div></div>
+    <div class="kpi"><div class="kpi-val">14</div><div class="kpi-label">Sessions this month</div></div>
+    <div class="kpi"><div class="kpi-val lime">84%</div><div class="kpi-label">Avg recovery</div></div>
+    <div class="kpi"><div class="kpi-val">2</div><div class="kpi-label">Pending evals</div></div>
+  </div>
+
+  <div class="quick-actions">
+    <a class="qa-btn" href="/demo/student">
+      <div class="qa-icon">&#x1F468;</div>
+      <div class="qa-label">Student view</div>
+      <div class="qa-sub">Fernando's dashboard</div>
+    </a>
+    <a class="qa-btn" href="/report/demo">
+      <div class="qa-icon">&#x1F4CA;</div>
+      <div class="qa-label">Progress report</div>
+      <div class="qa-sub">Fernando's latest eval</div>
+    </a>
+    <a class="qa-btn" href="#" onclick="showToast('Orbis Core on Telegram — coming soon'); return false;">
+      <div class="qa-icon">&#x1F916;</div>
+      <div class="qa-label">Ask Orbis Core</div>
+      <div class="qa-sub">AI coaching agent</div>
+    </a>
+  </div>
+
+  <div class="grid2">
+
+    <!-- Student roster -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My students</div>
+        <span style="font-size:11px;color:var(--text3)">3 enrolled</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Fernando — active -->
+        <div class="student-row" onclick="window.location.href='/demo/student'">
+          <div class="student-avatar">F</div>
+          <div class="student-info">
+            <div class="student-name">Fernando de los Rios</div>
+            <div class="student-sub">Advanced recreational · Clay specialist</div>
+          </div>
+          <div class="student-stats">
+            <span class="stat-pill green">84% rec</span>
+            <span class="stat-pill">57ms HRV</span>
+            <div class="status-dot active"></div>
+          </div>
+        </div>
+
+        <!-- James — pending eval -->
+        <div class="student-row">
+          <div class="student-avatar pending">J</div>
+          <div class="student-info">
+            <div class="student-name">James Hartwell</div>
+            <div class="student-sub">Intermediate · Evaluation pending</div>
+          </div>
+          <div class="student-stats">
+            <span class="stat-pill muted">No wearable</span>
+            <div class="status-dot pending"></div>
+          </div>
+        </div>
+
+        <!-- Jaime — pending eval -->
+        <div class="student-row">
+          <div class="student-avatar pending">J</div>
+          <div class="student-info">
+            <div class="student-name">Jaime Robles</div>
+            <div class="student-sub">Competitive junior · Padel focus</div>
+          </div>
+          <div class="student-stats">
+            <span class="stat-pill muted">No wearable</span>
+            <div class="status-dot pending"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Fernando skills + recovery -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Fernando — latest evaluation</div>
+        <span style="font-size:11px;color:var(--text3)">Jun 15, 2026</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:8px;margin-bottom:12px;font-size:11px;">
+          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--navy);border-radius:50%;display:inline-block;"></span>Coach</span>
+          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--lime);border-radius:50%;display:inline-block;"></span>Self</span>
+        </div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Forehand</div><div class="skill-scores"><span class="score-coach">4.2/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:84%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Backhand</div><div class="skill-scores"><span class="score-coach">3.5/5</span><span class="score-self">3.2/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:70%"></div><div class="skill-bar-self" style="width:64%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Serve</div><div class="skill-scores"><span class="score-coach">3.8/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:76%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Movement</div><div class="skill-scores"><span class="score-coach">4.0/5</span><span class="score-self">3.8/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:80%"></div><div class="skill-bar-self" style="width:76%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Tactical</div><div class="skill-scores"><span class="score-coach">3.2/5</span><span class="score-self">3.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:64%"></div><div class="skill-bar-self" style="width:60%"></div></div></div>
+
+        <!-- Recovery chart -->
+        <div style="margin-top:14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:6px;">14-day recovery trend</div>
+        <div class="chart-wrap"><canvas id="recoveryChart"></canvas></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Orbis Core AI recommendation -->
+  <div class="rec-strip">
+    <div class="rec-header">
+      <div class="rec-title">Orbis Core — AI coaching recommendation · Fernando</div>
+      <span style="font-size:10px;color:rgba(255,255,255,.3);">claude-sonnet-4-6 · ITF + FIP + ATP data</span>
+    </div>
+    <div class="rec-grid">
+      <div class="rec-block">
+        <div class="rec-label">Key finding</div>
+        <div class="rec-text">Fernando's backhand under pressure is the primary technical gap. Coach scores (3.5) align with match data showing 22 unforced errors/match concentrated on backhand cross-court exchanges.</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Today's recommendation</div>
+        <div class="rec-text">Recovery at 84% — green light for high-intensity session. Focus on backhand slice as a defensive reset pattern (ITF Level 2 framework), reducing error count by creating neutral ball opportunities.</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Cross-data insight</div>
+        <div class="rec-text">HRV at 57ms (7d avg 54ms) trending upward — Fernando's best tactical performances correlate with HRV above 55ms. Schedule match-play scenarios on high-HRV days for maximum transfer.</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Watch this week</div>
+        <div class="rec-text">Pre-match anxiety score is 3.8/10 — within acceptable range but higher than baseline. Monitor self-talk quality metric after Tuesday's match and adjust warm-up routine if anxiety exceeds 5.0.</div>
+      </div>
+    </div>
+    <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">WHOOP</span>
+      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">ITF frameworks</span>
+      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">ATP benchmarks</span>
+      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">APSQ psychology</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+
+const recovData = [72,68,75,80,84,78,82,85,79,83,88,84,80,84];
+const recovLabels = ['Jun 8','Jun 9','Jun 10','Jun 11','Jun 12','Jun 13','Jun 14','Jun 15','Jun 16','Jun 17','Jun 18','Jun 19','Jun 20','Jun 21'];
+function rcol(v){return v>=75?'#16a34a':v>=55?'#d97706':'#dc2626';}
+new Chart(document.getElementById('recoveryChart'),{
+  type:'bar',
+  data:{labels:recovLabels,datasets:[{data:recovData,backgroundColor:recovData.map(v=>rcol(v)+'33'),borderColor:recovData.map(v=>rcol(v)),borderWidth:1.5,borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9a8aaa',font:{size:8}},grid:{display:false},border:{display:false}},y:{min:0,max:100,ticks:{color:'#9a8aaa',font:{size:8},stepSize:25},grid:{color:'#e2e6ef'},border:{display:false}}}}
+});
+</script>
+</body>
+</html>"""
+
+
+@app.get("/demo/coach", response_class=HTMLResponse)
+async def demo_coach():
+    return DEMO_COACH_HTML
+
+
+DEMO_STUDENT_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Student Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:10px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-text{font-size:15px;font-weight:700;color:#fff;}.logo-text span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.demo-badge{background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--lime);font-weight:600;}
+.btn-back{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;}
+.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
+.welcome{background:var(--navy);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;border-left:4px solid var(--lime);}
+.welcome-title{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.02em;}
+.welcome-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;line-height:1;}
+.kpi-val.green{color:var(--green);}
+.kpi-val.lime{color:var(--lime-dark);}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
+.card-body{padding:16px;}
+.skill-row{margin-bottom:12px;}
+.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.skill-name{font-size:12px;font-weight:500;color:var(--text);}
+.skill-scores{display:flex;gap:8px;font-size:11px;}
+.score-coach{color:var(--navy);font-weight:600;}
+.score-self{color:var(--lime-dark);font-weight:600;}
+.skill-bar-bg{height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:hidden;}
+.skill-bar-coach{height:100%;background:var(--navy);border-radius:3px;}
+.skill-bar-self{height:3px;background:var(--lime);border-radius:3px;position:absolute;top:0;}
+.session-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.session-row:last-child{border-bottom:none;}
+.session-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);margin-top:4px;flex-shrink:0;}
+.session-date{font-size:11px;color:var(--text3);min-width:72px;}
+.session-text{font-size:12px;color:var(--text2);line-height:1.5;}
+.coach-card{display:flex;align-items:center;gap:14px;background:var(--bg);border-radius:8px;padding:14px;margin-bottom:14px;}
+.coach-avatar{width:44px;height:44px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--lime);flex-shrink:0;}
+.coach-name{font-size:13px;font-weight:600;color:var(--text);}
+.coach-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.next-session{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:8px;padding:14px 16px;color:#fff;}
+.next-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+.next-date{font-size:15px;font-weight:700;color:#fff;}
+.next-focus{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.connect-btn{display:flex;align-items:center;gap:10px;border-radius:8px;padding:10px 12px;font-family:inherit;width:100%;cursor:pointer;transition:border-color .15s;border:1px solid var(--border);background:var(--bg);}
+.connect-btn.connected{border-color:var(--lime);background:var(--lime-pale);}
+.connect-icon{font-size:18px;}
+.connect-name{font-size:12px;font-weight:500;color:var(--text);text-align:left;}
+.connect-status{font-size:10px;margin-top:1px;text-align:left;}
+.connect-status.on{color:var(--lime-dark);}
+.connect-status.off{color:var(--text3);}
+.upload-zone{border:1.5px dashed var(--border);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:10px;}
+.upload-zone:hover{border-color:var(--navy);}
+.upload-item{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--text2);margin-bottom:6px;}
+.wearable-data{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.wdata{background:var(--bg);border-radius:8px;padding:10px 12px;text-align:center;}
+.wdata-val{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--navy);}
+.wdata-val.green{color:var(--green);}
+.wdata-label{font-size:10px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
+.chart-wrap{position:relative;height:90px;}
+.toast{position:fixed;top:70px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:280px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
+      <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
+    </svg>
+    <div>
+      <div class="logo-text">Orbis <span>AI</span></div>
+      <div class="logo-sub">Student Dashboard</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="demo-badge">Demo mode</span>
+    <a href="/demo/coach" class="btn-back">Coach view</a>
+    <a href="/" class="btn-back">Home</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="main">
+
+  <div class="welcome">
+    <div class="welcome-title">Good morning, Fernando 👋</div>
+    <div class="welcome-sub">Roger Lederer Academy · Coach Toni · Recovery 84% — great day to push hard</div>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-val green">84%</div><div class="kpi-label">Recovery today</div></div>
+    <div class="kpi"><div class="kpi-val">57ms</div><div class="kpi-label">HRV</div></div>
+    <div class="kpi"><div class="kpi-val lime">4.2</div><div class="kpi-label">Overall skill</div></div>
+    <div class="kpi"><div class="kpi-val">6</div><div class="kpi-label">Week streak</div></div>
+  </div>
+
+  <div class="grid2">
+
+    <!-- Skills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My skills</div>
+        <span style="font-size:11px;color:var(--text3)">Jun 15, 2026</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:8px;margin-bottom:12px;font-size:11px;">
+          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--navy);border-radius:50%;display:inline-block;"></span>Coach</span>
+          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--lime);border-radius:50%;display:inline-block;"></span>Self</span>
+        </div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Forehand</div><div class="skill-scores"><span class="score-coach">4.2/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:84%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Backhand</div><div class="skill-scores"><span class="score-coach">3.5/5</span><span class="score-self">3.2/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:70%"></div><div class="skill-bar-self" style="width:64%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Serve</div><div class="skill-scores"><span class="score-coach">3.8/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:76%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Movement</div><div class="skill-scores"><span class="score-coach">4.0/5</span><span class="score-self">3.8/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:80%"></div><div class="skill-bar-self" style="width:76%"></div></div></div>
+        <div class="skill-row"><div class="skill-header"><div class="skill-name">Tactical</div><div class="skill-scores"><span class="score-coach">3.2/5</span><span class="score-self">3.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:64%"></div><div class="skill-bar-self" style="width:60%"></div></div></div>
+        <a href="/report/demo" style="display:block;margin-top:14px;background:var(--navy);color:#fff;text-align:center;padding:8px;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;">View full progress report</a>
+      </div>
+    </div>
+
+    <!-- Coach + next session -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My coach</div>
+      </div>
+      <div class="card-body">
+        <div class="coach-card">
+          <div class="coach-avatar">T</div>
+          <div>
+            <div class="coach-name">Coach Toni Alcala</div>
+            <div class="coach-sub">Roger Lederer Academy · Madrid</div>
+          </div>
+        </div>
+        <div class="next-session">
+          <div class="next-label">Next session</div>
+          <div class="next-date">Thursday, Jun 26 — 10:00 AM</div>
+          <div class="next-focus">Focus: Backhand slice under pressure + serve consistency</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(62,207,126,.1);border:1px solid rgba(62,207,126,.25);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--lime-dark);line-height:1.5;">
+          Coach note: Great week Fernando. Recovery numbers up — lets push the tactical work Thursday. Keep the pre-match routine tight.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid2">
+
+    <!-- Wearable data -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My devices</div>
+        <span style="font-size:11px;color:var(--lime-dark);font-weight:600;">Whoop connected</span>
+      </div>
+      <div class="card-body">
+        <div class="wearable-data">
+          <div class="wdata"><div class="wdata-val green">84%</div><div class="wdata-label">Recovery</div></div>
+          <div class="wdata"><div class="wdata-val">57ms</div><div class="wdata-label">HRV</div></div>
+          <div class="wdata"><div class="wdata-val">7.4h</div><div class="wdata-label">Sleep</div></div>
+          <div class="wdata"><div class="wdata-val">52bpm</div><div class="wdata-label">Resting HR</div></div>
+          <div class="wdata"><div class="wdata-val">14.2</div><div class="wdata-label">Strain</div></div>
+          <div class="wdata"><div class="wdata-val green">95%</div><div class="wdata-label">SpO2</div></div>
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:6px;">14-day recovery</div>
+        <div class="chart-wrap"><canvas id="wearableChart"></canvas></div>
+        <div class="connect-grid" style="margin-top:12px;">
+          <button class="connect-btn connected">
+            <span class="connect-icon">&#x231A;</span>
+            <div><div class="connect-name">Whoop</div><div class="connect-status on">Connected</div></div>
+          </button>
+          <button class="connect-btn" onclick="showToast('Apple Health connection coming soon')">
+            <span class="connect-icon">&#x1F34E;</span>
+            <div><div class="connect-name">Apple Health</div><div class="connect-status off">Not connected</div></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My documents</div>
+        <span style="font-size:11px;color:var(--text3)">3 uploaded</span>
+      </div>
+      <div class="card-body">
+        <div class="upload-item">
+          <span style="font-size:14px;">&#x1F4C4;</span>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--text);">Whoop_health_report_Jun2026.pdf</div>
+            <div style="font-size:10px;color:var(--text3);">Synced to Orbis Core · Jun 20</div>
+          </div>
+        </div>
+        <div class="upload-item">
+          <span style="font-size:14px;">&#x1F4CA;</span>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--text);">Gym_training_plan_Q2.xlsx</div>
+            <div style="font-size:10px;color:var(--text3);">Synced to Orbis Core · Jun 15</div>
+          </div>
+        </div>
+        <div class="upload-item">
+          <span style="font-size:14px;">&#x1F4DD;</span>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--text);">Nutrition_plan_May2026.docx</div>
+            <div style="font-size:10px;color:var(--text3);">Synced to Orbis Core · May 28</div>
+          </div>
+        </div>
+        <div class="upload-zone" onclick="showToast('Document upload — backend coming soon')">
+          <div style="font-size:22px;margin-bottom:6px;">&#x1F4C1;</div>
+          <div style="font-size:12px;font-weight:500;color:var(--text2);">Upload a document</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">PDF, Excel, Word — synced to Orbis Core</div>
+        </div>
+        <div style="margin-top:8px;background:rgba(62,207,126,.08);border:1px solid rgba(62,207,126,.2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--lime-dark);margin-bottom:4px;">Orbis Core insight</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.5;">Your gym plan shows a high volume week — Orbis Core has flagged this against your Whoop recovery data and recommends reducing leg press load by 15% on Thursday.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Session history -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Session history</div>
+      <span style="font-size:11px;color:var(--text3)">Last 5 sessions</span>
+    </div>
+    <div class="card-body">
+      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 20, 2026</div><div class="session-text">Serve and volley drills — 90 min. Recovery 88%. Coach: strong net approach, work on backhand volley placement.</div></div>
+      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 17, 2026</div><div class="session-text">Match play vs. James — 75 min. Won 6-3 6-4. Recovery 85%. Backhand under pressure improved vs last week.</div></div>
+      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 15, 2026</div><div class="session-text">Evaluation session — 60 min. Full skill assessment completed. Coach notes: tactical awareness is main improvement area.</div></div>
+      <div class="session-row"><div class="session-dot"></div><div class="session-date">Jun 12, 2026</div><div class="session-text">Baseline and cross-court patterns — 90 min. Recovery 79%. Focus on inside-out forehand execution.</div></div>
+      <div class="session-row"><div class="session-dot" style="background:var(--amber);"></div><div class="session-date">Jun 10, 2026</div><div class="session-text">Light session — 45 min. Recovery 68% (below threshold). Coach reduced intensity per Whoop data recommendation.</div></div>
+    </div>
+  </div>
+
+  <!-- Ask Orbis Core -->
+  <div style="margin-top:16px;background:var(--navy);border-radius:var(--radius);padding:20px 24px;border-left:4px solid var(--lime);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">Ask Orbis Core</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);">Get AI coaching advice, drill suggestions, or mental prep tips — directly on Telegram.</div>
+      </div>
+      <a href="#" onclick="showToast('Orbis Core Telegram bot — coming soon'); return false;" style="background:var(--lime);color:var(--navy);font-size:13px;font-weight:700;padding:10px 20px;border-radius:7px;text-decoration:none;white-space:nowrap;">Open Telegram</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+const d=[72,68,75,80,84,78,82,85,79,83,88,84,80,84];
+const l=['Jun 8','Jun 9','Jun 10','Jun 11','Jun 12','Jun 13','Jun 14','Jun 15','Jun 16','Jun 17','Jun 18','Jun 19','Jun 20','Jun 21'];
+function rc(v){return v>=75?'#16a34a':v>=55?'#d97706':'#dc2626';}
+new Chart(document.getElementById('wearableChart'),{type:'bar',data:{labels:l,datasets:[{data:d,backgroundColor:d.map(v=>rc(v)+'33'),borderColor:d.map(v=>rc(v)),borderWidth:1.5,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9a8aaa',font:{size:8}},grid:{display:false},border:{display:false}},y:{min:0,max:100,ticks:{color:'#9a8aaa',font:{size:8},stepSize:25},grid:{color:'#e2e6ef'},border:{display:false}}}}});
+</script>
+</body>
+</html>"""
+
+
+@app.get("/demo/student", response_class=HTMLResponse)
+async def demo_student():
+    return DEMO_STUDENT_HTML
+
 from mangum import Mangum
 handler = Mangum(app)
 
