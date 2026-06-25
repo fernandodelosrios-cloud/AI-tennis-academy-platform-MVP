@@ -481,6 +481,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
       <h2 class="section-title">Not a generic tool<br>with a tennis skin.</h2>
       <p class="section-sub">Every other platform was built for fitness coaches and adapted. Orbis was designed from day one for racket sports coaches.</p>
     </div>
+    <!-- Photo row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;">
+      <div style="border-radius:16px;overflow:hidden;height:320px;position:relative;">
+        <img src="/static/Gemini_Generated_Image_b3exc0b3exc0b3ex.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center top;" alt="Tennis coach with Orbis Core"/>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,10,46,.8));padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--lime);margin-bottom:2px;">Tennis</div>
+          <div style="font-size:14px;font-weight:600;color:#fff;">Real-time data review on court</div>
+        </div>
+      </div>
+      <div style="border-radius:16px;overflow:hidden;height:320px;position:relative;">
+        <img src="/static/Gemini_Generated_Image_qz6qanqz6qanqz6q.png" style="width:100%;height:100%;object-fit:cover;object-position:center top;" alt="Padel coach with Orbis Core"/>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,10,46,.8));padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--lime);margin-bottom:2px;">Padel</div>
+          <div style="font-size:14px;font-weight:600;color:#fff;">AI coaching intelligence between sets</div>
+        </div>
+      </div>
+    </div>
+
     <div class="why-grid">
       <div class="why-card">
         <div class="why-icon" style="background:rgba(61,26,110,.08);">
