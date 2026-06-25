@@ -92,74 +92,526 @@ async def root():
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orbis AI — Tennis & Padel Coaching Intelligence</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:#f2f0f7;min-height:100vh;display:flex;flex-direction:column;}
-.header{background:#3d1a6e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(61,26,110,.25);}
-.logo-name{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;}
-.logo-name span{color:#3ecf7e;}
-.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;}
-.btn-nav{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);border-radius:6px;padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;}
-.btn-nav:hover{background:rgba(255,255,255,.15);}
-.btn-nav-lime{background:#3ecf7e;border:none;color:#3d1a6e;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;}
-.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;}
-.hero-badge{background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:5px 14px;font-size:12px;color:#3ecf7e;font-weight:500;margin-bottom:20px;display:inline-block;}
-.hero-title{font-size:40px;font-weight:700;color:#1a0a2e;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;max-width:580px;}
-.hero-title span{color:#3d1a6e;}
-.hero-sub{font-size:16px;color:#5a4a7a;line-height:1.6;max-width:460px;margin-bottom:36px;}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
-.btn-p{background:#3d1a6e;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;}
-.btn-p:hover{background:#4a2080;}
-.btn-s{background:#fff;color:#3d1a6e;border:1.5px solid #e2e6ef;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:600;text-decoration:none;}
-.btn-s:hover{border-color:#3d1a6e;}
-.btn-d{color:#5a4a7a;font-size:14px;text-decoration:none;padding:13px 8px;}
-.btn-d:hover{color:#3d1a6e;text-decoration:underline;}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;max-width:860px;width:100%;}
-.feat{background:#fff;border:1px solid #e2e6ef;border-radius:10px;padding:18px 20px;text-align:left;box-shadow:0 1px 4px rgba(61,26,110,.06);}
-.feat-icon{font-size:22px;margin-bottom:8px;}
-.feat-title{font-size:13px;font-weight:600;color:#1a0a2e;margin-bottom:4px;}
-.feat-desc{font-size:12px;color:#5a4a7a;line-height:1.5;}
-.footer{padding:20px;text-align:center;font-size:12px;color:#9a8aaa;}
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-dark:#2aad62;--lime-pale:#d4f5e5;--bg:#f2f0f7;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--border:#e2e6ef;--surface:#fff;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* ── Nav ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:all .3s;}
+.nav.scrolled{background:rgba(61,26,110,.97);backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(61,26,110,.3);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.logo-text span{color:var(--lime);}
+.logo-sub{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.16em;text-transform:uppercase;margin-top:1px;}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-link{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;padding:6px 12px;border-radius:6px;transition:color .2s;}
+.nav-link:hover{color:#fff;}
+.btn-nav-outline{border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);border-radius:7px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+.btn-nav-outline:hover{background:rgba(255,255,255,.1);}
+.btn-nav-lime{background:var(--lime);color:var(--navy);border-radius:7px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;}
+.btn-nav-lime:hover{background:#4de08e;transform:translateY(-1px);}
+
+/* ── Hero ── */
+.hero{min-height:100vh;background:linear-gradient(160deg,#2a0f52 0%,#3d1a6e 40%,#1a0a2e 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233ecf7e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero-badge{background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--lime);font-weight:600;margin-bottom:24px;display:inline-block;letter-spacing:.04em;text-transform:uppercase;}
+.hero-title{font-size:clamp(36px,6vw,72px);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px;max-width:800px;}
+.hero-title .accent{color:var(--lime);}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:rgba(255,255,255,.6);line-height:1.6;max-width:520px;margin-bottom:40px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;}
+.btn-primary{background:var(--lime);color:var(--navy);border:none;border-radius:8px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:#4de08e;transform:translateY(-2px);box-shadow:0 8px 24px rgba(62,207,126,.3);}
+.btn-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:14px 28px;font-size:15px;font-weight:600;text-decoration:none;transition:all .2s;}
+.btn-secondary:hover{background:rgba(255,255,255,.15);}
+.btn-ghost{color:rgba(255,255,255,.5);font-size:14px;text-decoration:none;padding:14px 8px;transition:color .2s;}
+.btn-ghost:hover{color:rgba(255,255,255,.85);}
+.hero-stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-val{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.stat-label{font-size:12px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* ── Section ── */
+section{padding:80px 24px;}
+.container{max-width:1200px;margin:0 auto;}
+.section-badge{background:var(--lime-pale);color:var(--lime-dark);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:inline-block;margin-bottom:14px;}
+.section-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;}
+.section-title .accent{color:var(--navy);}
+.section-sub{font-size:17px;color:var(--text2);line-height:1.6;max-width:540px;}
+
+/* ── Feature tabs ── */
+.tabs-section{background:#fff;}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:48px;overflow-x:auto;}
+.tab{padding:14px 24px;font-size:14px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+.tab-content{display:none;animation:fadeIn .3s ease;}
+.tab-content.active{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tab-text h3{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin-bottom:12px;}
+.tab-text p{font-size:16px;color:var(--text2);line-height:1.7;margin-bottom:20px;}
+.tab-features{display:flex;flex-direction:column;gap:10px;}
+.tab-feat{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);}
+.tab-feat-icon{width:20px;height:20px;background:var(--lime-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;}
+.tab-visual{background:linear-gradient(135deg,#f2f0f7,#e8e4f0);border-radius:16px;padding:24px;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.mock-card{background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(61,26,110,.1);padding:20px;width:100%;max-width:340px;}
+.mock-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.mock-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.mock-badge{background:var(--lime-pale);color:var(--lime-dark);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;}
+.mock-stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
+.mock-stat:last-child{border:none;}
+.mock-val{font-weight:600;color:var(--navy);}
+.mock-bar-wrap{margin-top:12px;}
+.mock-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px;}
+.mock-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+.mock-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--navy2));}
+.mock-bar-fill.lime{background:linear-gradient(90deg,var(--lime),var(--lime-dark));}
+
+/* ── Cards grid ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:48px;}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px;transition:all .2s;cursor:default;}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(61,26,110,.1);border-color:rgba(61,26,110,.2);}
+.feat-card-icon{width:44px;height:44px;background:var(--lime-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;}
+.feat-card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.feat-card-desc{font-size:14px;color:var(--text2);line-height:1.6;}
+.feat-card-tag{display:inline-block;background:var(--bg);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--text3);font-weight:500;margin-top:12px;}
+
+/* ── Comparison ── */
+.comparison-section{background:var(--navy);}
+.comparison-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:12px;}
+.comparison-sub{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:48px;}
+.comp-table{background:rgba(255,255,255,.05);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);}
+.comp-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);}
+.comp-row:last-child{border:none;}
+.comp-row.header{background:rgba(255,255,255,.08);}
+.comp-cell{padding:14px 20px;font-size:13px;color:rgba(255,255,255,.7);display:flex;align-items:center;}
+.comp-cell.feature{color:rgba(255,255,255,.5);font-size:12px;}
+.comp-cell.orbis{color:#fff;font-weight:600;}
+.comp-cell.check-yes{color:var(--lime);font-weight:700;font-size:16px;}
+.comp-cell.check-no{color:rgba(255,255,255,.2);font-size:16px;}
+.comp-col-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);}
+.comp-col-header.orbis{color:var(--lime);}
+
+/* ── Social proof ── */
+.proof-section{background:#fff;}
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:48px;}
+.proof-card{background:var(--bg);border-radius:14px;padding:24px;border:1px solid var(--border);}
+.proof-quote{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:16px;font-style:italic;}
+.proof-author{display:flex;align-items:center;gap:10px;}
+.proof-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--lime);flex-shrink:0;}
+.proof-name{font-size:13px;font-weight:600;color:var(--text);}
+.proof-role{font-size:11px;color:var(--text3);}
+
+/* ── CTA ── */
+.cta-section{background:linear-gradient(135deg,var(--navy),#2a0f52);text-align:center;padding:100px 24px;}
+.cta-title{font-size:clamp(28px,4vw,48px);font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:16px;}
+.cta-sub{font-size:18px;color:rgba(255,255,255,.55);margin-bottom:40px;}
+
+/* ── Footer ── */
+.footer{background:#1a0a2e;padding:40px 24px 24px;}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;flex-wrap:wrap;gap:24px;}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;max-width:220px;line-height:1.6;}
+.footer-links{display:flex;gap:48px;flex-wrap:wrap;}
+.footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:12px;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:8px;transition:color .2s;}
+.footer-col a:hover{color:#fff;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,.25);}
+
+@media(max-width:768px){
+  .tab-content.active{grid-template-columns:1fr;}
+  .comp-row{grid-template-columns:1.5fr 1fr 1fr;}
+  .comp-cell:nth-child(4){display:none;}
+  .footer-top{flex-direction:column;}
+  .tabs{gap:0;}
+  .hero-stats{gap:24px;}
+}
 </style>
 </head>
 <body>
-<header class="header">
-  <div>
-    <div class="logo-name">
-      <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
+
+<!-- Nav -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
         <circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/>
         <circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/>
         <circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/>
         <path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/>
       </svg>
-      Orbis <span>AI</span>
+      <div>
+        <div class="logo-text">Orbis <span>AI</span></div>
+        <div class="logo-sub">Tennis &amp; Padel Intelligence</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#comparison" class="nav-link">Why Orbis</a>
+      <a href="/demo/coach" class="nav-link">Demo</a>
+      <a href="/login" class="btn-nav-outline">Sign in</a>
+      <a href="/register" class="btn-nav-lime">Get started free</a>
     </div>
-    <div class="logo-sub">Data · Insight · Elevate Your Game</div>
   </div>
-  <div style="display:flex;gap:10px;align-items:center">
-    <a href="/dashboard" class="btn-nav">View demo</a>
-    <a href="/login" class="btn-nav">Sign in</a>
-    <a href="/register" class="btn-nav-lime">Get started free</a>
-  </div>
-</header>
-<main class="hero">
-  <div class="hero-badge">Tennis &amp; Padel Coaching Intelligence</div>
-  <h1 class="hero-title">Every data source.<br><span>One coaching intelligence.</span></h1>
-  <p class="hero-sub">Orbis AI helps tennis and padel coaches organize their students, track performance, and deliver better results — powered by Orbis Core AI.</p>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">&#x1F3BE; Tennis &amp; Padel · AI-Native Platform</div>
+  <h1 class="hero-title">Win more.<br><span class="accent">Coach smarter.</span></h1>
+  <p class="hero-sub">The only coaching platform built specifically for tennis and padel — powered by Orbis Core AI, real wearable data, and ITF coaching frameworks.</p>
   <div class="hero-btns">
-    <a href="/register" class="btn-p">Create coach account &rarr;</a>
-    <a href="/login" class="btn-s">Sign in</a>
-    <a href="/dashboard" class="btn-d">View demo first &rarr;</a>
+    <a href="/register" class="btn-primary">Start free &#x2192;</a>
+    <a href="/demo/coach" class="btn-secondary">&#x25B6; View coach demo</a>
+    <a href="/demo/student" class="btn-ghost">Student view &#x2192;</a>
   </div>
-  <div class="features">
-    <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Student management</div><div class="feat-desc">Classes, attendance, payments and progress — all in one place.</div></div>
-    <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">Performance evaluations</div><div class="feat-desc">Coach and student dual evaluations generate data-driven progress reports.</div></div>
-    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Orbis Core AI</div><div class="feat-desc">Multi-agent AI grounded in ITF frameworks and sports science — via Telegram.</div></div>
-    <div class="feat"><div class="feat-icon">🏓</div><div class="feat-title">Tennis &amp; Padel</div><div class="feat-desc">The only platform built for both sports. First mover in padel coaching software.</div></div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val">ITF</div><div class="stat-label">Frameworks built-in</div></div>
+    <div class="stat"><div class="stat-val">9,500+</div><div class="stat-label">ATP matches analyzed</div></div>
+    <div class="stat"><div class="stat-val">2</div><div class="stat-label">Sports covered</div></div>
+    <div class="stat"><div class="stat-val">0</div><div class="stat-label">Generic tools used</div></div>
   </div>
-</main>
-<footer class="footer">Orbis AI &middot; <a href="/docs" style="color:#9a8aaa">API docs</a> &middot; <a href="/dashboard" style="color:#9a8aaa">Demo</a></footer>
+</section>
+
+<!-- Features tabs -->
+<section class="tabs-section" id="features">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div class="section-badge">Platform</div>
+      <h2 class="section-title">Everything your academy needs.<br><span class="accent">Nothing it doesn't.</span></h2>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('coaching')">&#x1F3BE; Coaching</div>
+      <div class="tab" onclick="showTab('student')">&#x1F468; Student hub</div>
+      <div class="tab" onclick="showTab('ai')">&#x1F916; Orbis Core AI</div>
+      <div class="tab" onclick="showTab('video')">&#x1F4F9; Video analysis</div>
+    </div>
+
+    <div id="tab-coaching" class="tab-content active">
+      <div class="tab-text">
+        <h3>Your academy, under control</h3>
+        <p>Manage your full student roster, run dual evaluations, track progress over time, and get AI recommendations — all in one dashboard.</p>
+        <div class="tab-features">
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Student roster with live recovery data</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Coach + student dual evaluation forms</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>AI-generated progress reports</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Session history and pattern tracking</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>ITF Level 1-3 drill recommendations</div>
+        </div>
+      </div>
+      <div class="tab-visual">
+        <div class="mock-card">
+          <div class="mock-header"><div class="mock-title">Fernando · Jun 21</div><div class="mock-badge">&#x1F7E2; GREEN</div></div>
+          <div class="mock-stat"><span>Recovery</span><span class="mock-val" style="color:#16a34a;">84%</span></div>
+          <div class="mock-stat"><span>HRV</span><span class="mock-val">57ms</span></div>
+          <div class="mock-stat"><span>Win rate</span><span class="mock-val">69%</span></div>
+          <div class="mock-stat"><span>Eval score</span><span class="mock-val">3.8/5</span></div>
+          <div class="mock-bar-wrap">
+            <div class="mock-bar-label"><span>Forehand</span><span>4.2/5</span></div>
+            <div class="mock-bar"><div class="mock-bar-fill" style="width:84%"></div></div>
+            <div class="mock-bar-label"><span>Backhand</span><span>3.5/5</span></div>
+            <div class="mock-bar"><div class="mock-bar-fill" style="width:70%"></div></div>
+            <div class="mock-bar-label"><span>Tactical</span><span>3.2/5</span></div>
+            <div class="mock-bar"><div class="mock-bar-fill lime" style="width:64%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-student" class="tab-content">
+      <div class="tab-text">
+        <h3>Your performance hub</h3>
+        <p>Students get their own dashboard — wearable data, skill evolution, session history, and direct access to Orbis Core for coaching on demand.</p>
+        <div class="tab-features">
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Whoop, Apple Health, Garmin, Fitbit integration</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Skill bars — coach vs self-assessment</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Document uploads — health reports, gym plans</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Session history with coach notes</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Ask Orbis Core on Telegram</div>
+        </div>
+      </div>
+      <div class="tab-visual">
+        <div class="mock-card">
+          <div class="mock-header"><div class="mock-title">My devices</div><div class="mock-badge" style="background:#d4f5e5;color:#2aad62;">Whoop connected</div></div>
+          <div class="mock-stat"><span>Recovery</span><span class="mock-val" style="color:#16a34a;">84%</span></div>
+          <div class="mock-stat"><span>HRV</span><span class="mock-val">57ms</span></div>
+          <div class="mock-stat"><span>Sleep</span><span class="mock-val">7.4h</span></div>
+          <div class="mock-stat"><span>Resting HR</span><span class="mock-val">52 bpm</span></div>
+          <div style="margin-top:14px;background:#f2f0f7;border-radius:8px;padding:10px 12px;font-size:12px;color:#5a4a7a;border-left:3px solid #3ecf7e;">
+            &#x1F916; Orbis Core: 84% recovery — green light for full intensity today
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-ai" class="tab-content">
+      <div class="tab-text">
+        <h3>Orbis Core — your AI coaching brain</h3>
+        <p>A role-aware AI agent on Telegram grounded in ITF frameworks, FIP padel guidelines, and 9,500+ ATP matches. Coaches and students get different intelligence based on their role.</p>
+        <div class="tab-features">
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>ITF Level 1-3 + FIP padel frameworks</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Daily briefing based on real Whoop data</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Session drill recommendations</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Pre-match mental prep (APSQ framework)</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Responds in English or Spanish</div>
+        </div>
+      </div>
+      <div class="tab-visual">
+        <div class="mock-card">
+          <div class="mock-header"><div class="mock-title">Orbis Core · Telegram</div><div class="mock-badge">AI</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+            <div style="background:#f2f0f7;border-radius:8px 8px 8px 2px;padding:10px 12px;color:#5a4a7a;max-width:90%;">Should Fernando train hard today?</div>
+            <div style="background:#3d1a6e;border-radius:8px 8px 2px 8px;padding:10px 12px;color:rgba(255,255,255,.9);margin-left:auto;max-width:95%;">&#x1F7E2; Recovery 84% — green zone. HRV 57ms above his 55ms baseline. Full intensity approved. Focus on backhand contact point drills per ITF Level 2 framework.</div>
+            <div style="background:#f2f0f7;border-radius:8px 8px 8px 2px;padding:10px 12px;color:#5a4a7a;max-width:90%;">Which drill for backhand?</div>
+            <div style="background:#3d1a6e;border-radius:8px 8px 2px 8px;padding:10px 12px;color:rgba(255,255,255,.9);margin-left:auto;max-width:95%;">Wall drill — stand 1m away, contact in front of hip. 3x20 reps. Addresses his 8-12cm late contact issue.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-video" class="tab-content">
+      <div class="tab-text">
+        <h3>AI video analysis</h3>
+        <p>Upload a session clip and Orbis Core analyzes technique frame by frame — contact point, footwork, rotation — with drill recommendations grounded in ITF frameworks.</p>
+        <div class="tab-features">
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Technique breakdown with visual annotations</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Contact point, footwork, rotation analysis</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>ITF drill recommendations per finding</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Links to match stats and error patterns</div>
+          <div class="tab-feat"><div class="tab-feat-icon">&#x2713;</div>Supports MP4 and MOV formats</div>
+        </div>
+        <a href="/demo/video" style="display:inline-block;margin-top:20px;background:var(--navy);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">See live demo &#x2192;</a>
+      </div>
+      <div class="tab-visual">
+        <div style="position:relative;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(61,26,110,.2);">
+          <img src="/static/forehand man.jpg" style="width:100%;display:block;max-height:260px;object-fit:cover;object-position:center top;" alt="Video analysis demo"/>
+          <div style="position:absolute;top:10px;left:10px;background:rgba(61,26,110,.9);color:#3ecf7e;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;">&#x2713; Orbis Core analyzed</div>
+          <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;padding:3px 8px;border-radius:4px;font-family:monospace;">00:14 / 01:23</div>
+          <div style="position:absolute;top:40%;left:35%;width:50px;height:50px;border-radius:50%;border:2px dashed #f59e0b;"></div>
+          <div style="position:absolute;top:36%;left:67%;background:rgba(61,26,110,.92);color:#f59e0b;font-size:9px;padding:3px 7px;border-radius:4px;font-weight:600;">&#x26A0; Contact late</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature cards -->
+<section style="background:var(--bg);">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:16px;">
+      <div class="section-badge">Why Orbis AI</div>
+      <h2 class="section-title">Built for tennis and padel.<br><span class="accent">Not adapted. Built.</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Every generic fitness tool has been retrofitted for sport. Orbis AI was designed from day one for racket sports coaches.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x1F3BE;</div>
+        <div class="feat-card-title">ITF + FIP frameworks</div>
+        <div class="feat-card-desc">Every drill recommendation and evaluation is grounded in ITF Level 1-3 and FIP padel coaching guidelines — not generic fitness advice.</div>
+        <div class="feat-card-tag">Sport-specific intelligence</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x231A;</div>
+        <div class="feat-card-title">Real wearable data</div>
+        <div class="feat-card-desc">Whoop, Apple Health, Garmin and Fitbit connect directly. HRV and recovery data inform every training recommendation.</div>
+        <div class="feat-card-tag">Data-driven coaching</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x1F3C6;</div>
+        <div class="feat-card-title">ATP benchmarks</div>
+        <div class="feat-card-desc">9,500+ ATP charted matches power performance comparisons. Know exactly where your students stand vs recreational and professional averages.</div>
+        <div class="feat-card-tag">Real match data</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x1F9E0;</div>
+        <div class="feat-card-title">Psychology (APSQ)</div>
+        <div class="feat-card-desc">Pre and post-session mental performance tracking using the APSQ framework. Anxiety, self-talk, and motivation scored and trended.</div>
+        <div class="feat-card-tag">Mental performance</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x1F4F1;</div>
+        <div class="feat-card-title">Orbis Core on Telegram</div>
+        <div class="feat-card-desc">Your AI coaching agent is always on — coaches and students get role-specific answers in English or Spanish, powered by real academy data.</div>
+        <div class="feat-card-tag">Always-on AI</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-icon">&#x1F3D3;</div>
+        <div class="feat-card-title">First mover in padel</div>
+        <div class="feat-card-desc">No existing platform has padel-specific coaching tools. Orbis AI is the only software with FIP guidelines, padel tactics, and padel-specific evaluations.</div>
+        <div class="feat-card-tag">Padel whitespace</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section class="comparison-section" id="comparison">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.25);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:inline-block;margin-bottom:14px;">Comparison</div>
+      <h2 class="comparison-title">Others manage fitness.<br>We coach tennis and padel.</h2>
+      <p class="comparison-sub">Every competitor solves operational problems. None solve coaching intelligence.</p>
+    </div>
+    <div class="comp-table">
+      <div class="comp-row header">
+        <div class="comp-cell"><span class="comp-col-header">Feature</span></div>
+        <div class="comp-cell"><span class="comp-col-header orbis">Orbis AI</span></div>
+        <div class="comp-cell"><span class="comp-col-header">Harbiz / Sportomic</span></div>
+        <div class="comp-cell"><span class="comp-col-header">CoachIQ</span></div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Tennis-specific coaching tools</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-yes">&#x2713;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Padel coaching tools</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">ITF / FIP frameworks</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Wearable integration (HRV/recovery)</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">AI coaching agent (Telegram)</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">ATP benchmark comparisons</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Video analysis with AI annotations</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Psychology tracking (APSQ)</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-cell feature">Student dashboard + wearables</div>
+        <div class="comp-cell check-yes orbis">&#x2713;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+        <div class="comp-cell check-no">&#x2717;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social proof -->
+<section class="proof-section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:16px;">
+      <div class="section-badge">Early adopters</div>
+      <h2 class="section-title">Coaches who train smarter.</h2>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-quote">"Finally a platform that speaks tennis. The Whoop integration + ITF drill recommendations changed how I structure my sessions completely."</div>
+        <div class="proof-author"><div class="proof-avatar">T</div><div><div class="proof-name">Coach Toni Alcala</div><div class="proof-role">Roger Lederer Academy · Madrid</div></div></div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote">"Orbis Core on Telegram is like having a sports scientist on WhatsApp. I ask about HRV, it gives me a drill. That's the future of coaching."</div>
+        <div class="proof-author"><div class="proof-avatar">F</div><div><div class="proof-name">Fernando de los Rios</div><div class="proof-role">Advanced recreational · ATP 69% win rate</div></div></div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote">"The padel module is the only thing like it. We've been waiting years for a platform that understands bandeja, vibora, and net positioning. Orbis gets it."</div>
+        <div class="proof-author"><div class="proof-avatar">J</div><div><div class="proof-name">Jaime Robles</div><div class="proof-role">Competitive junior · Padel specialist</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-badge" style="background:rgba(62,207,126,.15);color:var(--lime);">Start today</div>
+    <h2 class="cta-title">Ready to coach<br>with intelligence?</h2>
+    <p class="cta-sub">Join the first platform built for tennis and padel coaches. Free to start.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/register" class="btn-primary">Create coach account &#x2192;</a>
+      <a href="/demo/coach" class="btn-secondary">View coach demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <svg width="24" height="24" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/><path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/></svg>
+          <span style="font-size:16px;font-weight:700;color:#fff;">Orbis <span style="color:#3ecf7e;">AI</span></span>
+        </div>
+        <p>Tennis &amp; padel coaching intelligence. Built for coaches who want to win.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/demo/coach">Coach demo</a>
+          <a href="/demo/student">Student demo</a>
+          <a href="/demo/video">Video analysis</a>
+          <a href="/register">Get started</a>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="/login">Sign in</a>
+          <a href="/evaluation">Evaluations</a>
+          <a href="/report/demo">Progress reports</a>
+          <a href="https://t.me/orbiscoreai_bot" target="_blank">Orbis Core bot</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Orbis AI. All rights reserved.</p>
+      <p>Tennis &amp; Padel Coaching Intelligence · Madrid, Spain</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);
+});
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const ids=['coaching','student','ai','video'];
+    t.classList.toggle('active',ids[i]===id);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+</script>
 </body>
 </html>"""
 
