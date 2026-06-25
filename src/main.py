@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
       <a href="#why" class="nav-link">Why Orbis</a>
       <a href="/demo/coach" class="nav-link">Demo</a>
       <a href="/login" class="nav-link">Sign in</a>
-      <a href="#" class="btn-waitlist" id="navBtn">Join waiting list</a>
+      <a href="#" class="btn-waitlist" href="/waitlist">Join waiting list</a>
     </div>
   </div>
 </nav>
@@ -281,7 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   <div class="hero-badge">&#x1F3BE; For tennis &amp; padel coaches</div>
   <h1 class="hero-title">Stop losing students.<br><span class="accent">Start coaching smarter.</span></h1>
   <p class="hero-sub">Orbis AI is your AI-powered assistant coach — track every student, personalize every session, and never drop the ball on follow-up again.</p>
-  <a href="#" class="btn-hero" id="heroBtn">
+  <a href="#" class="btn-hero" href="/waitlist">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     Join waiting list
   </a>
@@ -2304,6 +2304,111 @@ async def join_waitlist(request: Request):
         return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/waitlist", response_class=HTMLResponse)
+async def waitlist_page():
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Join Waiting List</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#3d1a6e;--lime:#3ecf7e;--lime-dark:#2aad62;--lime-pale:#d4f5e5;--bg:#f2f0f7;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--border:#e2e6ef;}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(160deg,#2a0f52 0%,#3d1a6e 50%,#1a0a2e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:#fff;border-radius:20px;padding:44px;max-width:440px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);}
+.logo{display:flex;align-items:center;gap:8px;margin-bottom:28px;}
+.logo-text{font-size:16px;font-weight:800;color:var(--navy);}
+.logo-text span{color:var(--lime-dark);}
+h2{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:6px;}
+.sub{font-size:14px;color:var(--text2);margin-bottom:28px;line-height:1.6;}
+.field{margin-bottom:16px;}
+label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:6px;}
+input,select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border .15s;background:#fff;}
+input:focus,select:focus{border-color:var(--navy);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;transition:background .2s;}
+.btn:hover{background:#4a2080;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.back{display:block;text-align:center;margin-top:16px;font-size:13px;color:var(--text3);text-decoration:none;}
+.back:hover{color:var(--navy);}
+.success{display:none;text-align:center;padding:20px 0;}
+.check{width:60px;height:60px;background:var(--lime-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <svg width="24" height="24" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" fill="none" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="19" fill="none" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="none" stroke="#3ecf7e" stroke-width="4"/><path d="M32 20 L36 32 L32 44 L28 32 Z" fill="#3ecf7e"/></svg>
+    <div class="logo-text">Orbis <span>AI</span></div>
+  </div>
+
+  <div id="formSection">
+    <h2>Join the waiting list</h2>
+    <p class="sub">Be among the first tennis and padel coaches to get access. We are onboarding coaches across Europe and LatAm.</p>
+    <div class="field"><label>Full name</label><input type="text" id="wl-name" placeholder="Toni Alcala"></div>
+    <div class="field"><label>Email</label><input type="email" id="wl-email" placeholder="toni@academy.com"></div>
+    <div class="row2">
+      <div class="field"><label>Country</label><input type="text" id="wl-country" placeholder="Spain"></div>
+      <div class="field"><label>City</label><input type="text" id="wl-city" placeholder="Madrid"></div>
+    </div>
+    <div class="field">
+      <label>Sport</label>
+      <select id="wl-sport">
+        <option value="tennis">Tennis</option>
+        <option value="padel">Padel</option>
+        <option value="both">Both tennis and padel</option>
+      </select>
+    </div>
+    <button class="btn" id="wl-btn" onclick="submitWaitlist()">Join waiting list &rarr;</button>
+    <a href="/" class="back">&larr; Back to home</a>
+  </div>
+
+  <div class="success" id="successSection">
+    <div class="check">&#x2705;</div>
+    <h2 style="margin-bottom:8px;">You are on the list!</h2>
+    <p style="font-size:14px;color:#5a4a7a;line-height:1.6;margin-bottom:20px;">We will reach out as soon as early access opens in your region. Thank you for joining Orbis AI.</p>
+    <a href="/" class="back">&larr; Back to home</a>
+  </div>
+</div>
+
+<script>
+async function submitWaitlist() {
+  var name = document.getElementById('wl-name').value.trim();
+  var email = document.getElementById('wl-email').value.trim();
+  var country = document.getElementById('wl-country').value.trim();
+  var city = document.getElementById('wl-city').value.trim();
+  var sport = document.getElementById('wl-sport').value;
+  if (!name || !email) { alert('Please enter your name and email.'); return; }
+  var btn = document.getElementById('wl-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  try {
+    var res = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: name, email: email, country: country, city: city, sport: sport})
+    });
+    if (res.ok) {
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('successSection').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Join waiting list';
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Join waiting list';
+    alert('Network error. Please try again.');
+  }
+}
+</script>
+</body>
+</html>"""
 
 from mangum import Mangum
 handler = Mangum(app)
