@@ -623,13 +623,7 @@ function showTab(id){
 }
 function showModal(){document.getElementById("modalOverlay").classList.add("open");}
 function openModal(){showModal();}
-document.addEventListener("DOMContentLoaded",function(){
-  var hb=document.getElementById("heroBtn");
-  var nb=document.getElementById("navBtn");
-  var mo=document.getElementById("modalOverlay");
-  if(hb)hb.addEventListener("click",function(e){e.preventDefault();mo.classList.add("open");});
-  if(nb)nb.addEventListener("click",function(e){e.preventDefault();mo.classList.add("open");});
-});
+
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
 function closeOnOverlay(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 
