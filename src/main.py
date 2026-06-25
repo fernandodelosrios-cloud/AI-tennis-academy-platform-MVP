@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
       <a href="#why" class="nav-link">Why Orbis</a>
       <a href="/demo/coach" class="nav-link">Demo</a>
       <a href="/login" class="nav-link">Sign in</a>
-      <a href="#" class="btn-waitlist" onclick="openModal();return false;">Join waiting list</a>
+      <a href="#" class="btn-waitlist" onclick="document.getElementById('modalOverlay').classList.add('open');return false;">Join waiting list</a>
     </div>
   </div>
 </nav>
@@ -281,17 +281,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
   <div class="hero-badge">&#x1F3BE; For tennis &amp; padel coaches</div>
   <h1 class="hero-title">Stop losing students.<br><span class="accent">Start coaching smarter.</span></h1>
   <p class="hero-sub">Orbis AI is your AI-powered assistant coach — track every student, personalize every session, and never drop the ball on follow-up again.</p>
-  <a href="#" class="btn-hero" onclick="openModal();return false;">
+  <a href="#" class="btn-hero" onclick="document.getElementById('modalOverlay').classList.add('open');return false;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     Join waiting list
   </a>
-  <p class="hero-note">Free early access · No credit card · Limited spots</p>
-  <div class="hero-pain">
-    <div class="pain-item"><div class="pain-dot"></div>Lost students from poor follow-up</div>
-    <div class="pain-item"><div class="pain-dot"></div>Hours wasted on admin</div>
-    <div class="pain-item"><div class="pain-dot"></div>No data to back your coaching</div>
-    <div class="pain-item"><div class="pain-dot"></div>Generic tools that don't speak tennis</div>
-  </div>
+  <p class="hero-note">Free early access &middot; No credit card &middot; Limited spots</p>
 </section>
 
 <!-- Pain → Solution -->
@@ -341,7 +335,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);ove
           <svg viewBox="0 0 24 24" fill="none" stroke="#2aad62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div class="pain-title">Generic tools that don't get sport</div>
-        <div class="pain-desc">Harbiz and similar tools are built for gym trainers. They don't speak ITF, FIP, padel tactics, or HRV. You're hacking workarounds daily.</div>
+        <div class="pain-desc">Every existing tool was built for gym trainers. They don't speak ITF, FIP, padel tactics, or HRV. You're hacking workarounds daily.</div>
         <div class="pain-arrow">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2aad62" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Orbis was built for racket sports
