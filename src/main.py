@@ -1413,77 +1413,103 @@ DEMO_COACH_HTML = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orbis AI — Coach Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<title>Orbis AI — Padel Coach Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:10px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
-.header{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:12px;--shadow:0 1px 4px rgba(61,26,110,.08),0 4px 16px rgba(61,26,110,.06);}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.header{background:var(--navy);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(61,26,110,.25);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:10px;}
-.logo-text{font-size:15px;font-weight:700;color:#fff;}.logo-text span{color:var(--lime);}
-.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
-.demo-badge{background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--lime);font-weight:600;}
-.btn-back{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;}
-.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
-.welcome{background:var(--navy);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;border-left:4px solid var(--lime);}
-.welcome-title{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.02em;}
-.welcome-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;}
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
-.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;line-height:1;}
-.kpi-val.lime{color:var(--lime-dark);}
-.kpi-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
-.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
-.card-body{padding:16px;}
-.student-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background .1s;}
+.logo-text{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.logo-text span{color:var(--lime);}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.coach-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:6px;}
+.coach-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--lime);}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;}
+
+.main{max-width:1280px;margin:0 auto;padding:24px 24px 60px;}
+
+.welcome{margin-bottom:22px;}
+.welcome-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.welcome-sub{font-size:13px;color:var(--text2);margin-top:3px;}
+
+/* ── HERO: Simulator + Video Analysis (the moat) ── */
+.hero-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+.hero-card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end;padding:22px 24px;box-shadow:0 8px 32px rgba(61,26,110,.16);transition:transform .2s,box-shadow .2s;}
+.hero-card:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(61,26,110,.22);}
+.hero-card.simulator{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);}
+.hero-card.video{background:linear-gradient(135deg,#2a0f52 0%,#1a0a2e 100%);}
+.hero-bg-pattern{position:absolute;inset:0;opacity:.5;}
+.hero-badge-new{position:absolute;top:18px;right:18px;background:rgba(62,207,126,.18);border:1px solid rgba(62,207,126,.4);color:var(--lime);font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase;}
+.hero-icon-wrap{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;backdrop-filter:blur(4px);}
+.hero-icon-wrap svg{width:24px;height:24px;}
+.hero-card-title{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.01em;margin-bottom:5px;}
+.hero-card-desc{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.55;max-width:380px;margin-bottom:14px;}
+.hero-card-cta{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--lime);}
+.hero-stats-row{position:absolute;top:18px;left:24px;display:flex;gap:14px;}
+.hero-stat{font-size:11px;color:rgba(255,255,255,.5);}
+.hero-stat b{color:#fff;font-weight:700;}
+
+/* ── ROSTER CONTROLS ── */
+.roster-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap;}
+.roster-title-wrap{display:flex;align-items:center;gap:10px;}
+.roster-title{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.01em;}
+.roster-count{background:rgba(61,26,110,.08);color:var(--navy);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;}
+.roster-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.rbtn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;}
+.rbtn:hover{border-color:var(--navy);color:var(--navy);}
+.rbtn svg{width:14px;height:14px;}
+.rbtn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.rbtn.primary:hover{background:var(--navy2);}
+
+.filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.search-box{flex:1;min-width:180px;position:relative;}
+.search-box input{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;font-size:12.5px;font-family:inherit;outline:none;background:var(--surface);}
+.search-box input:focus{border-color:var(--navy);}
+.search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);}
+.filter-chip{padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;white-space:nowrap;}
+.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── STUDENT ROSTER ── */
+.roster-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
+.student-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;align-items:center;gap:14px;padding:13px 18px;border-bottom:.5px solid var(--border);transition:background .15s;}
 .student-row:last-child{border-bottom:none;}
-.student-row:hover{background:var(--bg);margin:0 -16px;padding:11px 16px;}
-.student-avatar{width:38px;height:38px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--lime-dark);flex-shrink:0;}
-.student-avatar.pending{background:#f2f0f7;border-color:var(--border);color:var(--text3);}
-.student-info{flex:1;}
-.student-name{font-size:13px;font-weight:500;color:var(--text);}
-.student-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.student-stats{display:flex;gap:12px;align-items:center;}
-.stat-pill{font-size:11px;font-family:'DM Mono',monospace;font-weight:600;}
-.stat-pill.green{color:var(--green);}
-.stat-pill.amber{color:var(--amber);}
-.stat-pill.muted{color:var(--text3);}
-.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.student-row:hover{background:#faf9fd;}
+.student-avatar{width:38px;height:38px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--lime-dark);flex-shrink:0;}
+.student-info{min-width:0;}
+.student-name{font-size:13.5px;font-weight:700;color:var(--text);}
+.student-meta{font-size:11px;color:var(--text3);margin-top:1px;}
+.tag{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.tag-level-1{background:#fef3c7;color:#92400e;}
+.tag-level-2{background:#dbeafe;color:#1e40af;}
+.tag-level-3{background:#d4f5e5;color:#2aad62;}
+.tag-level-4{background:#ede9fe;color:#5b21b6;}
+.tag-level-5{background:#f3f4f6;color:#6b7280;}
+.tag-rec{background:rgba(61,26,110,.07);color:var(--navy);}
+.tag-type-ind{background:#fee2e2;color:#991b1b;}
+.tag-type-grp{background:#e0f2fe;color:#0369a1;}
+.student-next{font-size:11px;color:var(--text2);text-align:right;white-space:nowrap;}
+.student-next b{display:block;color:var(--text);font-size:12px;font-weight:700;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .status-dot.active{background:var(--green);}
 .status-dot.pending{background:var(--amber);}
-.skill-row{margin-bottom:12px;}
-.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.skill-name{font-size:12px;font-weight:500;color:var(--text);}
-.skill-scores{display:flex;gap:8px;font-size:11px;}
-.score-coach{color:var(--navy);font-weight:600;}
-.score-self{color:var(--lime-dark);font-weight:600;}
-.skill-bar-bg{height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:hidden;}
-.skill-bar-coach{height:100%;background:var(--navy);border-radius:3px;}
-.skill-bar-self{height:3px;background:var(--lime);border-radius:3px;position:absolute;top:0;}
-.rec-strip{background:var(--navy);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border-left:4px solid var(--lime);margin-top:16px;}
-.rec-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;}
-.rec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.7);}
-.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.rec-block{padding:14px 16px;border-right:1px solid rgba(255,255,255,.07);}
-.rec-block:nth-child(2){border-right:none;}
-.rec-block:nth-child(3){border-right:1px solid rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.07);}
-.rec-block:nth-child(4){border-top:1px solid rgba(255,255,255,.07);}
-.rec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--lime);margin-bottom:6px;}
-.rec-text{font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;}
-.orbis-panel{background:var(--navy);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
-.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.qa-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:border-color .15s;text-decoration:none;display:block;}
-.qa-btn:hover{border-color:var(--navy);}
-.qa-icon{font-size:22px;margin-bottom:6px;}
-.qa-label{font-size:12px;font-weight:500;color:var(--text);}
-.qa-sub{font-size:10px;color:var(--text3);margin-top:2px;}
-.chart-wrap{position:relative;height:100px;}
-.toast{position:fixed;top:70px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:280px;line-height:1.5;}
+
+/* ── CALENDAR STRIP ── */
+.section-title{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.01em;margin-bottom:14px;}
+.cal-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
+.cal-day{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 10px;min-height:130px;}
+.cal-day.today{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy);}
+.cal-day-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:2px;}
+.cal-day-num{font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.cal-day.today .cal-day-num{color:var(--navy);}
+.cal-class{background:var(--bg);border-left:3px solid var(--lime);border-radius:6px;padding:5px 7px;margin-bottom:5px;font-size:10px;}
+.cal-class-time{font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;font-size:9.5px;}
+.cal-class-name{color:var(--text2);margin-top:1px;line-height:1.3;}
+.cal-empty{font-size:10px;color:var(--text3);text-align:center;margin-top:20px;}
+
+.toast{position:fixed;top:72px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:999;border-left:3px solid var(--lime);display:none;max-width:300px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -1498,12 +1524,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </svg>
     <div>
       <div class="logo-text">Orbis <span>AI</span></div>
-      <div class="logo-sub">Coach Dashboard</div>
+      <div class="logo-sub">Padel Coach Hub</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="demo-badge">Demo mode</span>
-    <a href="/" class="btn-back">Back to home</a>
+  <div class="header-right">
+    <div class="coach-chip"><div class="dot"></div>Coach Toni Alcala</div>
+    <button class="btn-logout" onclick="window.location.href='/'">Sign out</button>
   </div>
 </div>
 
@@ -1512,183 +1538,302 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 <div class="main">
 
   <div class="welcome">
-    <div class="welcome-title">Good morning, Coach Toni 👋</div>
-    <div class="welcome-sub">Roger Lederer Academy — 3 students enrolled · Orbis Core active · Demo data</div>
+    <div class="welcome-title">Good morning, Toni 🎾</div>
+    <div class="welcome-sub">Padel Lab Madrid &middot; 10 students enrolled &middot; Orbis Core active</div>
   </div>
 
-  <div class="kpi-strip">
-    <div class="kpi"><div class="kpi-val">3</div><div class="kpi-label">Students</div></div>
-    <div class="kpi"><div class="kpi-val">14</div><div class="kpi-label">Sessions this month</div></div>
-    <div class="kpi"><div class="kpi-val lime">84%</div><div class="kpi-label">Avg recovery</div></div>
-    <div class="kpi"><div class="kpi-val">2</div><div class="kpi-label">Pending evals</div></div>
-  </div>
+  <!-- HERO: Tactical Simulator + Video Analysis -->
+  <div class="hero-row">
 
-  <div class="quick-actions">
-    <a class="qa-btn" href="/demo/student">
-      <div class="qa-icon">&#x1F468;</div>
-      <div class="qa-label">Student view</div>
-      <div class="qa-sub">Fernando's dashboard</div>
-    </a>
-    <a class="qa-btn" href="/report/demo">
-      <div class="qa-icon">&#x1F4CA;</div>
-      <div class="qa-label">Progress report</div>
-      <div class="qa-sub">Fernando's latest eval</div>
-    </a>
-    <a class="qa-btn" href="#" onclick="window.open('https://t.me/orbiscoreai_bot', '_blank'); return false;">
-      <div class="qa-icon">&#x1F916;</div>
-      <div class="qa-label">Ask Orbis Core</div>
-      <div class="qa-sub">AI coaching agent</div>
-    </a>
-  </div>
-
-  <div class="grid2">
-
-    <!-- Student roster -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">My students</div>
-        <span style="font-size:11px;color:var(--text3)">3 enrolled</span>
+    <div class="hero-card simulator" onclick="window.location.href='/demo/simulator'">
+      <div class="hero-stats-row">
+        <div class="hero-stat"><b>18</b> demo plays</div>
+        <div class="hero-stat"><b>3</b> levels</div>
       </div>
-      <div class="card-body">
+      <div class="hero-badge-new">+100 plays library</div>
+      <div class="hero-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3ecf7e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      </div>
+      <div class="hero-card-title">Tactical Simulator</div>
+      <div class="hero-card-desc">Animated padel plays grounded in FIP Academy &mdash; show students exactly how a point should unfold, from beginner to advanced.</div>
+      <div class="hero-card-cta">Open simulator &rarr;</div>
+    </div>
 
-        <!-- Fernando — active -->
-        <div class="student-row" onclick="window.location.href='/demo/student'">
-          <div class="student-avatar">F</div>
-          <div class="student-info">
-            <div class="student-name">Fernando de los Rios</div>
-            <div class="student-sub">Advanced recreational · Clay specialist</div>
-          </div>
-          <div class="student-stats">
-            <span class="stat-pill green">84% rec</span>
-            <span class="stat-pill">57ms HRV</span>
-            <div class="status-dot active"></div>
-          </div>
+    <div class="hero-card video" onclick="window.location.href='/demo/video'">
+      <div class="hero-stats-row">
+        <div class="hero-stat"><b>3.5/5</b> last score</div>
+        <div class="hero-stat"><b>6</b> findings</div>
+      </div>
+      <div class="hero-badge-new">Orbis Core analyzed</div>
+      <div class="hero-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      </div>
+      <div class="hero-card-title">Video Analysis</div>
+      <div class="hero-card-desc">Upload a session clip &mdash; Orbis Core breaks down technique frame by frame with FIP drill recommendations per finding.</div>
+      <div class="hero-card-cta">Open video analysis &rarr;</div>
+    </div>
+
+  </div>
+
+  <!-- ROSTER CONTROLS -->
+  <div class="roster-controls">
+    <div class="roster-title-wrap">
+      <div class="roster-title">My students</div>
+      <div class="roster-count">10</div>
+    </div>
+    <div class="roster-actions">
+      <button class="rbtn" onclick="showToast('Template downloaded — fill in and re-upload to bulk update your roster')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download template
+      </button>
+      <button class="rbtn primary" onclick="showToast('Excel upload — drag a .xlsx file here to bulk update your roster')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Excel
+      </button>
+      <button class="rbtn" onclick="showToast('Invitation form coming up')">+ Invite student</button>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search students...">
+    </div>
+    <div class="filter-chip active">All levels</div>
+    <div class="filter-chip">1ª &mdash; Pro</div>
+    <div class="filter-chip">2ª</div>
+    <div class="filter-chip">3ª</div>
+    <div class="filter-chip">4ª</div>
+    <div class="filter-chip">5ª &mdash; Amateur</div>
+  </div>
+
+  <!-- STUDENT ROSTER -->
+  <div class="roster-card">
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">F</div>
+        <div class="student-info">
+          <div class="student-name">Fernando de los Rios</div>
+          <div class="student-meta">Joined Jun 2026 &middot; 7 sessions logged</div>
         </div>
-
-        <!-- James — pending eval -->
-        <div class="student-row">
-          <div class="student-avatar pending">J</div>
-          <div class="student-info">
-            <div class="student-name">James Hartwell</div>
-            <div class="student-sub">Intermediate · Evaluation pending</div>
-          </div>
-          <div class="student-stats">
-            <span class="stat-pill muted">No wearable</span>
-            <div class="status-dot pending"></div>
-          </div>
-        </div>
-
-        <!-- Jaime — pending eval -->
-        <div class="student-row">
-          <div class="student-avatar pending">J</div>
-          <div class="student-info">
-            <div class="student-name">Jaime Robles</div>
-            <div class="student-sub">Competitive junior · Padel focus</div>
-          </div>
-          <div class="student-stats">
-            <span class="stat-pill muted">No wearable</span>
-            <div class="status-dot pending"></div>
-          </div>
-        </div>
-
       </div>
+      <span class="tag tag-level-3">3ª categoria</span>
+      <span class="tag tag-rec">2x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>Thu 26, 10:00</b></div>
     </div>
 
-    <!-- Fernando skills + recovery -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Fernando — latest evaluation</div>
-        <span style="font-size:11px;color:var(--text3)">Jun 15, 2026</span>
-      </div>
-      <div class="card-body">
-        <div style="display:flex;gap:8px;margin-bottom:12px;font-size:11px;">
-          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--navy);border-radius:50%;display:inline-block;"></span>Coach</span>
-          <span style="display:flex;align-items:center;gap:4px;color:var(--text3)"><span style="width:8px;height:8px;background:var(--lime);border-radius:50%;display:inline-block;"></span>Self</span>
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">J</div>
+        <div class="student-info">
+          <div class="student-name">James Whitfield</div>
+          <div class="student-meta">Joined Jun 2026 &middot; 5 sessions logged</div>
         </div>
-        <div class="skill-row"><div class="skill-header"><div class="skill-name">Forehand</div><div class="skill-scores"><span class="score-coach">4.2/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:84%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
-        <div class="skill-row"><div class="skill-header"><div class="skill-name">Backhand</div><div class="skill-scores"><span class="score-coach">3.5/5</span><span class="score-self">3.2/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:70%"></div><div class="skill-bar-self" style="width:64%"></div></div></div>
-        <div class="skill-row"><div class="skill-header"><div class="skill-name">Serve</div><div class="skill-scores"><span class="score-coach">3.8/5</span><span class="score-self">4.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:76%"></div><div class="skill-bar-self" style="width:80%"></div></div></div>
-        <div class="skill-row"><div class="skill-header"><div class="skill-name">Movement</div><div class="skill-scores"><span class="score-coach">4.0/5</span><span class="score-self">3.8/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:80%"></div><div class="skill-bar-self" style="width:76%"></div></div></div>
-        <div class="skill-row"><div class="skill-header"><div class="skill-name">Tactical</div><div class="skill-scores"><span class="score-coach">3.2/5</span><span class="score-self">3.0/5</span></div></div><div class="skill-bar-bg"><div class="skill-bar-coach" style="width:64%"></div><div class="skill-bar-self" style="width:60%"></div></div></div>
-
-        <!-- Recovery chart -->
-        <div style="margin-top:14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:6px;">14-day recovery trend</div>
-        <div class="chart-wrap"><canvas id="recoveryChart"></canvas></div>
       </div>
+      <span class="tag tag-level-4">4ª categoria</span>
+      <span class="tag tag-rec">1x / week</span>
+      <span class="tag tag-type-grp">Group</span>
+      <div class="student-next">Next class<b>Fri 27, 18:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot pending"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">J</div>
+        <div class="student-info">
+          <div class="student-name">Jaime Robles</div>
+          <div class="student-meta">Invited Jun 2026 &middot; Pending acceptance</div>
+        </div>
+      </div>
+      <span class="tag tag-level-2">2ª categoria</span>
+      <span class="tag tag-rec">+2x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>&mdash;</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">M</div>
+        <div class="student-info">
+          <div class="student-name">Marta Iglesias</div>
+          <div class="student-meta">Joined May 2026 &middot; 14 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-1">1ª &mdash; Pro</span>
+      <span class="tag tag-rec">+2x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>Wed 25, 09:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">D</div>
+        <div class="student-info">
+          <div class="student-name">Diego Fernandez</div>
+          <div class="student-meta">Joined Apr 2026 &middot; 22 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-2">2ª categoria</span>
+      <span class="tag tag-rec">2x / week</span>
+      <span class="tag tag-type-grp">Group</span>
+      <div class="student-next">Next class<b>Thu 26, 19:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">L</div>
+        <div class="student-info">
+          <div class="student-name">Lucia Moreno</div>
+          <div class="student-meta">Joined Jun 2026 &middot; 3 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-5">5ª &mdash; Amateur</span>
+      <span class="tag tag-rec">&lt;1x / week</span>
+      <span class="tag tag-type-grp">Group</span>
+      <div class="student-next">Next class<b>Sat 28, 11:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">P</div>
+        <div class="student-info">
+          <div class="student-name">Pablo Santos</div>
+          <div class="student-meta">Joined Mar 2026 &middot; 31 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-1">1ª &mdash; Pro</span>
+      <span class="tag tag-rec">+2x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>Wed 25, 17:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">C</div>
+        <div class="student-info">
+          <div class="student-name">Carla Navarro</div>
+          <div class="student-meta">Joined May 2026 &middot; 9 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-3">3ª categoria</span>
+      <span class="tag tag-rec">1x / week</span>
+      <span class="tag tag-type-grp">Group</span>
+      <div class="student-next">Next class<b>Fri 27, 09:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">A</div>
+        <div class="student-info">
+          <div class="student-name">Alvaro Gimenez</div>
+          <div class="student-meta">Joined Feb 2026 &middot; 38 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-2">2ª categoria</span>
+      <span class="tag tag-rec">2x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>Thu 26, 08:00</b></div>
+    </div>
+
+    <div class="student-row">
+      <div class="status-dot active"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="student-avatar">S</div>
+        <div class="student-info">
+          <div class="student-name">Sofia Castellanos</div>
+          <div class="student-meta">Joined Jun 2026 &middot; 4 sessions logged</div>
+        </div>
+      </div>
+      <span class="tag tag-level-4">4ª categoria</span>
+      <span class="tag tag-rec">&lt;1x / week</span>
+      <span class="tag tag-type-ind">Individual</span>
+      <div class="student-next">Next class<b>Sat 28, 16:00</b></div>
     </div>
 
   </div>
 
-  <!-- Orbis Core AI recommendation -->
-  <div class="rec-strip">
-    <div class="rec-header">
-      <div class="rec-title">Orbis Core — AI coaching recommendation · Fernando</div>
-      <span style="font-size:10px;color:rgba(255,255,255,.3);">claude-sonnet-4-6 · ITF + FIP + ATP data</span>
-    </div>
-    <div class="rec-grid">
-      <div class="rec-block">
-        <div class="rec-label">Key finding</div>
-        <div class="rec-text">Fernando's backhand under pressure is the primary technical gap. Coach scores (3.5) align with match data showing 22 unforced errors/match concentrated on backhand cross-court exchanges.</div>
-      </div>
-      <div class="rec-block">
-        <div class="rec-label">Today's recommendation</div>
-        <div class="rec-text">Recovery at 84% — green light for high-intensity session. Focus on backhand slice as a defensive reset pattern (ITF Level 2 framework), reducing error count by creating neutral ball opportunities.</div>
-      </div>
-      <div class="rec-block">
-        <div class="rec-label">Cross-data insight</div>
-        <div class="rec-text">HRV at 57ms (7d avg 54ms) trending upward — Fernando's best tactical performances correlate with HRV above 55ms. Schedule match-play scenarios on high-HRV days for maximum transfer.</div>
-      </div>
-      <div class="rec-block">
-        <div class="rec-label">Watch this week</div>
-        <div class="rec-text">Pre-match anxiety score is 3.8/10 — within acceptable range but higher than baseline. Monitor self-talk quality metric after Tuesday's match and adjust warm-up routine if anxiety exceeds 5.0.</div>
-      </div>
-    </div>
-    <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-wrap:wrap;">
-      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">WHOOP</span>
-      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">ITF frameworks</span>
-      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">ATP benchmarks</span>
-      <span style="font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.25);color:var(--lime);font-family:'DM Mono',monospace;">APSQ psychology</span>
-    </div>
-  </div>
+  <!-- WEEKLY CALENDAR -->
+  <div class="section-title">This week's classes</div>
+  <div class="cal-strip">
 
-  <!-- Video Analysis Card -->
-  <div class="card" style="margin-top:16px;">
-    <div class="card-header">
-      <div class="card-title">&#x1F4F9; Video analysis</div>
-      <span style="font-size:11px;color:var(--lime-dark);font-weight:600;">Orbis Core powered</span>
+    <div class="cal-day">
+      <div class="cal-day-label">Mon</div>
+      <div class="cal-day-num">23</div>
+      <div class="cal-empty">No classes</div>
     </div>
-    <div class="card-body" style="display:flex;align-items:center;gap:16px;">
-      <div style="flex-shrink:0;width:120px;height:80px;border-radius:8px;overflow:hidden;background:#1a1a2e;position:relative;">
-        <img src="/static/forehand man.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;" alt="Forehand analysis"/>
-        <div style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:monospace;">00:14</div>
-        <div style="position:absolute;top:4px;left:4px;background:rgba(61,26,110,0.85);color:#3ecf7e;font-size:8px;padding:1px 5px;border-radius:3px;font-weight:700;">3.5/5.0</div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Fernando — Backhand analysis</div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Jun 20, 2026 · Orbis Core analyzed</div>
-        <div style="font-size:12px;color:var(--text2);background:var(--bg);border-radius:6px;padding:6px 10px;border-left:3px solid var(--amber);">&#x26A0; Contact point 8-12cm late — main correction area</div>
-      </div>
-      <a href="/demo/video" style="flex-shrink:0;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:8px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;">View full analysis &#x2192;</a>
+
+    <div class="cal-day">
+      <div class="cal-day-label">Tue</div>
+      <div class="cal-day-num">24</div>
+      <div class="cal-empty">No classes</div>
     </div>
+
+    <div class="cal-day today">
+      <div class="cal-day-label">Wed</div>
+      <div class="cal-day-num">25</div>
+      <div class="cal-class"><div class="cal-class-time">09:00</div><div class="cal-class-name">Marta Iglesias</div></div>
+      <div class="cal-class"><div class="cal-class-time">17:00</div><div class="cal-class-name">Pablo Santos</div></div>
+    </div>
+
+    <div class="cal-day">
+      <div class="cal-day-label">Thu</div>
+      <div class="cal-day-num">26</div>
+      <div class="cal-class"><div class="cal-class-time">08:00</div><div class="cal-class-name">Alvaro Gimenez</div></div>
+      <div class="cal-class"><div class="cal-class-time">10:00</div><div class="cal-class-name">Fernando de los Rios</div></div>
+      <div class="cal-class"><div class="cal-class-time">19:00</div><div class="cal-class-name">Diego Fernandez (group)</div></div>
+    </div>
+
+    <div class="cal-day">
+      <div class="cal-day-label">Fri</div>
+      <div class="cal-day-num">27</div>
+      <div class="cal-class"><div class="cal-class-time">09:00</div><div class="cal-class-name">Carla Navarro (group)</div></div>
+      <div class="cal-class"><div class="cal-class-time">18:00</div><div class="cal-class-name">James Whitfield (group)</div></div>
+    </div>
+
+    <div class="cal-day">
+      <div class="cal-day-label">Sat</div>
+      <div class="cal-day-num">28</div>
+      <div class="cal-class"><div class="cal-class-time">11:00</div><div class="cal-class-name">Lucia Moreno (group)</div></div>
+      <div class="cal-class"><div class="cal-class-time">16:00</div><div class="cal-class-name">Sofia Castellanos</div></div>
+    </div>
+
+    <div class="cal-day">
+      <div class="cal-day-label">Sun</div>
+      <div class="cal-day-num">29</div>
+      <div class="cal-empty">No classes</div>
+    </div>
+
   </div>
 
 </div>
 
 <script>
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
 
-const recovData = [72,68,75,80,84,78,82,85,79,83,88,84,80,84];
-const recovLabels = ['Jun 8','Jun 9','Jun 10','Jun 11','Jun 12','Jun 13','Jun 14','Jun 15','Jun 16','Jun 17','Jun 18','Jun 19','Jun 20','Jun 21'];
-function rcol(v){return v>=75?'#16a34a':v>=55?'#d97706':'#dc2626';}
-new Chart(document.getElementById('recoveryChart'),{
-  type:'bar',
-  data:{labels:recovLabels,datasets:[{data:recovData,backgroundColor:recovData.map(v=>rcol(v)+'33'),borderColor:recovData.map(v=>rcol(v)),borderWidth:1.5,borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9a8aaa',font:{size:8}},grid:{display:false},border:{display:false}},y:{min:0,max:100,ticks:{color:'#9a8aaa',font:{size:8},stepSize:25},grid:{color:'#e2e6ef'},border:{display:false}}}}
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
 });
 </script>
 </body>
 </html>"""
-
 
 @app.get("/demo/coach", response_class=HTMLResponse)
 async def demo_coach():
