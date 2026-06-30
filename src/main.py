@@ -1493,7 +1493,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
 /* ── STUDENT ROSTER ── */
 .roster-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
-.student-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto auto;align-items:center;gap:14px;padding:13px 18px;border-bottom:.5px solid var(--border);transition:background .15s;}
+.student-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto auto auto;align-items:center;gap:14px;padding:13px 18px;border-bottom:.5px solid var(--border);transition:background .15s;}
 .student-row:last-child{border-bottom:none;}
 .student-row:hover{background:#faf9fd;}
 .student-avatar{width:38px;height:38px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--lime-dark);flex-shrink:0;}
@@ -1580,6 +1580,50 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .form-textarea:focus{border-color:var(--navy);}
 .form-submit{width:100%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;padding:12px;border-radius:9px;border:none;cursor:pointer;margin-top:8px;}
 .form-submit:hover{background:var(--navy2);}
+
+.at-nbtn{font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;border:1px solid transparent;transition:all .15s;background:rgba(61,26,110,.06);color:var(--navy);border-color:rgba(61,26,110,.15);}
+.at-nbtn:hover{background:rgba(61,26,110,.12);}
+
+.at-overlay{display:none;position:fixed;inset:0;background:rgba(5,8,15,.6);backdrop-filter:blur(4px);z-index:1001;align-items:center;justify-content:center;padding:20px;}
+.at-overlay.open{display:flex;}
+.at-box{background:#0a1020;border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:480px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.at-header{position:sticky;top:0;background:#3d1a6e;padding:18px 22px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;z-index:5;}
+.at-htitle{font-size:14px;font-weight:700;color:#fff;}
+.at-hsub{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px;}
+.at-close{cursor:pointer;color:rgba(255,255,255,.55);font-size:20px;line-height:1;background:none;border:none;padding:4px;}
+.at-close:hover{color:#fff;}
+.at-body{padding:20px 22px;}
+
+.at-student{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.04);border-radius:10px;padding:11px 13px;margin-bottom:16px;}
+.at-student-avatar{width:34px;height:34px;border-radius:50%;background:#d4f5e5;color:#2aad62;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.at-student-name{font-size:12.5px;font-weight:700;color:#fff;}
+.at-student-sub{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:1px;}
+
+.at-search{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;color:#fff;outline:none;margin-bottom:12px;}
+.at-search::placeholder{color:rgba(255,255,255,.25);}
+.at-search:focus{border-color:#3ecf7e;}
+
+.at-tab-row{display:flex;gap:6px;margin-bottom:12px;}
+.at-tab{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);}
+.at-tab.sel{background:#3d1a6e;color:#fff;border-color:#7c4de0;}
+
+.at-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;max-height:260px;overflow-y:auto;}
+.at-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 11px;cursor:pointer;transition:all .15s;}
+.at-item:hover{border-color:rgba(255,255,255,.2);}
+.at-item.sel{border-color:#3ecf7e;background:rgba(62,207,126,.08);}
+.at-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.at-icon.priv{background:rgba(124,77,224,.2);color:#a78bfa;}
+.at-icon.lib{background:rgba(62,207,126,.15);color:#3ecf7e;}
+.at-text{flex:1;min-width:0;}
+.at-name{font-size:11.5px;font-weight:700;color:#fff;}
+.at-meta{font-size:9.5px;color:rgba(255,255,255,.4);margin-top:1px;}
+.at-check{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;}
+.at-item.sel .at-check{background:#3ecf7e;border-color:#3ecf7e;color:#0a2a16;}
+
+.at-empty{text-align:center;padding:24px 10px;font-size:12px;color:rgba(255,255,255,.3);}
+
+.at-submit{width:100%;background:#3ecf7e;color:#0a2a16;font-size:13px;font-weight:700;padding:12px;border-radius:9px;border:none;cursor:pointer;transition:background .15s;}
+.at-submit:hover{background:#34b86c;}
 
 </style>
 </head>
@@ -1695,6 +1739,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>Thu 26, 10:00</b></div>
       <div class="eval-btn see" onclick="openModal('evalSeeModal')">See evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Fernando de los Rios','F','Thu 26, 10:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1711,6 +1756,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-grp">Group</span>
       <div class="student-next">Next class<b>Fri 27, 18:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('james')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('James Whitfield','J','Fri 27, 18:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1727,6 +1773,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>&mdash;</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('jaime')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Jaime Robles','J','TBD')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1743,6 +1790,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>Wed 25, 09:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('marta')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Marta Iglesias','M','Wed 25, 09:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1759,6 +1807,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-grp">Group</span>
       <div class="student-next">Next class<b>Thu 26, 19:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('diego')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Diego Fernandez','D','Thu 26, 19:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1775,6 +1824,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-grp">Group</span>
       <div class="student-next">Next class<b>Sat 28, 11:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('lucia')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Lucia Moreno','L','Sat 28, 11:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1791,6 +1841,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>Wed 25, 17:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('pablo')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Pablo Santos','P','Wed 25, 17:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1807,6 +1858,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-grp">Group</span>
       <div class="student-next">Next class<b>Fri 27, 09:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('carla')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Carla Navarro','C','Fri 27, 09:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1823,6 +1875,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>Thu 26, 08:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('alvaro')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Alvaro Gimenez','A','Thu 26, 08:00')">Assign tactic</div>
     </div>
 
     <div class="student-row">
@@ -1839,6 +1892,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <span class="tag tag-type-ind">Individual</span>
       <div class="student-next">Next class<b>Sat 28, 16:00</b></div>
       <div class="eval-btn do" onclick="openDoEvaluation('sofia')">Do evaluation</div>
+      <div class="at-nbtn" onclick="openAssignTactic('Sofia Castellanos','S','Sat 28, 16:00')">Assign tactic</div>
     </div>
 
   </div>
@@ -1948,6 +2002,66 @@ function resetEvalForm(){
 function submitEvaluation(){
   closeModal('evalDoModal');
   showToast('Evaluation saved — student record updated');
+}
+
+let atSelectedItem=null;
+let atCurrentStudent={name:'',avatar:'',session:''};
+
+function openAssignTactic(studentName,avatar,session){
+  atCurrentStudent={name:studentName,avatar:avatar,session:session};
+  document.getElementById('atStudentName').textContent=studentName;
+  document.getElementById('atAvatar').textContent=avatar;
+  document.getElementById('atSessionInfo').textContent='Next session: '+session;
+  resetAtForm();
+  document.getElementById('assignTacticModal').classList.add('open');
+}
+
+function closeAssignTactic(){
+  document.getElementById('assignTacticModal').classList.remove('open');
+}
+
+function resetAtForm(){
+  document.getElementById('atSearch').value='';
+  document.querySelectorAll('.at-item').forEach(i=>i.classList.remove('sel'));
+  document.querySelectorAll('.at-tab').forEach(t=>t.classList.remove('sel'));
+  document.querySelector('.at-tab[data-tab="all"]').classList.add('sel');
+  atSelectedItem=null;
+  filterAtList();
+}
+
+function selectAtItem(el){
+  document.querySelectorAll('.at-item').forEach(i=>i.classList.remove('sel'));
+  el.classList.add('sel');
+  atSelectedItem=el.dataset.name;
+}
+
+function selectAtTab(el){
+  document.querySelectorAll('.at-tab').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+  filterAtList();
+}
+
+function filterAtList(){
+  const query=document.getElementById('atSearch').value.trim().toLowerCase();
+  const activeTab=document.querySelector('.at-tab.sel').dataset.tab;
+  const items=document.querySelectorAll('.at-item');
+  let visibleCount=0;
+  items.forEach(item=>{
+    const matchesQuery=!query||item.dataset.name.includes(query);
+    const matchesTab=activeTab==='all'||item.dataset.source===activeTab;
+    const show=matchesQuery&&matchesTab;
+    item.style.display=show?'flex':'none';
+    if(show)visibleCount++;
+  });
+}
+
+function submitAssignTactic(){
+  if(!atSelectedItem){
+    showToast('Pick a tactic to assign');
+    return;
+  }
+  closeAssignTactic();
+  showToast('Tactic assigned to '+atCurrentStudent.name+'\u2019s next session');
 }
 
 </script>
@@ -2125,6 +2239,74 @@ function submitEvaluation(){
       </div>
 
       <button class="form-submit" onclick="submitEvaluation()">Save evaluation</button>
+
+    </div>
+  </div>
+</div>
+
+<div class="at-overlay" id="assignTacticModal">
+  <div class="at-box">
+    <div class="at-header">
+      <div>
+        <div class="at-htitle">Assign a tactic</div>
+        <div class="at-hsub">Choose from your library and link it to this session</div>
+      </div>
+      <button class="at-close" onclick="closeAssignTactic()">&#10005;</button>
+    </div>
+    <div class="at-body">
+
+      <div class="at-student">
+        <div class="at-student-avatar" id="atAvatar">F</div>
+        <div>
+          <div class="at-student-name" id="atStudentName">Fernando de los Rios</div>
+          <div class="at-student-sub" id="atSessionInfo">Next session: Thu 26, 10:00</div>
+        </div>
+      </div>
+
+      <input class="at-search" placeholder="Search tactics..." id="atSearch" oninput="filterAtList()">
+
+      <div class="at-tab-row">
+        <div class="at-tab sel" data-tab="all" onclick="selectAtTab(this)">All</div>
+        <div class="at-tab" data-tab="private" onclick="selectAtTab(this)">My private</div>
+        <div class="at-tab" data-tab="library" onclick="selectAtTab(this)">+300 library</div>
+      </div>
+
+      <div class="at-list" id="atList">
+        <div class="at-item" data-source="private" data-name="my fake bandeja drill" onclick="selectAtItem(this)">
+          <div class="at-icon priv">&#128274;</div>
+          <div class="at-text">
+            <div class="at-name">My fake bandeja drill</div>
+            <div class="at-meta">Private &middot; created by you</div>
+          </div>
+          <div class="at-check">&#10003;</div>
+        </div>
+        <div class="at-item" data-source="library" data-name="bandeja hold at net" onclick="selectAtItem(this)">
+          <div class="at-icon lib">&#127934;</div>
+          <div class="at-text">
+            <div class="at-name">Bandeja hold at net</div>
+            <div class="at-meta">+300 library &middot; Intermediate</div>
+          </div>
+          <div class="at-check">&#10003;</div>
+        </div>
+        <div class="at-item" data-source="library" data-name="serve plus net rush" onclick="selectAtItem(this)">
+          <div class="at-icon lib">&#127934;</div>
+          <div class="at-text">
+            <div class="at-name">Serve + net rush</div>
+            <div class="at-meta">+300 library &middot; Beginner</div>
+          </div>
+          <div class="at-check">&#10003;</div>
+        </div>
+        <div class="at-item" data-source="library" data-name="vibora to side glass" onclick="selectAtItem(this)">
+          <div class="at-icon lib">&#127934;</div>
+          <div class="at-text">
+            <div class="at-name">Vibora to side glass</div>
+            <div class="at-meta">+300 library &middot; Advanced</div>
+          </div>
+          <div class="at-check">&#10003;</div>
+        </div>
+      </div>
+
+      <button class="at-submit" onclick="submitAssignTactic()">Assign to this session</button>
 
     </div>
   </div>
