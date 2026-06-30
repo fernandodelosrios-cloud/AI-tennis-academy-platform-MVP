@@ -1448,7 +1448,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .hero-card-title{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.01em;margin-bottom:5px;}
 .hero-card-desc{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.55;max-width:380px;margin-bottom:14px;}
 .hero-card-cta{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--lime);}
-.hero-stats-row{position:absolute;top:18px;left:24px;display:flex;gap:14px;}
+.hero-stats-row{display:flex;gap:14px;margin-bottom:10px;}
 .hero-stat{font-size:11px;color:rgba(255,255,255,.5);}
 .hero-stat b{color:#fff;font-weight:700;}
 
@@ -1546,30 +1546,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   <div class="hero-row">
 
     <div class="hero-card simulator" onclick="window.location.href='/demo/simulator'">
-      <div class="hero-stats-row">
-        <div class="hero-stat"><b>18</b> demo plays</div>
-        <div class="hero-stat"><b>3</b> levels</div>
-      </div>
       <div class="hero-badge-new">+100 plays library</div>
       <div class="hero-icon-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="#3ecf7e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
       </div>
       <div class="hero-card-title">Tactical Simulator</div>
       <div class="hero-card-desc">Animated padel plays grounded in FIP Academy &mdash; show students exactly how a point should unfold, from beginner to advanced.</div>
+      <div class="hero-stats-row">
+        <div class="hero-stat"><b>18</b> demo plays</div>
+        <div class="hero-stat"><b>3</b> levels</div>
+      </div>
       <div class="hero-card-cta">Open simulator &rarr;</div>
     </div>
 
     <div class="hero-card video" onclick="window.location.href='/demo/video'">
-      <div class="hero-stats-row">
-        <div class="hero-stat"><b>3.5/5</b> last score</div>
-        <div class="hero-stat"><b>6</b> findings</div>
-      </div>
       <div class="hero-badge-new">Orbis Core analyzed</div>
       <div class="hero-icon-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       </div>
       <div class="hero-card-title">Video Analysis</div>
       <div class="hero-card-desc">Upload a session clip &mdash; Orbis Core breaks down technique frame by frame with FIP drill recommendations per finding.</div>
+      <div class="hero-stats-row">
+        <div class="hero-stat"><b>3.5/5</b> last score</div>
+        <div class="hero-stat"><b>6</b> findings</div>
+      </div>
       <div class="hero-card-cta">Open video analysis &rarr;</div>
     </div>
 
