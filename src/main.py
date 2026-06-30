@@ -1474,7 +1474,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
 /* ── STUDENT ROSTER ── */
 .roster-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
-.student-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;align-items:center;gap:14px;padding:13px 18px;border-bottom:.5px solid var(--border);transition:background .15s;}
+.student-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto auto;align-items:center;gap:14px;padding:13px 18px;border-bottom:.5px solid var(--border);transition:background .15s;}
 .student-row:last-child{border-bottom:none;}
 .student-row:hover{background:#faf9fd;}
 .student-avatar{width:38px;height:38px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--lime-dark);flex-shrink:0;}
