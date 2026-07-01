@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Orbis AI — Train</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--amber:#ffb84d;--purple:#7c4de0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--text);overscroll-behavior:none;}
+.app-shell{max-width:420px;margin:0 auto;min-height:100vh;background:var(--surface);display:flex;flex-direction:column;position:relative;box-shadow:0 0 40px rgba(61,26,110,.08);padding-bottom:64px;}
+
+.top{background:var(--navy);padding:16px 18px 14px;color:#fff;flex-shrink:0;}
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.greeting{font-size:14px;font-weight:700;}
+.greeting span{color:var(--lime);}
+.streak{display:flex;align-items:center;gap:5px;background:rgba(255,159,28,.18);border:1px solid rgba(255,159,28,.4);border-radius:20px;padding:4px 10px;font-size:11.5px;font-weight:700;color:var(--amber);}
+.icon-xs{width:12px;height:12px;flex-shrink:0;}
+.icon-sm{width:16px;height:16px;flex-shrink:0;}
+
+.xp-total-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+.xp-total-card{flex-shrink:0;text-align:center;}
+.xp-total-label{font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;}
+.xp-total-val{font-size:18px;font-weight:800;color:var(--lime);}
+.xp-total-next{flex:1;}
+.xp-total-next-label{font-size:8.5px;color:rgba(255,255,255,.4);}
+.xp-total-next-val{font-size:10.5px;font-weight:700;color:#fff;margin-bottom:4px;}
+.xp-total-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
+.xp-total-fill{height:100%;background:var(--lime);border-radius:3px;}
+.xp-row{display:flex;gap:8px;}
+.xp-card{flex:1;background:rgba(255,255,255,.08);border-radius:10px;padding:8px 9px;}
+.xp-label{display:flex;align-items:center;gap:4px;font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.xp-label i{font-size:10px;}
+.xp-bar-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-top:5px;}
+.xp-bar-fill{height:100%;border-radius:3px;transition:width .3s;}
+.xp-val{font-size:10.5px;font-weight:700;color:#fff;}
+
+.screen{display:none;padding-bottom:24px;}
+.screen.active{display:block;}
+
+.section-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);margin:0 0 12px;padding:0 18px;}
+.section-title i{font-size:15px;color:var(--purple);}
+.section-title:first-child{margin-top:18px;}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;border-top:0.5px solid var(--border);background:#fff;flex-shrink:0;z-index:20;max-width:420px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;font-size:9px;color:var(--text3);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;}
+.nav-item.active{color:var(--navy);}
+.nav-icon{width:18px;height:18px;}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:9px;font-size:12.5px;font-weight:600;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap;max-width:90%;text-align:center;}
+.quiz-card{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:16px;padding:18px;position:relative;overflow:hidden;cursor:pointer;}
+.quiz-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(62,207,126,.18);border:1px solid rgba(62,207,126,.35);border-radius:20px;padding:3px 9px;font-size:9.5px;font-weight:700;color:var(--lime);margin-bottom:10px;}
+.qb-icon{font-size:12px;}
+.quiz-title{font-size:14.5px;font-weight:700;color:#fff;margin-bottom:5px;}
+.quiz-sub{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;}
+.quiz-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;}
+.qbtn-icon{font-size:12px;}
+
+.streak-cal{display:flex;gap:6px;}
+.day{flex:1;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.day.done{background:var(--lime-pale);color:var(--lime-dark);}
+.day.today{background:var(--navy);color:#fff;}
+.day.future{background:#f0eef8;color:#c4bedb;}
+
+.tree{position:relative;}
+.tree-row{display:flex;align-items:center;gap:0;position:relative;margin-bottom:4px;}
+.tree-node{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:3px solid transparent;position:relative;z-index:2;}
+.tn-icon{font-size:18px;}
+.tree-node.done{background:var(--lime-pale);border-color:var(--lime);color:var(--lime-dark);}
+.tree-node.active{background:var(--navy);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px rgba(124,77,224,.18);}
+.tree-node.locked{background:#f0eef8;border-color:var(--border);color:#c4bedb;}
+.tree-line{flex:1;height:3px;background:var(--border);margin:0 -2px;}
+.tree-line.done{background:var(--lime);}
+.tree-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);padding:0 2px;margin-top:4px;}
+
+.play-row{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:10px 12px;cursor:pointer;}
+.play-list-wrap{padding:0 18px;display:flex;flex-direction:column;gap:8px;}
+.play-icon{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--border);}
+.play-name{font-size:12.5px;font-weight:700;color:var(--text);}
+.play-meta{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);margin-top:1px;}
+.pm-icon{font-size:11px;}
+.play-check{margin-left:auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.play-check.done{background:var(--lime-pale);color:var(--lime-dark);}
+.play-check.todo{background:#fff;border:1.5px solid var(--border);}
+.pc-icon{font-size:11px;}
+
+.search-box{position:relative;}
+.search-icon-svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);}
+.search-box input{width:100%;border:1px solid var(--border);border-radius:9px;padding:9px 12px 9px 32px;font-size:12.5px;font-family:inherit;outline:none;}
+.search-box input:focus{border-color:var(--navy);}
+
+.filter-row{display:flex;gap:6px;overflow-x:auto;}
+.filter-chip{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:#fff;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+.empty-state,.empty-hint{text-align:center;padding:30px 24px;font-size:12px;color:var(--text3);}
+
+/* Verified coaches section */
+.vc-section{padding:18px 18px 0;}
+.vc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.vc-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);}
+.vc-see-all{font-size:11px;font-weight:600;color:var(--navy);cursor:pointer;}
+.vc-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.vc-scroll::-webkit-scrollbar{display:none;}
+.vc-card{flex-shrink:0;width:130px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;}
+.vc-card:hover{border-color:var(--navy);}
+.vc-avatar-wrap{position:relative;width:48px;height:48px;margin:0 auto 10px;}
+.vc-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;}
+.vc-check{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;background:#1d9bf0;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;}
+.vc-check svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:3;}
+.vc-name{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vc-role{font-size:9.5px;color:var(--text3);margin-bottom:7px;line-height:1.3;}
+.vc-stats{display:flex;justify-content:center;gap:8px;}
+.vc-stat{font-size:9px;font-weight:700;color:var(--navy);}
+.vc-stat span{color:var(--text3);font-weight:500;}
+.vc-tactic-count{display:inline-block;background:var(--lime-pale);color:var(--lime-dark);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px;}
+
+/* Verified coaches section */
+.vc-section{padding:18px 18px 0;}
+.vc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.vc-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);}
+.vc-see-all{font-size:11px;font-weight:600;color:var(--navy);cursor:pointer;}
+.vc-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.vc-scroll::-webkit-scrollbar{display:none;}
+.vc-card{flex-shrink:0;width:130px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;}
+.vc-card:hover{border-color:var(--navy);}
+.vc-avatar-wrap{position:relative;width:48px;height:48px;margin:0 auto 10px;}
+.vc-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;}
+.vc-check{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;background:#1d9bf0;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;}
+.vc-check svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:3;}
+.vc-name{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vc-role{font-size:9.5px;color:var(--text3);margin-bottom:7px;line-height:1.3;}
+.vc-stats{display:flex;justify-content:center;gap:8px;}
+.vc-stat{font-size:9px;font-weight:700;color:var(--navy);}
+.vc-stat span{color:var(--text3);font-weight:500;}
+.vc-tactic-count{display:inline-block;background:var(--lime-pale);color:var(--lime-dark);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px;}
+
+.watch-top{background:var(--navy);height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+.watch-back{color:rgba(255,255,255,.7);width:16px;height:16px;cursor:pointer;}
+.watch-title{font-size:12.5px;font-weight:700;color:#fff;}
+.xp-pill{display:flex;align-items:center;gap:4px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--lime);}
+.xpp-icon{font-size:11px;}
+
+.watch-court{background:#1a4d7a;height:220px;position:relative;overflow:hidden;}
+#watchCanvas{display:block;width:100%;height:100%;}
+.watch-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);}
+.watch-progress-fill{height:100%;background:var(--lime);width:0%;transition:width .1s linear;}
+
+.step-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}
+.step-icon{font-size:13px;}
+.locked-card{background:#f7f5fb;border:1.5px dashed #d4cfe8;border-radius:12px;padding:16px;text-align:center;}
+.locked-icon{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:17px;color:var(--text3);}
+.li-icon{font-size:17px;}
+.locked-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.locked-sub{font-size:11px;color:var(--text3);line-height:1.5;}
+.watch-cta-btn{margin-top:12px;background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px;border-radius:9px;cursor:pointer;}
+.zero-note{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#c4915c;background:#fff7ed;border:1px solid #fde4c4;border-radius:8px;padding:9px 11px;margin-top:14px;}
+.zn-icon{font-size:14px;flex-shrink:0;}
+
+.quiz-frame{background:var(--text);padding:20px 18px;min-height:240px;display:flex;flex-direction:column;}
+.quiz-q{font-size:14px;font-weight:700;color:#fff;margin-bottom:16px;line-height:1.45;}
+.quiz-opt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;font-size:12.5px;color:rgba(255,255,255,.8);margin-bottom:9px;cursor:pointer;}
+.quiz-opt.correct-sel{background:rgba(62,207,126,.18);border-color:var(--lime);color:var(--lime);font-weight:700;}
+.quiz-opt.wrong-sel{background:rgba(248,113,113,.12);border-color:#f87171;color:#f87171;}
+.quiz-reward{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:10px;padding:11px;font-size:12.5px;font-weight:700;color:var(--lime);}
+
+.loc-found{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:14px;padding:18px;text-align:center;}
+.loc-pin{width:42px;height:42px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:19px;color:var(--lime);}
+.lp-icon{font-size:19px;}
+.loc-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:5px;}
+.loc-club{font-size:11.5px;color:var(--lime);font-weight:600;margin-bottom:4px;}
+.loc-sub{font-size:10.5px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:14px;}
+
+.tier-list{display:flex;flex-direction:column;gap:8px;text-align:left;}
+.tier-card{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.tier-card.recommended{border-color:var(--purple);background:rgba(124,77,224,.12);}
+.tier-badge{position:absolute;top:-7px;right:10px;background:var(--purple);color:#fff;font-size:8px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;}
+.tier-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.ti-icon{font-size:14px;}
+.tier-icon.loc{background:rgba(62,207,126,.15);color:var(--lime);}
+.tier-icon.coach{background:rgba(124,77,224,.2);color:#a78bfa;}
+.tier-text{flex:1;}
+.tier-name{font-size:11.5px;font-weight:700;color:#fff;}
+.tier-desc{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:1px;}
+.tier-xp{font-size:12px;font-weight:800;color:var(--lime);white-space:nowrap;}
+.tier-card.skip{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03);}
+.tier-icon.skip-icon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);}
+.tier-card.skip .tier-name{color:rgba(255,255,255,.55);}
+.tier-card.skip .tier-desc{color:rgba(255,255,255,.3);}
+.tier-xp.skip-xp{color:rgba(255,255,255,.35);font-size:10.5px;font-weight:600;}
+
+.quiz-pro-tag{display:inline-flex;align-items:center;background:rgba(124,77,224,.15);border:1px solid rgba(124,77,224,.3);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#a78bfa;margin-bottom:14px;}
+.quiz-pro-tag.news-tag{background:rgba(62,207,126,.15);border-color:rgba(62,207,126,.3);color:var(--lime);}
+
+.quiz-lock-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}
+.quiz-lock-icon{width:46px;height:46px;border-radius:50%;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#f87171;}
+.quiz-lock-text{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px;}
+.quiz-lock-timer{font-size:28px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;}
+
+.quiz-result-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}
+.quiz-result-icon{width:46px;height:46px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--lime);}
+.quiz-result-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}
+.quiz-result-xp{font-size:20px;font-weight:800;color:var(--lime);margin-bottom:18px;}
+.quiz-result-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px 22px;border-radius:9px;display:inline-block;cursor:pointer;}
+
+.coach-pending{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}
+.coach-avatar{width:46px;height:46px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:700;color:var(--lime-dark);}
+.coach-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.coach-sub{font-size:11px;color:var(--text3);line-height:1.55;margin-bottom:12px;}
+.coach-status{display:inline-flex;align-items:center;gap:6px;background:#fef3c7;border:1px solid #fcd989;border-radius:20px;padding:5px 12px;font-size:10.5px;font-weight:700;color:#92400e;}
+.cs-icon{font-size:12px;}
+.fallback-note{margin-top:14px;font-size:11px;color:var(--text3);text-decoration:underline;cursor:pointer;}
+
+.profile-card{text-align:center;margin-bottom:20px;}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;font-weight:700;color:var(--lime-dark);}
+.profile-name{font-size:15px;font-weight:700;color:var(--text);}
+.profile-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.profile-stat{background:#f7f5fb;border-radius:11px;padding:14px 8px;text-align:center;}
+.profile-stat-val{font-size:18px;font-weight:800;color:var(--navy);}
+.profile-stat-label{font-size:9.5px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.04em;}
+.profile-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;}
+.profile-coach-card{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:12px 14px;}
+.profile-coach-avatar{width:36px;height:36px;border-radius:50%;background:var(--lime-pale);color:var(--lime-dark);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+.profile-coach-name{font-size:12.5px;font-weight:700;color:var(--text);}
+.profile-coach-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
+
+</style>
+</head>
+<body>
+<div class="app-shell" id="appShell">
+
+  <div class="toast" id="toast"></div>
+
+    <div class="top">
+    <div class="top-row">
+      <div class="greeting">Hey, <span>Carlos</span></div>
+      <div class="streak">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        <span id="streakCount">12</span> day streak
+      </div>
+    </div>
+    <div class="xp-total-row">
+      <div class="xp-total-card">
+        <div class="xp-total-label">Total XP</div>
+        <div class="xp-total-val" id="totalXpVal">840</div>
+      </div>
+      <div class="xp-total-next">
+        <div class="xp-total-next-label">Next reward at</div>
+        <div class="xp-total-next-val">1,000 XP</div>
+        <div class="xp-total-track"><div class="xp-total-fill" id="xpTotalFill" style="width:84%;"></div></div>
+      </div>
+    </div>
+    <div class="xp-row">
+      <div class="xp-card">
+        <div class="xp-label">
+          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          Net play
+        </div>
+        <div class="xp-val">Level 4</div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpNet" style="width:70%;background:var(--lime);"></div></div>
+      </div>
+      <div class="xp-card">
+        <div class="xp-label">
+          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Defense
+        </div>
+        <div class="xp-val">Level 2</div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpDefense" style="width:35%;background:var(--purple);"></div></div>
+      </div>
+      <div class="xp-card">
+        <div class="xp-label">
+          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Serve
+        </div>
+        <div class="xp-val">Level 3</div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpServe" style="width:55%;background:var(--amber);"></div></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="screen active" id="screen-home">
+    <div style="padding:18px 18px 0;">
+      <div class="quiz-card" onclick="goToQuiz()">
+        <div class="quiz-badge">
+          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Daily quiz
+        </div>
+        <div class="quiz-title" id="quizHomeTitle">Today's padel trivia</div>
+        <div class="quiz-sub">Test your knowledge — tactics, pros &amp; rules &middot; +20 XP &middot; 2 min</div>
+        <div class="quiz-btn">
+          <svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21"/></svg>
+          Start
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      This week
+    </div>
+    <div style="padding:0 18px 22px;">
+      <div class="streak-cal">
+        <div class="day done">M</div>
+        <div class="day done">T</div>
+        <div class="day done">W</div>
+        <div class="day done">T</div>
+        <div class="day today">F</div>
+        <div class="day future">S</div>
+        <div class="day future">S</div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+      Your skill path
+    </div>
+    <div style="padding:0 18px 22px;">
+      <div class="tree">
+        <div class="tree-row">
+          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="tree-line done"></div>
+          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="tree-line done"></div>
+          <div class="tree-node active"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <div class="tree-line"></div>
+          <div class="tree-node locked"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        </div>
+        <div class="tree-meta">
+          <span>Serve</span><span>Net rush</span><span>Bandeja</span><span>Vibora</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Practice these next
+    </div>
+    <div class="play-list-wrap">
+      <div class="play-row" onclick="watchPlay('bandeja-hold\
