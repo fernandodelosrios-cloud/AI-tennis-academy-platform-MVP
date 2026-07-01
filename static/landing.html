@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Padel Coaching Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#3d1a6e;
+  --navy2:#2a1050;
+  --lime:#3ecf7e;
+  --lime-dim:rgba(62,207,126,.12);
+  --lime-border:rgba(62,207,126,.25);
+  --court:#1a4d7a;
+  --bg-dark:#080b14;
+  --bg-mid:#0f1420;
+  --bg-light:#f5f3fa;
+  --surface:#fff;
+  --text-dark:#0f0a1e;
+  --text-mid:#5a4a7a;
+  --text-muted:#9a8aaa;
+  --border:#e4dff2;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-dark);color:#fff;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,11,20,.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-logo svg{width:28px;height:28px;}
+.nav-logo-text{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em;}
+.nav-logo-text span{color:var(--lime);}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-tab{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;
+  color:rgba(255,255,255,.55);cursor:pointer;border:none;background:none;
+  font-family:inherit;transition:color .15s;}
+.nav-tab:hover,.nav-tab.active{color:#fff;}
+.nav-tab.active{background:rgba(255,255,255,.08);}
+.nav-cta{padding:7px 16px;background:var(--lime);color:#0a2a16;font-size:12.5px;
+  font-weight:700;border-radius:20px;border:none;cursor:pointer;font-family:inherit;
+  transition:opacity .15s;}
+.nav-cta:hover{opacity:.9;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:80px 24px 60px;position:relative;overflow:hidden;
+  background:var(--bg-dark);}
+.hero-bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;background:radial-gradient(ellipse,rgba(61,26,110,.45) 0%,transparent 70%);
+  pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;
+  background:var(--lime-dim);border:1px solid var(--lime-border);
+  border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;
+  color:var(--lime);letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px;}
+.hero h1{font-size:clamp(38px,6vw,72px);font-weight:900;line-height:1.05;
+  letter-spacing:-.03em;text-align:center;max-width:800px;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:var(--lime);}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.55);line-height:1.6;
+  text-align:center;max-width:520px;margin-bottom:36px;}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;}
+.btn-lime{padding:14px 28px;background:var(--lime);color:#0a2a16;font-size:14px;
+  font-weight:800;border-radius:10px;border:none;cursor:pointer;font-family:inherit;
+  transition:opacity .15s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+.btn-lime:hover{opacity:.9;}
+.btn-outline{padding:13px 24px;background:transparent;color:#fff;font-size:14px;
+  font-weight:600;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
+  cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;
+  align-items:center;gap:7px;transition:border-color .15s;}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);}
+.hero-trust{font-size:11.5px;color:rgba(255,255,255,.3);text-align:center;}
+
+/* Hero court card */
+.hero-court-wrap{width:100%;max-width:680px;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 80px rgba(0,0,0,.5);
+  position:relative;}
+.hero-court-label{position:absolute;top:12px;left:12px;z-index:2;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border-radius:20px;
+  padding:4px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.1);}
+.hero-court-play{position:absolute;top:12px;right:12px;z-index:2;
+  background:var(--lime-dim);border:1px solid var(--lime-border);
+  border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--lime);}
+#heroCanvas{display:block;width:100%;aspect-ratio:16/9;}
+.hero-shot-label{background:rgba(8,11,20,.9);padding:10px 18px;
+  font-size:12px;font-weight:600;color:rgba(255,255,255,.7);text-align:center;
+  border-top:1px solid rgba(255,255,255,.06);}
+.hero-shot-label strong{color:#fff;}
+
+/* ── SOCIAL PROOF STRIP ── */
+.proof-strip{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);padding:18px 24px;
+  display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;}
+.proof-item{display:flex;align-items:center;gap:8px;font-size:12px;
+  color:rgba(255,255,255,.4);font-weight:500;}
+.proof-item strong{color:rgba(255,255,255,.8);font-weight:700;}
+.proof-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);}
+
+/* ── SECTIONS ── */
+.section{padding:96px 24px;}
+.section-inner{max-width:1000px;margin:0 auto;}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:14px;}
+.section-title{font-size:clamp(28px,4vw,46px);font-weight:900;line-height:1.1;
+  letter-spacing:-.02em;margin-bottom:16px;}
+.section-sub{font-size:16px;line-height:1.65;color:rgba(255,255,255,.5);
+  max-width:560px;margin-bottom:48px;}
+
+/* ── BENEFITS (dark) ── */
+.benefits{background:var(--bg-dark);}
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.benefit-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:24px;transition:border-color .2s;}
+.benefit-card:hover{border-color:rgba(62,207,126,.25);}
+.benefit-icon{width:40px;height:40px;border-radius:10px;background:var(--lime-dim);
+  border:1px solid var(--lime-border);display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;}
+.benefit-icon svg{width:20px;height:20px;stroke:var(--lime);fill:none;stroke-width:2;}
+.benefit-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;}
+.benefit-body{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;}
+
+/* ── PLAYER APP DEMO ── */
+.demo-section{background:var(--bg-mid);}
+.demo-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.demo-phone{background:var(--navy2);border-radius:20px;border:1px solid rgba(255,255,255,.08);
+  overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.4);}
+.demo-phone-top{background:var(--navy);padding:14px 16px 12px;}
+.demo-phone-greeting{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);}
+.demo-phone-greeting span{color:var(--lime);}
+.demo-phone-xp{display:flex;align-items:center;justify-content:space-between;
+  margin-top:10px;}
+.demo-xp-val{font-size:22px;font-weight:900;color:var(--lime);}
+.demo-xp-label{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;}
+.demo-xp-bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:6px;overflow:hidden;}
+.demo-xp-fill{height:100%;width:68%;background:var(--lime);border-radius:2px;}
+.demo-phone-body{padding:14px 16px;}
+.demo-quiz-card{background:linear-gradient(135deg,#1a5c38,#0d2818);border-radius:12px;
+  padding:14px;margin-bottom:12px;}
+.demo-quiz-tag{font-size:9px;font-weight:700;color:var(--lime);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:6px;}
+.demo-quiz-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:10px;}
+.demo-quiz-btn{display:inline-flex;align-items:center;gap:5px;background:var(--lime);
+  color:#0a2a16;font-size:11px;font-weight:700;padding:6px 12px;border-radius:7px;}
+.demo-plays-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.demo-play-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);
+  border-radius:9px;padding:9px 11px;margin-bottom:6px;}
+.demo-play-icon{width:28px;height:28px;background:rgba(62,207,126,.12);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.demo-play-icon svg{width:14px;height:14px;stroke:var(--lime);fill:none;stroke-width:2;}
+.demo-play-name{font-size:11.5px;font-weight:700;color:#fff;}
+.demo-play-level{font-size:9.5px;color:rgba(255,255,255,.35);}
+.demo-play-check{margin-left:auto;width:18px;height:18px;border-radius:50%;
+  background:rgba(62,207,126,.2);display:flex;align-items:center;justify-content:center;}
+.demo-play-check svg{width:10px;height:10px;stroke:var(--lime);fill:none;stroke-width:3;}
+
+.demo-text{}
+.demo-text .eyebrow{color:var(--lime);}
+.demo-text .section-title{color:#fff;}
+.demo-text .section-sub{color:rgba(255,255,255,.5);}
+.demo-features{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+.demo-feature{display:flex;align-items:flex-start;gap:12px;}
+.demo-feature-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);
+  flex-shrink:0;margin-top:6px;}
+.demo-feature-text{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.5;}
+.demo-feature-text strong{color:#fff;}
+
+/* ── MARKETPLACE (dark) ── */
+.marketplace{background:var(--bg-dark);}
+.marketplace-card{background:linear-gradient(135deg,rgba(61,26,110,.4),rgba(15,20,32,.8));
+  border:1px solid rgba(124,77,224,.3);border-radius:20px;padding:32px;
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;}
+.mp-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);
+  border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:5px 12px;
+  font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:16px;}
+.mp-title{font-size:26px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px;letter-spacing:-.02em;}
+.mp-sub{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:20px;}
+.mp-earn{display:flex;align-items:center;gap:10px;background:rgba(62,207,126,.08);
+  border:1px solid var(--lime-border);border-radius:10px;padding:12px 16px;}
+.mp-earn-val{font-size:20px;font-weight:900;color:var(--lime);}
+.mp-earn-label{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;}
+.mp-rows{display:flex;flex-direction:column;gap:8px;}
+.mp-row{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;padding:11px 14px;}
+.mp-row-name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7);}
+.mp-status{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;}
+.mp-status.approved{background:rgba(62,207,126,.15);color:var(--lime);}
+.mp-status.pending{background:rgba(245,158,11,.12);color:#f59e0b;}
+.mp-status.review{background:rgba(124,77,224,.15);color:#b08fff;}
+
+/* ── COACH SECTION (light) ── */
+.coach-section{background:var(--bg-light);}
+.coach-section .eyebrow{color:var(--navy);}
+.coach-section .section-title{color:var(--text-dark);}
+.coach-section .section-sub{color:var(--text-mid);}
+.coach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.coach-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;}
+.coach-card-icon{width:36px;height:36px;border-radius:9px;background:#f0edf8;
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.coach-card-icon svg{width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;}
+.coach-card-title{font-size:13.5px;font-weight:800;color:var(--text-dark);margin-bottom:6px;}
+.coach-card-body{font-size:12px;color:var(--text-mid);line-height:1.55;}
+.coach-demo-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px;}
+.coach-link{padding:10px 18px;border-radius:9px;font-size:12.5px;font-weight:700;
+  text-decoration:none;border:1.5px solid var(--navy);color:var(--navy);transition:all .15s;}
+.coach-link:hover{background:var(--navy);color:#fff;}
+.coach-link.primary{background:var(--navy);color:#fff;}
+.coach-link.primary:hover{opacity:.85;}
+
+/* ── WAITLIST CTA ── */
+.cta-section{background:linear-gradient(135deg,var(--navy2),var(--bg-dark));
+  padding:96px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:300px;background:radial-gradient(ellipse,rgba(61,26,110,.6),transparent 70%);
+  pointer-events:none;}
+.cta-section .section-title{color:#fff;max-width:540px;margin:0 auto 12px;}
+.cta-section .section-sub{color:rgba(255,255,255,.45);margin:0 auto 36px;}
+.waitlist-form{display:flex;gap:10px;max-width:440px;margin:0 auto 14px;flex-wrap:wrap;justify-content:center;}
+.waitlist-input{flex:1;min-width:200px;padding:13px 16px;border-radius:10px;
+  border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+  color:#fff;font-size:14px;font-family:inherit;outline:none;}
+.waitlist-input::placeholder{color:rgba(255,255,255,.3);}
+.waitlist-input:focus{border-color:var(--lime);}
+.waitlist-btn{padding:13px 24px;background:var(--lime);color:#0a2a16;font-size:14px;
+  font-weight:800;border-radius:10px;border:none;cursor:pointer;font-family:inherit;
+  white-space:nowrap;}
+.cta-trust{font-size:11.5px;color:rgba(255,255,255,.25);}
+.waitlist-success{display:none;text-align:center;padding:20px;}
+.waitlist-success-icon{width:48px;height:48px;border-radius:50%;background:var(--lime-dim);
+  border:1px solid var(--lime-border);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;}
+.waitlist-success-icon svg{width:24px;height:24px;stroke:var(--lime);fill:none;stroke-width:2.5;}
+.waitlist-success-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px;}
+.waitlist-success-sub{font-size:13px;color:rgba(255,255,255,.45);}
+
+/* ── FOOTER ── */
+footer{background:var(--bg-dark);border-top:1px solid rgba(255,255,255,.06);
+  padding:32px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#fff;}
+.footer-logo span{color:var(--lime);}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-link{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s;}
+.footer-link:hover{color:rgba(255,255,255,.7);}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.2);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .demo-inner{grid-template-columns:1fr;}
+  .marketplace-card{grid-template-columns:1fr;}
+  .proof-strip{gap:16px;}
+  .nav-links .nav-tab{display:none;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">
+    <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="18" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="8" stroke="#3ecf7e" stroke-width="4"/></svg>
+    <span class="nav-logo-text">Orbis <span>AI</span></span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-tab active" onclick="setTab('players',this)">For players</button>
+    <button class="nav-tab" onclick="setTab('coaches',this)">For coaches</button>
+    <button class="nav-cta" onclick="scrollToWaitlist()">Join waitlist</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero-players">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    For padel players
+  </div>
+  <h1>Learn padel tactics<br>like a <em>pro trains.</em></h1>
+  <p class="hero-sub">Daily tactics, animated plays, and a trivia quiz that builds real court IQ — in 2 minutes a day.</p>
+  <div class="hero-actions">
+    <a href="/demo/player" class="btn-lime">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
+      Try the player app
+    </a>
+    <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist →</button>
+  </div>
+  <p class="hero-trust">Free early access · No credit card · Limited spots</p>
+  <br><br>
+  <!-- Live court -->
+  <div class="hero-court-wrap">
+    <div class="hero-court-label">Orbis AI · Live play</div>
+    <div class="hero-court-play" id="heroPlayLabel">+300 plays</div>
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-shot-label" id="heroShotLabel">Watch your students learn <strong>serve + net rush</strong> in seconds, not sentences</div>
+  </div>
+</section>
+
+<!-- HERO COACHES (hidden by default) -->
+<section class="hero" id="hero-coaches" style="display:none;">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    For padel coaches
+  </div>
+  <h1>Stop drawing plays<br>on a napkin. <em>Show them animated.</em></h1>
+  <p class="hero-sub">Orbis AI gives padel coaches an animated tactical simulator, AI video analysis, and a roster built for how academies actually run.</p>
+  <div class="hero-actions">
+    <a href="/demo/coach" class="btn-lime">See coach demo →</a>
+    <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+  </div>
+  <p class="hero-trust">Free early access · No credit card · Limited spots</p>
+</section>
+
+<!-- PLAYER SECTIONS (toggled by tab) -->
+<div id="section-players">
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item"><strong>+300</strong> animated plays</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>FIP Academy</strong> framework</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>2 min</strong> daily session</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item">Built for <strong>padel-first</strong></div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>35M+</strong> padel players worldwide</div>
+</div>
+
+<!-- BENEFITS -->
+<section class="section benefits">
+  <div class="section-inner">
+    <div class="eyebrow">Why Orbis</div>
+    <h2 class="section-title">Your court IQ.<br>Upgraded daily.</h2>
+    <p class="section-sub">Most padel players improve their fitness. Almost none improve their tactical reading. Orbis fixes that.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="benefit-title">Daily padel trivia</div>
+        <div class="benefit-body">A new question every day — pros, rules, and tactics. Two minutes that actually make you think differently on court.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        </div>
+        <div class="benefit-title">Animated plays library</div>
+        <div class="benefit-body">+300 animated tactical plays — from basic serve + net rush to advanced vibora sequences. Watch, understand, execute.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+        </div>
+        <div class="benefit-title">Your personal skill path</div>
+        <div class="benefit-body">Progress from Serve to Net Rush to Bandeja to Vibora. XP, streaks, and badges that track your real tactical evolution.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="benefit-title">Coach-verified practice</div>
+        <div class="benefit-body">Practiced a tactic on court? Confirm it with GPS or ask your coach to verify. Earn extra XP for real on-court reps.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYER APP DEMO -->
+<section class="section demo-section">
+  <div class="section-inner">
+    <div class="demo-inner">
+      <!-- Phone mockup -->
+      <div class="demo-phone">
+        <div class="demo-phone-top">
+          <div class="demo-phone-greeting">Hey, <span>Carlos</span></div>
+          <div class="demo-phone-xp">
+            <div>
+              <div class="demo-xp-label">Total XP</div>
+              <div class="demo-xp-val">840</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="demo-xp-label">Next reward at</div>
+              <div style="font-size:11px;font-weight:700;color:#fff;">1,000 XP</div>
+            </div>
+          </div>
+          <div class="demo-xp-bar"><div class="demo-xp-fill"></div></div>
+        </div>
+        <div class="demo-phone-body">
+          <div class="demo-quiz-card">
+            <div class="demo-quiz-tag">⚡ Daily quiz</div>
+            <div class="demo-quiz-title">Today's padel trivia</div>
+            <div class="demo-quiz-btn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+              Start — +20 XP
+            </div>
+          </div>
+          <div class="demo-plays-label">Practice these next</div>
+          <div class="demo-play-row">
+            <div class="demo-play-icon"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+            <div>
+              <div class="demo-play-name">Bandeja hold at net</div>
+              <div class="demo-play-level">Intermediate · 12,400 players learned this</div>
+            </div>
+          </div>
+          <div class="demo-play-row">
+            <div class="demo-play-icon"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+            <div>
+              <div class="demo-play-name">Cross-court lob</div>
+              <div class="demo-play-level">Beginner · 28,900 players learned this</div>
+            </div>
+            <div class="demo-play-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+        </div>
+      </div>
+      <!-- Text -->
+      <div class="demo-text">
+        <div class="eyebrow">The player app</div>
+        <h2 class="section-title" style="color:#fff;">Your padel brain.<br>In your pocket.</h2>
+        <p class="section-sub">Open it before practice, after a match, or on the way to the club. Two minutes of daily padel IQ that compounds over time.</p>
+        <div class="demo-features">
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Daily trivia</strong> — tactics, pro rankings, rules. One question, one explanation, +20 XP.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Watch animated plays</strong> — see exactly how a bandeja or vibora sequence unfolds, step by step.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Earn XP for on-court practice</strong> — confirm with GPS or coach verification for bonus points.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>7-day streak tracker</strong> — build the habit that turns good players into tactical players.</div>
+          </div>
+        </div>
+        <a href="/demo/player" class="btn-lime">Try the app now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE -->
+<section class="section marketplace">
+  <div class="section-inner">
+    <div class="eyebrow">The marketplace</div>
+    <h2 class="section-title">Tactics created by coaches.<br>Learned by you.</h2>
+    <p class="section-sub" style="margin-bottom:32px;">Every play in the library was submitted and approved by a certified padel coach. The best tactics rise to the top.</p>
+    <div class="marketplace-card">
+      <div>
+        <div class="mp-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          How it works
+        </div>
+        <div class="mp-title">Coaches submit.<br>You learn.<br>They earn.</div>
+        <p class="mp-sub">Coaches describe tactics in their own words. Orbis Core builds the animation. Once approved, it joins the library and the coach earns every time it gets used.</p>
+        <div class="mp-earn">
+          <div>
+            <div class="mp-earn-val">€5</div>
+          </div>
+          <div class="mp-earn-label">per 1,000 plays viewed<br><span style="color:rgba(255,255,255,.25);font-size:10px;">coaches earn every time you learn</span></div>
+        </div>
+      </div>
+      <div class="mp-rows">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Latest tactics</div>
+        <div class="mp-row">
+          <span class="mp-row-name">Fake bandeja, real chiquita</span>
+          <span class="mp-status approved">Approved</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Cross vibora into the glass</span>
+          <span class="mp-status pending">Pending</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Double lob recovery</span>
+          <span class="mp-status review">In review</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Around the post — left side</span>
+          <span class="mp-status approved">Approved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /section-players -->
+
+<!-- COACHES SECTION -->
+<section id="section-coaches" style="display:none;">
+
+  <!-- Coach hero -->
+  <div style="background:var(--bg-dark);padding:96px 24px 64px;">
+    <div class="section-inner">
+      <div class="eyebrow">For padel coaches</div>
+      <h2 class="section-title">The platform built for<br>how padel academies<br><em style="font-style:normal;color:var(--lime);">actually run.</em></h2>
+      <p class="section-sub">Tactical simulator, student roster, session evaluations, and AI video analysis — all in one place, built padel-first from day one.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/demo/coach" class="btn-lime">See the live coach demo →</a>
+        <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 1: Tactical simulator + tactic creator -->
+  <div style="background:var(--bg-mid);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Simulator mockup -->
+        <div style="background:#0a1520;border-radius:16px;border:1px solid rgba(255,255,255,.08);overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.4);">
+          <div style="background:#111827;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);">
+            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);">Orbis AI · Tactical simulator</span>
+            <span style="font-size:10px;font-weight:700;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:20px;padding:2px 8px;">+300 plays</span>
+          </div>
+          <!-- Mini court SVG -->
+          <div style="background:#1a4d7a;aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 400 300" style="width:100%;height:100%;position:absolute;top:0;left:0;">
+              <!-- Court -->
+              <polygon points="80,20 320,20 390,280 10,280" fill="#2e6cb0" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+              <!-- Net -->
+              <line x1="45" y1="150" x2="355" y2="150" stroke="rgba(255,255,255,0.9)" stroke-width="3"/>
+              <!-- Service lines -->
+              <line x1="28" y1="57" x2="372" y2="57" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+              <line x1="18" y1="243" x2="382" y2="243" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+              <line x1="200" y1="57" x2="200" y2="150" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <line x1="200" y1="150" x2="200" y2="243" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <!-- Players Y -->
+              <ellipse cx="148" cy="232" rx="16" ry="5" fill="rgba(0,0,0,0.4)"/>
+              <rect x="133" y="200" width="30" height="32" rx="2" fill="#1a0a2e"/>
+              <ellipse cx="148" cy="200" rx="15" ry="5" fill="#7c4de0"/>
+              <text x="148" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="white">Y1</text>
+              <ellipse cx="252" cy="232" rx="16" ry="5" fill="rgba(0,0,0,0.4)"/>
+              <rect x="237" y="200" width="30" height="32" rx="2" fill="#1a0a2e"/>
+              <ellipse cx="252" cy="200" rx="15" ry="5" fill="#3ecf7e"/>
+              <text x="252" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="white">Y2</text>
+              <!-- Players O -->
+              <ellipse cx="140" cy="78" rx="14" ry="4" fill="rgba(0,0,0,0.4)"/>
+              <rect x="127" y="50" width="26" height="28" rx="2" fill="#50000e"/>
+              <ellipse cx="140" cy="50" rx="13" ry="4" fill="#dc2626"/>
+              <text x="140" y="65" text-anchor="middle" font-size="9" font-weight="bold" fill="white">O1</text>
+              <ellipse cx="260" cy="78" rx="14" ry="4" fill="rgba(0,0,0,0.4)"/>
+              <rect x="247" y="50" width="26" height="28" rx="2" fill="#50000e"/>
+              <ellipse cx="260" cy="50" rx="13" ry="4" fill="#dc2626"/>
+              <text x="260" y="65" text-anchor="middle" font-size="9" font-weight="bold" fill="white">O2</text>
+              <!-- Ball path: serve + net rush -->
+              <path d="M252,215 Q200,140 200,30" stroke="#3ecf7e" stroke-width="2" stroke-dasharray="5,4" fill="none"/>
+              <circle cx="200" cy="30" r="7" fill="#d4e820" stroke="#9aac00" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-top:1px solid rgba(255,255,255,.06);">
+            <span style="font-size:11px;color:rgba(255,255,255,.5);">Watch your students learn <strong style="color:#fff;">serve + net rush</strong> in seconds</span>
+          </div>
+          <!-- Tactic creator row -->
+          <div style="padding:10px 14px;background:rgba(61,26,110,.15);border-top:1px solid rgba(124,77,224,.2);">
+            <div style="font-size:9.5px;font-weight:700;color:#b08fff;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Create your own tactic</div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(255,255,255,.4);">Describe a rally in your own words...</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:5px 8px;font-size:10px;color:rgba(255,255,255,.3);">Fake bandeja, real chiquita</div>
+              <div style="background:#7c4de0;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;">Build →</div>
+            </div>
+          </div>
+        </div>
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Tactical simulator</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">+300 plays.<br>Or build your own.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">Show students exactly how a bandeja, vibora, or serve + net rush sequence unfolds — animated, step by step. And if you have a tactic that works for your students, describe it in plain words and Orbis Core builds the animation for you.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">FIP Academy Level 0–4</strong> — every play grounded in the official padel coaching standard</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Create your own tactics</strong> — describe a rally and Orbis Core builds the animation. Once approved, it joins the library</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Earn €5 per 1,000 uses</strong> — every time another coach's student watches your tactic, you get paid</div>
+            </div>
+          </div>
+          <a href="/demo/simulator" class="btn-lime">Open simulator →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 2: Student roster -->
+  <div style="background:var(--bg-dark);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Student roster</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">Every student.<br>Every session.<br>Under control.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">10 students or 100 — your full roster in one place with categoría tags, session frequency, and next class at a glance. No more WhatsApp threads to track who trained when.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Categoría tags</strong> — 1ª Pro through 5ª Amateur, filter your roster by level instantly</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Session history</strong> — see how many sessions each student has logged and when they last trained</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Weekly class view</strong> — all your classes laid out day by day, individual and group</div>
+            </div>
+          </div>
+          <a href="/demo/coach" class="btn-lime">See coach hub →</a>
+        </div>
+        <!-- Roster mockup -->
+        <div style="background:#fff;border-radius:16px;border:1px solid #e4dff2;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.3);">
+          <div style="background:#3d1a6e;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:600;">Good morning, Toni 🎾</div>
+              <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">Padel Lab Madrid · 10 students</div>
+            </div>
+            <div style="background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--lime);">Orbis Core active</div>
+          </div>
+          <div style="padding:12px 14px;">
+            <div style="font-size:9.5px;font-weight:700;color:#9a8aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">My students</div>
+            <!-- Student rows -->
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#3d1a6e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">F</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Fernando de los Rios</div>
+                  <div style="font-size:10px;color:#9a8aaa;">3ª · 2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Thu 26, 10:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#7c4de0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">M</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Marta Iglesias</div>
+                  <div style="font-size:10px;color:#9a8aaa;">1ª Pro · +2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Wed 25, 09:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#2e6cb0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">P</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Pablo Santos</div>
+                  <div style="font-size:10px;color:#9a8aaa;">1ª Pro · +2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Wed 25, 17:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:center;padding:8px;font-size:10px;color:#9a8aaa;">+ 7 more students</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 3: Evaluation forms -->
+  <div style="background:var(--bg-mid);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Eval mockup -->
+        <div style="background:#fff;border-radius:16px;border:1px solid #e4dff2;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.3);">
+          <div style="background:#3d1a6e;padding:10px 14px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;">Fernando de los Rios — Evaluation</div>
+            <div style="font-size:9.5px;color:rgba(255,255,255,.5);margin-top:2px;">Session: Thu Jun 26 · 10:00 · Individual</div>
+          </div>
+          <div style="padding:12px 14px;">
+            <!-- Score summary -->
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.6</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Technical</div>
+              </div>
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.3</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Tactical</div>
+              </div>
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.5</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Overall</div>
+              </div>
+            </div>
+            <!-- Progress trend -->
+            <div style="font-size:9.5px;font-weight:700;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Progress — last 4 sessions</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:40px;margin-bottom:12px;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.1</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:62%;opacity:.4;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">May 29</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.2</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:64%;opacity:.55;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">Jun 5</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.4</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:68%;opacity:.75;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">Jun 12</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#3ecf7e;font-weight:700;">3.5</div>
+                <div style="width:100%;background:#3ecf7e;border-radius:3px 3px 0 0;height:70%;"></div>
+                <div style="font-size:7.5px;color:#3ecf7e;font-weight:600;">Jun 26</div>
+              </div>
+            </div>
+            <!-- Coach note -->
+            <div style="background:#f7f5fb;border-radius:8px;padding:9px 11px;font-size:10.5px;color:#5a4a7a;line-height:1.5;">
+              Good improvement on net positioning — holding the volley zone better. Still rushing the bandeja under pressure. Worth revisiting wall-bounce contact-point drill.
+            </div>
+          </div>
+        </div>
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Session evaluations</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">Finally know<br>if your students<br>are actually improving.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">Score every session across technical and tactical dimensions. Watch progress build over time. No more relying on memory when a student asks "am I getting better?"</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Coach + student dual eval</strong> — both sides score the same session, you see the gap</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Progress chart</strong> — 4-session trend per student, per skill dimension</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Coach notes per session</strong> — write your observations, they stay attached to the eval forever</div>
+            </div>
+          </div>
+          <a href="/demo/coach" class="btn-lime">See evaluations in action →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coach CTA -->
+  <div style="background:linear-gradient(135deg,var(--navy2),var(--bg-dark));padding:64px 24px;text-align:center;">
+    <div class="section-inner" style="max-width:600px;">
+      <div class="eyebrow" style="color:var(--lime);margin-bottom:16px;">Early access for coaches</div>
+      <h3 style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">Ready to run your academy smarter?</h3>
+      <p style="font-size:15px;color:rgba(255,255,255,.45);margin-bottom:28px;">Join coaches across Europe and LatAm getting early access to Orbis AI. Free to start, no credit card required.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/demo/coach" class="btn-lime">See the live demo →</a>
+        <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg width="22" height="22" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="18" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="8" stroke="#3ecf7e" stroke-width="4"/></svg>
+    Orbis <span>AI</span>
+  </div>
+  <div class="footer-links">
+    <a href="/demo/player" class="footer-link">Player app</a>
+    <a href="/demo/coach" class="footer-link">Coach hub</a>
+    <a href="/demo/simulator" class="footer-link">Simulator</a>
+    <a href="/demo/video" class="footer-link">Video analysis</a>
+    <a href="/login" class="footer-link">Sign in</a>
+  </div>
+  <div class="footer-copy">© 2026 Orbis AI · Madrid, Spain</div>
+</footer>
+
+<script>
+// ── TAB SWITCH ────────────────────────────────────────
+function setTab(tab, el){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('hero-players').style.display   = tab==='players'?'flex':'none';
+  document.getElementById('hero-coaches').style.display   = tab==='coaches'?'flex':'none';
+  document.getElementById('section-players').style.display = tab==='players'?'block':'none';
+  document.getElementById('section-coaches').style.display = tab==='coaches'?'block':'none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function scrollToWaitlist(){
+  document.querySelector('footer').scrollIntoView({behavior:'smooth'});
+}
+
+// ── WAITLIST ──────────────────────────────────────────
+async function submitWL(){
+  const email = document.getElementById('wlEmail').value.trim();
+  if(!email || !email.includes('@')){ alert('Please enter a valid email.'); return; }
+  try{
+    const res = await fetch('/api/waitlist',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name:'',email,country:'',city:'',sport:'padel'})
+    });
+    if(res.ok){
+      document.getElementById('waitlistFormWrap').style.display='none';
+      document.getElementById('waitlistSuccess').style.display='block';
+    }
+  } catch(e){
+    // fallback — show success anyway for demo
+    document.getElementById('waitlistFormWrap').style.display='none';
+    document.getElementById('waitlistSuccess').style.display='block';
+  }
+}
+
+// ── HERO COURT ANIMATION ──────────────────────────────
+const PLAYS={
+'bandeja-hold':{
+  sY:[{x:.32,y:.57},{x:.68,y:.57}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:'<strong>Bandeja hold</strong> — overhead control, stay at net',
+  shots:[
+    {l:'Cross-court volley',h:'Y',f:{x:.32,y:.57},c:{x:.55,y:.35},t:{x:.72,y:.12},ht:.05,d:800,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:'Opponents LOB',h:'O',f:{x:.72,y:.12},c:{x:.5,y:.4},t:{x:.5,y:.76},ht:.82,d:1500,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:'BANDEJA wide',h:'Y',f:{x:.68,y:.76},c:{x:.88,y:.45},t:{x:.92,y:.12},ht:.12,d:900,yP:[{x:.32,y:.57},{x:.68,y:.78}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+},
+'cross-lob':{
+  sY:[{x:.32,y:.84},{x:.68,y:.84}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:'<strong>Cross-court lob</strong> — reset from baseline, take the net',
+  shots:[
+    {l:'Opponents drive left',h:'O',f:{x:.72,y:.14},c:{x:.45,y:.5},t:{x:.32,y:.8},ht:.08,d:850,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:'Deep cross LOB',h:'Y',f:{x:.32,y:.8},c:{x:.72,y:.3},t:{x:.85,y:.07},ht:.85,d:1500,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+},
+'serve-net-rush':{
+  sY:[{x:.32,y:.88},{x:.68,y:.88}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:'<strong>Serve + net rush</strong> — attack the net behind your serve',
+  shots:[
+    {l:'Serve down the T',h:'Y',f:{x:.68,y:.88},c:{x:.5,y:.65},t:{x:.5,y:.12},ht:.15,d:900,yP:[{x:.32,y:.88},{x:.68,y:.88}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:'Both sprint to net',h:'M',f:{x:.5,y:.12},t:{x:.5,y:.12},ht:0,d:700,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+}
+};
+
+const PLAY_IDS = Object.keys(PLAYS);
+let hCanvas,hCW,hCH,hShot=0,hShotStart=null,hPlaying=false,hAnimId=null,hPlayIdx=0,hCurrentId='serve-net-rush';
+
+function hSetup(){
+  hCanvas=document.getElementById('heroCanvas');
+  if(!hCanvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=hCanvas.parentElement.clientWidth;
+  const h=Math.round(w*9/16);
+  hCanvas.width=w*dpr;hCanvas.height=h*dpr;
+  hCanvas.style.width=w+'px';hCanvas.style.height=h+'px';
+  hCanvas.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+  hCW=w;hCH=h;
+}
+
+function hSc(nx,ny){
+  const tLx=hCW*0.22,tLy=hCH*0.06,tRx=hCW*0.78;
+  const bLx=hCW*0.04,bLy=hCH*0.94,bRx=hCW*0.96;
+  const lx=tLx+(bLx-tLx)*ny,rx=tRx+(bRx-tRx)*ny;
+  return{x:lx+(rx-lx)*nx,y:tLy+(bLy-tLy)*ny};
+}
+function hLerp(a,b,t){return a+(b-a)*t;}
+function hEase(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+function hBez(p0,p1,p2,t){
+  return{x:(1-t)*(1-t)*p0.x+2*(1-t)*t*p1.x+t*t*p2.x,
+         y:(1-t)*(1-t)*p0.y+2*(1-t)*t*p1.y+t*t*p2.y};
+}
+function hDrawCourt(ctx){
+  const tLx=hCW*0.22,tRx=hCW*0.78,tY=hCH*0.06;
+  const bLx=hCW*0.04,bRx=hCW*0.96,bY=hCH*0.94;
+  ctx.fillStyle='#1a4d7a';ctx.fillRect(0,0,hCW,hCH);
+  ctx.beginPath();ctx.moveTo(tLx,tY);ctx.lineTo(tRx,tY);ctx.lineTo(bRx,bY);ctx.lineTo(bLx,bY);ctx.closePath();
+  ctx.fillStyle='#2e6cb0';ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=2;ctx.stroke();
+  const nL=hSc(0,.5),nR=hSc(1,.5);
+  ctx.beginPath();ctx.moveTo(nL.x,nL.y);ctx.lineTo(nR.x,nR.y);
+  ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=3;ctx.stroke();
+  [[0,.15],[0,.85]].forEach(([x,y])=>{
+    const l=hSc(0,y),r=hSc(1,y);
+    ctx.beginPath();ctx.moveTo(l.x,l.y);ctx.lineTo(r.x,r.y);
+    ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.2;ctx.stroke();
+  });
+  const cN=hSc(.5,.5),cS1=hSc(.5,.15),cS2=hSc(.5,.85);
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(cS1.x,cS1.y);ctx.lineTo(cN.x,cN.y);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cN.x,cN.y);ctx.lineTo(cS2.x,cS2.y);ctx.stroke();
+}
+function hPS(ny){return Math.round(hCW*(0.028+ny*0.022));}
+function hDrawPlayer(ctx,nx,ny,fill,ring,label){
+  const p=hSc(nx,ny),r=hPS(ny),bodyH=r*1.6;
+  ctx.beginPath();ctx.ellipse(p.x,p.y+r*.25,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,.4)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(p.x-r,p.y);ctx.lineTo(p.x+r,p.y);
+  ctx.lineTo(p.x+r*.9,p.y-bodyH);ctx.lineTo(p.x-r*.9,p.y-bodyH);ctx.closePath();
+  ctx.fillStyle=fill;ctx.fill();
+  ctx.beginPath();ctx.ellipse(p.x,p.y-bodyH,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle=ring;ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.95)';
+  ctx.font='bold '+Math.round(r*.75)+'px Inter,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,p.x,p.y-bodyH+r*.08);
+}
+function hDrawBall(ctx,nx,ny,h){
+  const p=hSc(nx,ny),pr=hPS(ny),lift=h*hCH*0.14,r=pr*.42+h*pr*.3;
+  ctx.beginPath();ctx.ellipse(p.x,p.y,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,'+(0.35-h*.15)+')';ctx.fill();
+  ctx.beginPath();ctx.arc(p.x,p.y-lift,r,0,Math.PI*2);
+  ctx.fillStyle='#d4e820';ctx.fill();
+  ctx.strokeStyle='#9aac00';ctx.lineWidth=1;ctx.stroke();
+}
+function hRender(t){
+  const ctx=hCanvas.getContext('2d');
+  ctx.clearRect(0,0,hCW,hCH);
+  hDrawCourt(ctx);
+  const play=PLAYS[hCurrentId];
+  const shots=play.shots;
+  const et=hEase(Math.min(t,1));
+  const s=shots[Math.min(hShot,shots.length-1)];
+  const prevY=hShot===0?play.sY:(shots[hShot-1].yP||play.sY);
+  const prevO=hShot===0?play.sO:(shots[hShot-1].oP||play.sO);
+  const curY=s.yP||prevY;const curO=s.oP||prevO;
+  const py=curY.map((p,i)=>({x:hLerp(prevY[i].x,p.x,et),y:hLerp(prevY[i].y,p.y,et)}));
+  const po=curO.map((p,i)=>({x:hLerp(prevO[i].x,p.x,et),y:hLerp(prevO[i].y,p.y,et)}));
+  po.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#50000e','#dc2626',['O1','O2'][i]));
+  py.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#1a0a2e',i===1?'#3ecf7e':'#7c4de0',['Y1','Y2'][i]));
+  if(hShot<shots.length&&s.h!=='M'){
+    const bp=hBez(s.f,s.c,s.t,et);
+    const bh=(s.ht||0)*Math.sin(et*Math.PI);
+    hDrawBall(ctx,bp.x,bp.y,bh);
+  }else if(hShot>0){
+    const last=shots[Math.min(hShot-1,shots.length-1)];
+    hDrawBall(ctx,last.t.x,last.t.y,0);
+  }
+}
+function hAnimFrame(ts){
+  const play=PLAYS[hCurrentId];
+  const shots=play.shots;
+  if(!hShotStart)hShotStart=ts;
+  const s=shots[hShot];
+  const t=Math.min((ts-hShotStart)/s.d,1);
+  hRender(t);
+  if(t>=1){
+    hShot++;
+    if(hShot>=shots.length){
+      // pause then switch play
+      hPlaying=false;
+      setTimeout(()=>{
+        hPlayIdx=(hPlayIdx+1)%PLAY_IDS.length;
+        hCurrentId=PLAY_IDS[hPlayIdx];
+        document.getElementById('heroShotLabel').innerHTML=PLAYS[hCurrentId].label;
+        hShot=0;hShotStart=null;hPlaying=true;
+        hAnimId=requestAnimationFrame(hAnimFrame);
+      },2000);
+      return;
+    }
+    hShotStart=null;
+  }
+  if(hPlaying)hAnimId=requestAnimationFrame(hAnimFrame);
+}
+function hStart(){
+  hSetup();
+  if(!hCanvas)return;
+  hShot=0;hShotStart=null;hPlaying=true;
+  document.getElementById('heroShotLabel').innerHTML=PLAYS[hCurrentId].label;
+  hAnimId=requestAnimationFrame(hAnimFrame);
+}
+window.addEventListener('resize',()=>{hSetup();});
+window.addEventListener('load',()=>{ setTimeout(hStart,100); });
+</script>
+</body>
+</html>

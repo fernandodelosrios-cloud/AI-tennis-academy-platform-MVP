@@ -86,6 +86,11 @@ class NutritionLog(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
+    with open("static/landing.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/_old_root", response_class=HTMLResponse)
+async def _old_root():
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
