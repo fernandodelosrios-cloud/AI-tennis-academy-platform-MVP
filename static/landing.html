@@ -974,6 +974,27 @@ function hDrawBall(ctx,nx,ny,h){
   ctx.fillStyle='#d4e820';ctx.fill();
   ctx.strokeStyle='#9aac00';ctx.lineWidth=1;ctx.stroke();
 }
+function hDrawArrow(ctx,x1,y1,x2,y2,color,alpha){
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+  if(len<4)return;
+  const ux=dx/len,uy=dy/len;
+  const headSize=Math.min(len*.35,hCW*.018);
+  const ex=x1+dx*.85,ey=y1+dy*.85;
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.strokeStyle=color;ctx.lineWidth=hCW*.004;
+  ctx.setLineDash([hCW*.012,hCW*.008]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(ex,ey);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.moveTo(ex+ux*headSize,ey+uy*headSize);
+  ctx.lineTo(ex-uy*headSize*.5,ey+ux*headSize*.5);
+  ctx.lineTo(ex+uy*headSize*.5,ey-ux*headSize*.5);
+  ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+
 function hRender(t){
   const ctx=hCanvas.getContext('2d');
   ctx.clearRect(0,0,hCW,hCH);
@@ -987,6 +1008,42 @@ function hRender(t){
   const curY=s.yP||prevY;const curO=s.oP||prevO;
   const py=curY.map((p,i)=>({x:hLerp(prevY[i].x,p.x,et),y:hLerp(prevY[i].y,p.y,et)}));
   const po=curO.map((p,i)=>({x:hLerp(prevO[i].x,p.x,et),y:hLerp(prevO[i].y,p.y,et)}));
+
+  // ── Ball path trail (dashed arc showing full trajectory) ──
+  if(hShot<shots.length&&s.h!=='M'){
+    const fromP=hSc(s.f.x,s.f.y);
+    const toP=hSc(s.t.x,s.t.y);
+    const cp=s.c?hSc(s.c.x,s.c.y):{x:(fromP.x+toP.x)/2,y:Math.min(fromP.y,toP.y)-hCH*.1};
+    const ballColor=s.h==='Y'?'#3ecf7e':'#f87171';
+    ctx.save();
+    ctx.setLineDash([hCW*.008,hCW*.006]);
+    ctx.strokeStyle=ballColor;ctx.lineWidth=hCW*.003;ctx.globalAlpha=0.35;
+    ctx.beginPath();ctx.moveTo(fromP.x,fromP.y);
+    ctx.quadraticCurveTo(cp.x,cp.y,toP.x,toP.y);
+    ctx.stroke();
+    ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.restore();
+    // arrowhead at destination
+    const nearEnd=hBez(s.f,s.c||{x:(s.f.x+s.t.x)/2,y:(s.f.y+s.t.y)/2},s.t,.85);
+    const nearEndP=hSc(nearEnd.x,nearEnd.y);
+    hDrawArrow(ctx,nearEndP.x,nearEndP.y,toP.x,toP.y,ballColor,0.5);
+  }
+
+  // ── Player movement arrows ──
+  const arrowAlpha=Math.min(et*2,1)*0.65;
+  if(arrowAlpha>0.05){
+    py.forEach((p,i)=>{
+      const from=hSc(prevY[i].x,prevY[i].y);
+      const to=hSc(curY[i].x,curY[i].y);
+      hDrawArrow(ctx,from.x,from.y,to.x,to.y,'#3ecf7e',arrowAlpha);
+    });
+    po.forEach((p,i)=>{
+      const from=hSc(prevO[i].x,prevO[i].y);
+      const to=hSc(curO[i].x,curO[i].y);
+      hDrawArrow(ctx,from.x,from.y,to.x,to.y,'#f87171',arrowAlpha);
+    });
+  }
+
   po.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#2a0808','#dc2626',i===0?-0.32:0.32));
   py.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#0a2a16','#3ecf7e',i===0?0.32:-0.32));
   if(hShot<shots.length&&s.h!=='M'){
