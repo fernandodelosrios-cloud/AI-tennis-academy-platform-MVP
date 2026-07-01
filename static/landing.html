@@ -279,6 +279,17 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.08);
     <div class="hero-court-play" id="heroPlayLabel">+300 plays</div>
     <canvas id="heroCanvas"></canvas>
     <div class="hero-shot-label" id="heroShotLabel">Watch your students learn <strong>serve + net rush</strong> in seconds, not sentences</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px;padding:8px 18px;background:rgba(8,11,20,.95);border-top:1px solid rgba(255,255,255,.06);">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#3ecf7e;flex-shrink:0;"></div>
+        <span style="font-size:11px;color:rgba(255,255,255,.55);font-weight:600;">Your team</span>
+      </div>
+      <div style="width:1px;height:12px;background:rgba(255,255,255,.12);"></div>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#dc2626;flex-shrink:0;"></div>
+        <span style="font-size:11px;color:rgba(255,255,255,.55);font-weight:600;">Opponents</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -897,19 +908,63 @@ function hDrawCourt(ctx){
   ctx.beginPath();ctx.moveTo(cN.x,cN.y);ctx.lineTo(cS2.x,cS2.y);ctx.stroke();
 }
 function hPS(ny){return Math.round(hCW*(0.028+ny*0.022));}
-function hDrawPlayer(ctx,nx,ny,fill,ring,label){
-  const p=hSc(nx,ny),r=hPS(ny),bodyH=r*1.6;
-  ctx.beginPath();ctx.ellipse(p.x,p.y+r*.25,r*.9,r*.32,0,0,Math.PI*2);
-  ctx.fillStyle='rgba(0,0,0,.4)';ctx.fill();
-  ctx.beginPath();ctx.moveTo(p.x-r,p.y);ctx.lineTo(p.x+r,p.y);
-  ctx.lineTo(p.x+r*.9,p.y-bodyH);ctx.lineTo(p.x-r*.9,p.y-bodyH);ctx.closePath();
-  ctx.fillStyle=fill;ctx.fill();
-  ctx.beginPath();ctx.ellipse(p.x,p.y-bodyH,r*.9,r*.32,0,0,Math.PI*2);
-  ctx.fillStyle=ring;ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.95)';
-  ctx.font='bold '+Math.round(r*.75)+'px Inter,sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(label,p.x,p.y-bodyH+r*.08);
+function hDrawPlayer(ctx,nx,ny,faceCol,rimCol,angle){
+  const p=hSc(nx,ny),r=hPS(ny);
+  const rW=r*.82,rH=r*.98;
+  const cos=Math.cos(angle),sin=Math.sin(angle);
+  function rot(dx,dy){return{x:p.x+dx*cos-dy*sin,y:p.y+dx*sin+dy*cos};}
+  const headOY=-(r*1.7);
+  const hCenter=rot(0,headOY);
+  const throatY=headOY+rH*.72;
+  const handleTopY=throatY+r*.5,handleBotY=handleTopY+r*.9;
+  const handleW=r*.3,throatSpread=rW*.45;
+  const throatTopL=rot(-throatSpread,throatY),throatTopR=rot(throatSpread,throatY);
+  const handleTopL=rot(-handleW/2,handleTopY),handleTopR=rot(handleW/2,handleTopY);
+  const handleBotL=rot(-handleW/2,handleBotY),handleBotR=rot(handleW/2,handleBotY);
+  // shadow
+  const sc=rot(0,handleBotY+r*.1);
+  ctx.beginPath();ctx.ellipse(sc.x,sc.y,r*.55,r*.14,angle,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,.3)';ctx.fill();
+  // V throat
+  ctx.beginPath();
+  ctx.moveTo(throatTopL.x,throatTopL.y);ctx.lineTo(handleTopL.x,handleTopL.y);
+  ctx.lineTo(handleTopR.x,handleTopR.y);ctx.lineTo(throatTopR.x,throatTopR.y);
+  ctx.closePath();ctx.fillStyle=rimCol;ctx.fill();
+  // handle
+  ctx.beginPath();
+  ctx.moveTo(handleTopL.x,handleTopL.y);ctx.lineTo(handleTopR.x,handleTopR.y);
+  ctx.lineTo(handleBotR.x,handleBotR.y);ctx.lineTo(handleBotL.x,handleBotL.y);
+  ctx.closePath();ctx.fillStyle='#2a2a3a';ctx.fill();
+  // grip lines
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=r*.09;
+  for(let i=1;i<5;i++){
+    const t=i/5;
+    const lp=rot(-handleW/2,handleTopY+(handleBotY-handleTopY)*t);
+    const rp=rot(handleW/2,handleTopY+(handleBotY-handleTopY)*t);
+    ctx.beginPath();ctx.moveTo(lp.x,lp.y);ctx.lineTo(rp.x,rp.y);ctx.stroke();
+  }
+  // oval rim
+  ctx.save();ctx.translate(hCenter.x,hCenter.y);ctx.rotate(angle);
+  ctx.beginPath();ctx.ellipse(0,0,rW,rH,0,0,Math.PI*2);
+  ctx.fillStyle=rimCol;ctx.fill();ctx.restore();
+  // oval face
+  ctx.save();ctx.translate(hCenter.x,hCenter.y);ctx.rotate(angle);
+  ctx.beginPath();ctx.ellipse(0,0,rW*.82,rH*.82,0,0,Math.PI*2);
+  ctx.fillStyle=faceCol;ctx.fill();ctx.restore();
+  // holes
+  ctx.save();ctx.translate(hCenter.x,hCenter.y);ctx.rotate(angle);
+  ctx.beginPath();ctx.ellipse(0,0,rW*.78,rH*.78,0,0,Math.PI*2);ctx.clip();
+  ctx.fillStyle='rgba(255,255,255,.18)';
+  const stepX=rW*.28,stepY=rH*.22;
+  for(let ry=-3;ry<=3;ry++){
+    for(let rx=-2;rx<=2;rx++){
+      const hx=rx*stepX,hy=ry*stepY;
+      if((hx*hx)/(rW*.7*rW*.7)+(hy*hy)/(rH*.7*rH*.7)<1){
+        ctx.beginPath();ctx.arc(hx,hy,r*.058,0,Math.PI*2);ctx.fill();
+      }
+    }
+  }
+  ctx.restore();
 }
 function hDrawBall(ctx,nx,ny,h){
   const p=hSc(nx,ny),pr=hPS(ny),lift=h*hCH*0.14,r=pr*.42+h*pr*.3;
@@ -932,8 +987,8 @@ function hRender(t){
   const curY=s.yP||prevY;const curO=s.oP||prevO;
   const py=curY.map((p,i)=>({x:hLerp(prevY[i].x,p.x,et),y:hLerp(prevY[i].y,p.y,et)}));
   const po=curO.map((p,i)=>({x:hLerp(prevO[i].x,p.x,et),y:hLerp(prevO[i].y,p.y,et)}));
-  po.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#50000e','#dc2626',['O1','O2'][i]));
-  py.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#1a0a2e',i===1?'#3ecf7e':'#7c4de0',['Y1','Y2'][i]));
+  po.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#2a0808','#dc2626',i===0?-0.32:0.32));
+  py.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,'#0a2a16','#3ecf7e',i===0?0.32:-0.32));
   if(hShot<shots.length&&s.h!=='M'){
     const bp=hBez(s.f,s.c,s.t,et);
     const bh=(s.ht||0)*Math.sin(et*Math.PI);
