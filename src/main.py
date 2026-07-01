@@ -2737,7 +2737,989 @@ async function submitWaitlist() {
 
 @app.get("/demo/player", response_class=HTMLResponse)
 async def demo_player():
-    return HTMLResponse(content='<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">\n<title>Orbis AI — Train</title>\n<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">\n<style>\n:root{--navy:#3d1a6e;--navy2:#4a2080;--lime:#3ecf7e;--lime-pale:#d4f5e5;--lime-dark:#2aad62;--bg:#f2f0f7;--surface:#fff;--border:#e2e6ef;--text:#1a0a2e;--text2:#5a4a7a;--text3:#9a8aaa;--amber:#ffb84d;--purple:#7c4de0;}\n*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}\nhtml,body{height:100%;background:var(--bg);font-family:\'Inter\',system-ui,sans-serif;color:var(--text);overscroll-behavior:none;}\n.app-shell{max-width:420px;margin:0 auto;min-height:100vh;background:var(--surface);display:flex;flex-direction:column;position:relative;box-shadow:0 0 40px rgba(61,26,110,.08);padding-bottom:64px;}\n\n.top{background:var(--navy);padding:16px 18px 14px;color:#fff;flex-shrink:0;}\n.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}\n.greeting{font-size:14px;font-weight:700;}\n.greeting span{color:var(--lime);}\n.streak{display:flex;align-items:center;gap:5px;background:rgba(255,159,28,.18);border:1px solid rgba(255,159,28,.4);border-radius:20px;padding:4px 10px;font-size:11.5px;font-weight:700;color:var(--amber);}\n.icon-xs{width:12px;height:12px;flex-shrink:0;}\n.icon-sm{width:16px;height:16px;flex-shrink:0;}\n\n.xp-total-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:10px;}\n.xp-total-card{flex-shrink:0;text-align:center;}\n.xp-total-label{font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;}\n.xp-total-val{font-size:18px;font-weight:800;color:var(--lime);}\n.xp-total-next{flex:1;}\n.xp-total-next-label{font-size:8.5px;color:rgba(255,255,255,.4);}\n.xp-total-next-val{font-size:10.5px;font-weight:700;color:#fff;margin-bottom:4px;}\n.xp-total-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}\n.xp-total-fill{height:100%;background:var(--lime);border-radius:3px;}\n.xp-row{display:flex;gap:8px;}\n.xp-card{flex:1;background:rgba(255,255,255,.08);border-radius:10px;padding:8px 9px;}\n.xp-label{display:flex;align-items:center;gap:4px;font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}\n.xp-label i{font-size:10px;}\n.xp-bar-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-top:5px;}\n.xp-bar-fill{height:100%;border-radius:3px;transition:width .3s;}\n.xp-val{font-size:10.5px;font-weight:700;color:#fff;}\n\n.screen{display:none;padding-bottom:24px;}\n.screen.active{display:block;}\n\n.section-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);margin:0 0 12px;padding:0 18px;}\n.section-title i{font-size:15px;color:var(--purple);}\n.section-title:first-child{margin-top:18px;}\n\n.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;border-top:0.5px solid var(--border);background:#fff;flex-shrink:0;z-index:20;max-width:420px;}\n.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;font-size:9px;color:var(--text3);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;}\n.nav-item.active{color:var(--navy);}\n.nav-icon{width:18px;height:18px;}\n\n.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:9px;font-size:12.5px;font-weight:600;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap;max-width:90%;text-align:center;}\n.quiz-card{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:16px;padding:18px;position:relative;overflow:hidden;cursor:pointer;}\n.quiz-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(62,207,126,.18);border:1px solid rgba(62,207,126,.35);border-radius:20px;padding:3px 9px;font-size:9.5px;font-weight:700;color:var(--lime);margin-bottom:10px;}\n.qb-icon{font-size:12px;}\n.quiz-title{font-size:14.5px;font-weight:700;color:#fff;margin-bottom:5px;}\n.quiz-sub{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;}\n.quiz-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;}\n.qbtn-icon{font-size:12px;}\n\n.streak-cal{display:flex;gap:6px;}\n.day{flex:1;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}\n.day.done{background:var(--lime-pale);color:var(--lime-dark);}\n.day.today{background:var(--navy);color:#fff;}\n.day.future{background:#f0eef8;color:#c4bedb;}\n\n.tree{position:relative;}\n.tree-row{display:flex;align-items:center;gap:0;position:relative;margin-bottom:4px;}\n.tree-node{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:3px solid transparent;position:relative;z-index:2;}\n.tn-icon{font-size:18px;}\n.tree-node.done{background:var(--lime-pale);border-color:var(--lime);color:var(--lime-dark);}\n.tree-node.active{background:var(--navy);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px rgba(124,77,224,.18);}\n.tree-node.locked{background:#f0eef8;border-color:var(--border);color:#c4bedb;}\n.tree-line{flex:1;height:3px;background:var(--border);margin:0 -2px;}\n.tree-line.done{background:var(--lime);}\n.tree-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);padding:0 2px;margin-top:4px;}\n\n.play-row{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:10px 12px;cursor:pointer;}\n.play-list-wrap{padding:0 18px;display:flex;flex-direction:column;gap:8px;}\n.play-icon{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--border);}\n.play-name{font-size:12.5px;font-weight:700;color:var(--text);}\n.play-meta{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);margin-top:1px;}\n.pm-icon{font-size:11px;}\n.play-check{margin-left:auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}\n.play-check.done{background:var(--lime-pale);color:var(--lime-dark);}\n.play-check.todo{background:#fff;border:1.5px solid var(--border);}\n.pc-icon{font-size:11px;}\n\n.search-box{position:relative;}\n.search-icon-svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);}\n.search-box input{width:100%;border:1px solid var(--border);border-radius:9px;padding:9px 12px 9px 32px;font-size:12.5px;font-family:inherit;outline:none;}\n.search-box input:focus{border-color:var(--navy);}\n\n.filter-row{display:flex;gap:6px;overflow-x:auto;}\n.filter-chip{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:#fff;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;}\n.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}\n\n.empty-state,.empty-hint{text-align:center;padding:30px 24px;font-size:12px;color:var(--text3);}\n\n.watch-top{background:var(--navy);height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;}\n.watch-back{color:rgba(255,255,255,.7);width:16px;height:16px;cursor:pointer;}\n.watch-title{font-size:12.5px;font-weight:700;color:#fff;}\n.xp-pill{display:flex;align-items:center;gap:4px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--lime);}\n.xpp-icon{font-size:11px;}\n\n.watch-court{background:#1a4d7a;height:220px;position:relative;overflow:hidden;}\n#watchCanvas{display:block;width:100%;height:100%;}\n.watch-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);}\n.watch-progress-fill{height:100%;background:var(--lime);width:0%;transition:width .1s linear;}\n\n.step-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}\n.step-icon{font-size:13px;}\n.locked-card{background:#f7f5fb;border:1.5px dashed #d4cfe8;border-radius:12px;padding:16px;text-align:center;}\n.locked-icon{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:17px;color:var(--text3);}\n.li-icon{font-size:17px;}\n.locked-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}\n.locked-sub{font-size:11px;color:var(--text3);line-height:1.5;}\n.watch-cta-btn{margin-top:12px;background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px;border-radius:9px;cursor:pointer;}\n.zero-note{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#c4915c;background:#fff7ed;border:1px solid #fde4c4;border-radius:8px;padding:9px 11px;margin-top:14px;}\n.zn-icon{font-size:14px;flex-shrink:0;}\n\n.quiz-frame{background:var(--text);padding:20px 18px;min-height:240px;display:flex;flex-direction:column;}\n.quiz-q{font-size:14px;font-weight:700;color:#fff;margin-bottom:16px;line-height:1.45;}\n.quiz-opt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;font-size:12.5px;color:rgba(255,255,255,.8);margin-bottom:9px;cursor:pointer;}\n.quiz-opt.correct-sel{background:rgba(62,207,126,.18);border-color:var(--lime);color:var(--lime);font-weight:700;}\n.quiz-opt.wrong-sel{background:rgba(248,113,113,.12);border-color:#f87171;color:#f87171;}\n.quiz-reward{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:10px;padding:11px;font-size:12.5px;font-weight:700;color:var(--lime);}\n\n.loc-found{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:14px;padding:18px;text-align:center;}\n.loc-pin{width:42px;height:42px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:19px;color:var(--lime);}\n.lp-icon{font-size:19px;}\n.loc-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:5px;}\n.loc-club{font-size:11.5px;color:var(--lime);font-weight:600;margin-bottom:4px;}\n.loc-sub{font-size:10.5px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:14px;}\n\n.tier-list{display:flex;flex-direction:column;gap:8px;text-align:left;}\n.tier-card{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;}\n.tier-card.recommended{border-color:var(--purple);background:rgba(124,77,224,.12);}\n.tier-badge{position:absolute;top:-7px;right:10px;background:var(--purple);color:#fff;font-size:8px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;}\n.tier-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}\n.ti-icon{font-size:14px;}\n.tier-icon.loc{background:rgba(62,207,126,.15);color:var(--lime);}\n.tier-icon.coach{background:rgba(124,77,224,.2);color:#a78bfa;}\n.tier-text{flex:1;}\n.tier-name{font-size:11.5px;font-weight:700;color:#fff;}\n.tier-desc{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:1px;}\n.tier-xp{font-size:12px;font-weight:800;color:var(--lime);white-space:nowrap;}\n.tier-card.skip{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03);}\n.tier-icon.skip-icon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);}\n.tier-card.skip .tier-name{color:rgba(255,255,255,.55);}\n.tier-card.skip .tier-desc{color:rgba(255,255,255,.3);}\n.tier-xp.skip-xp{color:rgba(255,255,255,.35);font-size:10.5px;font-weight:600;}\n\n.quiz-pro-tag{display:inline-flex;align-items:center;background:rgba(124,77,224,.15);border:1px solid rgba(124,77,224,.3);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#a78bfa;margin-bottom:14px;}\n.quiz-pro-tag.news-tag{background:rgba(62,207,126,.15);border-color:rgba(62,207,126,.3);color:var(--lime);}\n\n.quiz-lock-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}\n.quiz-lock-icon{width:46px;height:46px;border-radius:50%;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#f87171;}\n.quiz-lock-text{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px;}\n.quiz-lock-timer{font-size:28px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;}\n\n.quiz-result-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}\n.quiz-result-icon{width:46px;height:46px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--lime);}\n.quiz-result-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}\n.quiz-result-xp{font-size:20px;font-weight:800;color:var(--lime);margin-bottom:18px;}\n.quiz-result-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px 22px;border-radius:9px;display:inline-block;cursor:pointer;}\n\n.coach-pending{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}\n.coach-avatar{width:46px;height:46px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:700;color:var(--lime-dark);}\n.coach-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}\n.coach-sub{font-size:11px;color:var(--text3);line-height:1.55;margin-bottom:12px;}\n.coach-status{display:inline-flex;align-items:center;gap:6px;background:#fef3c7;border:1px solid #fcd989;border-radius:20px;padding:5px 12px;font-size:10.5px;font-weight:700;color:#92400e;}\n.cs-icon{font-size:12px;}\n.fallback-note{margin-top:14px;font-size:11px;color:var(--text3);text-decoration:underline;cursor:pointer;}\n\n.profile-card{text-align:center;margin-bottom:20px;}\n.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;font-weight:700;color:var(--lime-dark);}\n.profile-name{font-size:15px;font-weight:700;color:var(--text);}\n.profile-sub{font-size:11px;color:var(--text3);margin-top:2px;}\n.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}\n.profile-stat{background:#f7f5fb;border-radius:11px;padding:14px 8px;text-align:center;}\n.profile-stat-val{font-size:18px;font-weight:800;color:var(--navy);}\n.profile-stat-label{font-size:9.5px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.04em;}\n.profile-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;}\n.profile-coach-card{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:12px 14px;}\n.profile-coach-avatar{width:36px;height:36px;border-radius:50%;background:var(--lime-pale);color:var(--lime-dark);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}\n.profile-coach-name{font-size:12.5px;font-weight:700;color:var(--text);}\n.profile-coach-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}\n\n</style>\n</head>\n<body>\n<div class="app-shell" id="appShell">\n\n  <div class="toast" id="toast"></div>\n\n    <div class="top">\n    <div class="top-row">\n      <div class="greeting">Hey, <span>Carlos</span></div>\n      <div class="streak">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>\n        <span id="streakCount">12</span> day streak\n      </div>\n    </div>\n    <div class="xp-total-row">\n      <div class="xp-total-card">\n        <div class="xp-total-label">Total XP</div>\n        <div class="xp-total-val" id="totalXpVal">840</div>\n      </div>\n      <div class="xp-total-next">\n        <div class="xp-total-next-label">Next reward at</div>\n        <div class="xp-total-next-val">1,000 XP</div>\n        <div class="xp-total-track"><div class="xp-total-fill" id="xpTotalFill" style="width:84%;"></div></div>\n      </div>\n    </div>\n    <div class="xp-row">\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>\n          Net play\n        </div>\n        <div class="xp-val">Level 4</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpNet" style="width:70%;background:var(--lime);"></div></div>\n      </div>\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>\n          Defense\n        </div>\n        <div class="xp-val">Level 2</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpDefense" style="width:35%;background:var(--purple);"></div></div>\n      </div>\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n          Serve\n        </div>\n        <div class="xp-val">Level 3</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpServe" style="width:55%;background:var(--amber);"></div></div>\n      </div>\n    </div>\n  </div>\n\n    <div class="screen active" id="screen-home">\n    <div style="padding:18px 18px 0;">\n      <div class="quiz-card" onclick="goToQuiz()">\n        <div class="quiz-badge">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n          Daily quiz\n        </div>\n        <div class="quiz-title" id="quizHomeTitle">Today\'s padel trivia</div>\n        <div class="quiz-sub">Test your knowledge — tactics, pros &amp; rules &middot; +20 XP &middot; 2 min</div>\n        <div class="quiz-btn">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21"/></svg>\n          Start\n        </div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>\n      This week\n    </div>\n    <div style="padding:0 18px 22px;">\n      <div class="streak-cal">\n        <div class="day done">M</div>\n        <div class="day done">T</div>\n        <div class="day done">W</div>\n        <div class="day done">T</div>\n        <div class="day today">F</div>\n        <div class="day future">S</div>\n        <div class="day future">S</div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>\n      Your skill path\n    </div>\n    <div style="padding:0 18px 22px;">\n      <div class="tree">\n        <div class="tree-row">\n          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n          <div class="tree-line done"></div>\n          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n          <div class="tree-line done"></div>\n          <div class="tree-node active"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>\n          <div class="tree-line"></div>\n          <div class="tree-node locked"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>\n        </div>\n        <div class="tree-meta">\n          <span>Serve</span><span>Net rush</span><span>Bandeja</span><span>Vibora</span>\n        </div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>\n      Practice these next\n    </div>\n    <div class="play-list-wrap">\n      <div class="play-row" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon">\n          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n        </div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta">\n            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>\n            Intermediate &middot; 12,400 players learned this\n          </div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row" onclick="watchPlay(\'cross-lob\')">\n        <div class="play-icon">\n          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n        </div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Cross-court lob</div>\n          <div class="play-meta">\n            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>\n            Beginner &middot; 28,900 players learned this\n          </div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-plays">\n    <div style="padding:18px 18px 12px;">\n      <div class="search-box">\n        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>\n        <input type="text" placeholder="Search plays..." id="playsSearch" oninput="filterPlaysList()">\n      </div>\n    </div>\n    <div class="filter-row" style="padding:0 18px 14px;">\n      <div class="filter-chip active" data-lv="all" onclick="selectPlaysFilter(this)">All</div>\n      <div class="filter-chip" data-lv="beginner" onclick="selectPlaysFilter(this)">Beginner</div>\n      <div class="filter-chip" data-lv="intermediate" onclick="selectPlaysFilter(this)">Intermediate</div>\n      <div class="filter-chip" data-lv="advanced" onclick="selectPlaysFilter(this)">Advanced</div>\n    </div>\n\n    <div class="play-list-wrap" id="playsListContainer">\n      <div class="play-row lib-item" data-lv="beginner" data-name="serve net rush" onclick="watchPlay(\'serve-net-rush\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Serve + net rush</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Beginner &middot; 31,200 players learned this</div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n      <div class="play-row lib-item" data-lv="beginner" data-name="cross court lob" onclick="watchPlay(\'cross-lob\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Cross-court lob</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Beginner &middot; 28,900 players learned this</div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n      <div class="play-row lib-item" data-lv="intermediate" data-name="bandeja hold at net" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; 12,400 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="intermediate" data-name="chiquita advance" onclick="watchPlay(\'chiquita-advance\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Chiquita + advance</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; 9,800 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="advanced" data-name="vibora side glass" onclick="watchPlay(\'vibora-glass\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Vibora to side glass</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Advanced &middot; 4,100 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="advanced" data-name="around the post" onclick="watchPlay(\'around-post\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Around the post</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Advanced &middot; 2,600 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n    </div>\n    <div class="empty-state" id="playsEmpty" style="display:none;">No plays match your search.</div>\n  </div>\n\n  <div class="screen" id="screen-watch">\n    <div class="watch-top">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'plays\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title" id="watchTitle">Bandeja hold at net</div>\n      <div style="width:16px;"></div>\n    </div>\n    <div class="watch-court" id="watchCourt">\n      <canvas id="watchCanvas"></canvas>\n      <div class="watch-progress"><div class="watch-progress-fill" id="watchProgressFill"></div></div>\n    </div>\n    <div style="padding:16px 18px;">\n      <div class="step-label">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>\n        Step 1 of 3\n      </div>\n      <div class="locked-card" id="watchLockedCard">\n        <div class="locked-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>\n        <div class="locked-title">Watch to unlock the quiz</div>\n        <div class="locked-sub">Watch the full play once, then the quiz unlocks below.</div>\n      </div>\n      <div class="locked-card" id="watchUnlockedCard" style="display:none;">\n        <div class="locked-icon" style="background:var(--lime-pale);color:var(--lime-dark);"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n        <div class="locked-title">Quiz unlocked</div>\n        <div class="locked-sub">You\'ve watched the full play. Take the quiz to earn XP.</div>\n        <div class="watch-cta-btn" onclick="goToQuizFromWatch()">Take the quiz</div>\n      </div>\n      <div class="zero-note">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>\n        Watching alone earns 0 XP &mdash; XP comes from the quiz and verified on-court practice.\n      </div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-quiz-active">\n    <div class="watch-top" style="background:var(--text);">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'home\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title">Quick check</div>\n      <div class="xp-pill">\n        <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n        +20 XP\n      </div>\n    </div>\n    <div class="quiz-frame">\n      <div class="quiz-pro-tag" id="quizProTag">Inspired by Tapia &amp; Coello\'s net play</div>\n      <div class="quiz-q" id="quizQuestion">Opponent lobs over your head at net. What\'s the correct response?</div>\n      <div id="quizOptsContainer">\n        <div class="quiz-opt" data-correct="false" onclick="selectQuizOpt(this,false)">Smash immediately</div>\n        <div class="quiz-opt" data-correct="true" onclick="selectQuizOpt(this,true)">Bandeja, hold net position</div>\n        <div class="quiz-opt" data-correct="false" onclick="selectQuizOpt(this,false)">Sprint back to baseline</div>\n      </div>\n      <div class="quiz-reward" id="quizReward" style="display:none;"></div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-checkin">\n    <div class="watch-top" style="background:var(--text);">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'home\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title">Confirm practice</div>\n      <div style="width:16px;"></div>\n    </div>\n    <div style="padding:18px;">\n\n      <div class="loc-found" id="locStepA">\n        <div class="loc-pin"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>\n        <div class="loc-title">We detected you\'re at a padel club</div>\n        <div class="loc-club">Padel Lab Madrid</div>\n        <div class="loc-sub">Choose how you\'d like to confirm you drilled this tactic today.</div>\n\n        <div class="tier-list">\n          <div class="tier-card" onclick="confirmByLocation()">\n            <div class="tier-icon loc"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Confirm by location</div>\n              <div class="tier-desc">Self-reported, verified by GPS</div>\n            </div>\n            <div class="tier-xp">+15 XP</div>\n          </div>\n          <div class="tier-card recommended" onclick="askCoachConfirm()">\n            <div class="tier-badge">More XP</div>\n            <div class="tier-icon coach"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Ask my coach to confirm</div>\n              <div class="tier-desc">Sent to your coach for a quick yes or no</div>\n            </div>\n            <div class="tier-xp high">+40 XP</div>\n          </div>\n          <div class="tier-card skip" onclick="skipCheckin()">\n            <div class="tier-icon skip-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Skip for now</div>\n              <div class="tier-desc">Neither option fits right now</div>\n            </div>\n            <div class="tier-xp skip-xp">No XP</div>\n          </div>\n        </div>\n      </div>\n\n      <div class="coach-pending" id="locStepB" style="display:none;">\n        <div class="coach-avatar">T</div>\n        <div class="coach-title">Sent to Toni Alcala</div>\n        <div class="coach-sub">Your coach will get a quick prompt to confirm you drilled this tactic in today\'s session.</div>\n        <div class="coach-status">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>\n          Awaiting confirmation\n        </div>\n        <div class="fallback-note" onclick="confirmByLocation()">Or confirm now with location for +15 XP instead</div>\n      </div>\n\n    </div>\n  </div>\n\n  <div class="screen" id="screen-saved">\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>\n      Your saved plays\n    </div>\n    <div class="play-list-wrap">\n      <div class="play-row" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; saved 3 days ago</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n    </div>\n    <div class="empty-hint">Save plays from the library to build your personal practice list.</div>\n  </div>\n\n  <div class="screen" id="screen-profile">\n    <div style="padding:24px 18px;">\n      <div class="profile-card">\n        <div class="profile-avatar">C</div>\n        <div class="profile-name">Carlos Mendez</div>\n        <div class="profile-sub">Member since Jun 2026</div>\n      </div>\n      <div class="profile-stats">\n        <div class="profile-stat">\n          <div class="profile-stat-val">12</div>\n          <div class="profile-stat-label">Day streak</div>\n        </div>\n        <div class="profile-stat">\n          <div class="profile-stat-val">840</div>\n          <div class="profile-stat-label">Total XP</div>\n        </div>\n        <div class="profile-stat">\n          <div class="profile-stat-val">9</div>\n          <div class="profile-stat-label">Plays learned</div>\n        </div>\n      </div>\n      <div class="profile-section-title">Coach</div>\n      <div class="profile-coach-card">\n        <div class="profile-coach-avatar">T</div>\n        <div>\n          <div class="profile-coach-name">Toni Alcala</div>\n          <div class="profile-coach-sub">Padel Lab Madrid</div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n    <div class="bottom-nav">\n    <button class="nav-item active" data-screen="home" onclick="showScreen(\'home\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>\n      Home\n    </button>\n    <button class="nav-item" data-screen="plays" onclick="showScreen(\'plays\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n      Plays\n    </button>\n    <button class="nav-item" data-screen="quiz-active" onclick="goToQuizFromNav(this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n      Quiz\n    </button>\n    <button class="nav-item" data-screen="saved" onclick="showScreen(\'saved\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>\n      Saved\n    </button>\n    <button class="nav-item" data-screen="profile" onclick="showScreen(\'profile\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>\n      Profile\n    </button>\n  </div>\n\n\n</div>\n\n<script>\n// ── MINI SIMULATOR ENGINE for Watch screen ──────────────────────────────────\nconst WATCH_PLAYS={\n\'bandeja-hold\':{\n  sY:[{x:.32,y:.57},{x:.68,y:.57}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'You attack — cross-court volley\',h:\'Y\',f:{x:.32,y:.57},c:{x:.55,y:.35},t:{x:.72,y:.12},ht:.05,d:800,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Opponents LOB over your head\',h:\'O\',f:{x:.72,y:.12},c:{x:.5,y:.4},t:{x:.5,y:.76},ht:.82,d:1500,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'BANDEJA — wide to side glass\',h:\'Y\',f:{x:.68,y:.76},c:{x:.88,y:.45},t:{x:.92,y:.12},ht:.12,d:900,yP:[{x:.32,y:.57},{x:.68,y:.78}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'cross-lob\':{\n  sY:[{x:.32,y:.84},{x:.68,y:.84}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents drive to your left\',h:\'O\',f:{x:.72,y:.14},c:{x:.45,y:.5},t:{x:.32,y:.8},ht:.08,d:850,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Deep cross-court LOB\',h:\'Y\',f:{x:.32,y:.8},c:{x:.72,y:.3},t:{x:.85,y:.07},ht:.85,d:1500,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'serve-net-rush\':{\n  sY:[{x:.32,y:.88},{x:.68,y:.88}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Serve down the T\',h:\'Y\',f:{x:.68,y:.88},c:{x:.5,y:.65},t:{x:.5,y:.12},ht:.15,d:900,yP:[{x:.32,y:.88},{x:.68,y:.88}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Both sprint to net\',h:\'M\',f:{x:.5,y:.12},t:{x:.5,y:.12},ht:0,d:700,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'chiquita-advance\':{\n  sY:[{x:.3,y:.74},{x:.7,y:.74}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents attack — fast low ball\',h:\'O\',f:{x:.28,y:.14},c:{x:.35,y:.5},t:{x:.35,y:.7},ht:.04,d:700,yP:[{x:.3,y:.74},{x:.7,y:.74}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'CHIQUITA — low at net feet\',h:\'Y\',f:{x:.35,y:.7},c:{x:.32,y:.52},t:{x:.3,y:.3},ht:.04,d:750,yP:[{x:.3,y:.74},{x:.7,y:.74}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'vibora-glass\':{\n  sY:[{x:.28,y:.62},{x:.7,y:.6}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents LOB — high ball center\',h:\'O\',f:{x:.72,y:.12},c:{x:.58,y:.38},t:{x:.62,y:.56},ht:.82,d:1400,yP:[{x:.28,y:.62},{x:.7,y:.6}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'VIBORA — to side glass\',h:\'Y\',f:{x:.62,y:.54},c:{x:.97,y:.4},t:{x:.97,y:.1},ht:.07,d:650,yP:[{x:.28,y:.62},{x:.7,y:.6}],oP:[{x:.28,y:.14},{x:.72,y:.14}],w:true}\n  ]\n},\n\'around-post\':{\n  sY:[{x:.3,y:.82},{x:.68,y:.82}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents angle wide left\',h:\'O\',f:{x:.32,y:.14},c:{x:.1,y:.45},t:{x:.06,y:.74},ht:.08,d:850,yP:[{x:.3,y:.82},{x:.68,y:.82}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'AROUND THE POST!\',h:\'Y\',f:{x:.06,y:.74},c:{x:-.02,y:.52},t:{x:.08,y:.2},ht:.04,d:900,yP:[{x:.06,y:.75},{x:.68,y:.82}],oP:[{x:.28,y:.14},{x:.72,y:.14}],w:true}\n  ]\n}\n};\n\nlet wCanvas,wCW,wCH,wShot=0,wShotStart=null,wPlaying=false,wAnimId=null;\n\nfunction wSetup(){\n  wCanvas=document.getElementById(\'watchCanvas\');\n  if(!wCanvas)return;\n  const wrap=document.getElementById(\'watchCourt\');\n  const dpr=window.devicePixelRatio||1;\n  const w=wrap.clientWidth;\n  const h=wrap.clientHeight;\n  wCanvas.width=w*dpr;wCanvas.height=h*dpr;\n  wCanvas.style.width=w+\'px\';wCanvas.style.height=h+\'px\';\n  wCanvas.getContext(\'2d\').setTransform(dpr,0,0,dpr,0,0);\n  wCW=w;wCH=h;\n}\n\nfunction wSc(nx,ny){\n  const tLx=wCW*0.22,tLy=wCH*0.06,tRx=wCW*0.78,tRy=wCH*0.06;\n  const bLx=wCW*0.04,bLy=wCH*0.94,bRx=wCW*0.96,bRy=wCH*0.94;\n  const lx=tLx+(bLx-tLx)*ny,rx=tRx+(bRx-tRx)*ny;\n  const px=lx+(rx-lx)*nx;\n  const py=tLy+(bLy-tLy)*ny;\n  return{x:px,y:py};\n}\n\nfunction wLerp(a,b,t){return a+(b-a)*t;}\nfunction wEase(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}\nfunction wBez(p0,p1,p2,t){\n  return{x:(1-t)*(1-t)*p0.x+2*(1-t)*t*p1.x+t*t*p2.x,\n         y:(1-t)*(1-t)*p0.y+2*(1-t)*t*p1.y+t*t*p2.y};\n}\n\nfunction wDrawCourt(ctx){\n  const tLx=wCW*0.22,tRx=wCW*0.78,tY=wCH*0.06;\n  const bLx=wCW*0.04,bRx=wCW*0.96,bY=wCH*0.94;\n  ctx.fillStyle=\'#1a4d7a\';ctx.fillRect(0,0,wCW,wCH);\n  ctx.beginPath();ctx.moveTo(tLx,tY);ctx.lineTo(tRx,tY);ctx.lineTo(bRx,bY);ctx.lineTo(bLx,bY);ctx.closePath();\n  ctx.fillStyle=\'#2e6cb0\';ctx.fill();\n  ctx.strokeStyle=\'rgba(255,255,255,0.9)\';ctx.lineWidth=2.5;ctx.stroke();\n  const nL=wSc(0,0.5),nR=wSc(1,0.5);\n  ctx.beginPath();ctx.moveTo(nL.x,nL.y);ctx.lineTo(nR.x,nR.y);\n  ctx.strokeStyle=\'rgba(255,255,255,0.95)\';ctx.lineWidth=3.5;ctx.stroke();\n  const sL1=wSc(0,0.15),sR1=wSc(1,0.15),sL2=wSc(0,0.85),sR2=wSc(1,0.85);\n  ctx.strokeStyle=\'rgba(255,255,255,0.4)\';ctx.lineWidth=1.5;\n  ctx.beginPath();ctx.moveTo(sL1.x,sL1.y);ctx.lineTo(sR1.x,sR1.y);ctx.stroke();\n  ctx.beginPath();ctx.moveTo(sL2.x,sL2.y);ctx.lineTo(sR2.x,sR2.y);ctx.stroke();\n  const cN=wSc(.5,.5),cS1=wSc(.5,.15),cS2=wSc(.5,.85);\n  ctx.strokeStyle=\'rgba(255,255,255,0.3)\';ctx.lineWidth=1.2;\n  ctx.beginPath();ctx.moveTo(cS1.x,cS1.y);ctx.lineTo(cN.x,cN.y);ctx.stroke();\n  ctx.beginPath();ctx.moveTo(cN.x,cN.y);ctx.lineTo(cS2.x,cS2.y);ctx.stroke();\n}\n\nfunction wPlayerSize(ny){return Math.round(wCW*(0.03+ny*0.024));}\n\nfunction wDrawPlayer(ctx,nx,ny,fill,ring,label){\n  const p=wSc(nx,ny);\n  const r=wPlayerSize(ny);\n  const bodyH=r*1.6;\n  ctx.beginPath();ctx.ellipse(p.x,p.y+r*0.25,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(0,0,0,0.45)\';ctx.fill();\n  ctx.beginPath();\n  ctx.moveTo(p.x-r,p.y);ctx.lineTo(p.x+r,p.y);\n  ctx.lineTo(p.x+r*0.9,p.y-bodyH);ctx.lineTo(p.x-r*0.9,p.y-bodyH);\n  ctx.closePath();ctx.fillStyle=fill;ctx.fill();\n  ctx.beginPath();ctx.ellipse(p.x,p.y-bodyH,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=ring;ctx.fill();\n  ctx.fillStyle=\'rgba(255,255,255,0.95)\';\n  ctx.font=\'bold \'+Math.round(r*0.75)+\'px Inter,sans-serif\';\n  ctx.textAlign=\'center\';ctx.textBaseline=\'middle\';\n  ctx.fillText(label,p.x,p.y-bodyH+r*0.08);\n}\n\nfunction wDrawBall(ctx,nx,ny,h){\n  const p=wSc(nx,ny);\n  const pr=wPlayerSize(ny);\n  const lift=h*wCH*0.14;\n  const r=pr*0.42+h*pr*0.3;\n  ctx.beginPath();ctx.ellipse(p.x,p.y,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(0,0,0,\'+(0.38-h*0.18)+\')\';ctx.fill();\n  ctx.beginPath();ctx.arc(p.x,p.y-lift,r,0,Math.PI*2);\n  ctx.fillStyle=\'#d4e820\';ctx.fill();\n  ctx.strokeStyle=\'#9aac00\';ctx.lineWidth=1.2;ctx.stroke();\n}\n\nfunction wRender(t){\n  const ctx=wCanvas.getContext(\'2d\');\n  ctx.clearRect(0,0,wCW,wCH);\n  wDrawCourt(ctx);\n  const play=WATCH_PLAYS[currentPlayId]||WATCH_PLAYS[\'bandeja-hold\'];\n  const shots=play.shots;\n  const et=wEase(Math.min(t,1));\n  const s=shots[Math.min(wShot,shots.length-1)];\n  const prevY=wShot===0?play.sY:(shots[wShot-1].yP||play.sY);\n  const prevO=wShot===0?play.sO:(shots[wShot-1].oP||play.sO);\n  const curY=s.yP||prevY;const curO=s.oP||prevO;\n  const py=curY.map((p,i)=>({x:wLerp(prevY[i].x,p.x,et),y:wLerp(prevY[i].y,p.y,et)}));\n  const po=curO.map((p,i)=>({x:wLerp(prevO[i].x,p.x,et),y:wLerp(prevO[i].y,p.y,et)}));\n  po.forEach((p,i)=>wDrawPlayer(ctx,p.x,p.y,\'#50000e\',\'#dc2626\',[\'O1\',\'O2\'][i]));\n  py.forEach((p,i)=>wDrawPlayer(ctx,p.x,p.y,\'#1a0a2e\',i===1?\'#3ecf7e\':\'#7c4de0\',[\'Y1\',\'Y2\'][i]));\n  if(wShot<shots.length&&s.h!==\'M\'){\n    const bp=wBez(s.f,s.c,s.t,et);\n    const h=(s.ht||0)*Math.sin(et*Math.PI);\n    wDrawBall(ctx,bp.x,bp.y,h);\n  } else if(wShot>0){\n    const last=shots[Math.min(wShot-1,shots.length-1)];\n    wDrawBall(ctx,last.t.x,last.t.y,0);\n  }\n}\n\nfunction wAnimFrame(ts){\n  const play=WATCH_PLAYS[currentPlayId]||WATCH_PLAYS[\'bandeja-hold\'];\n  const shots=play.shots;\n  if(!wShotStart)wShotStart=ts;\n  const s=shots[wShot];\n  const t=Math.min((ts-wShotStart)/s.d,1);\n  wRender(t);\n  const total=shots.reduce((a,x)=>a+x.d,0);\n  const done=shots.slice(0,wShot).reduce((a,x)=>a+x.d,0)+(ts-wShotStart);\n  document.getElementById(\'watchProgressFill\').style.width=Math.min(done/total*100,100)+\'%\';\n  if(t>=1){\n    wShot++;\n    if(wShot>=shots.length){\n      wPlaying=false;\n      document.getElementById(\'watchLockedCard\').style.display=\'none\';\n      document.getElementById(\'watchUnlockedCard\').style.display=\'block\';\n      showToast(\'Play watched — quiz unlocked\');\n      return;\n    }\n    wShotStart=null;\n  }\n  if(wPlaying)wAnimId=requestAnimationFrame(wAnimFrame);\n}\n\nfunction wStartAnim(){\n  wShot=0;wShotStart=null;wPlaying=true;\n  document.getElementById(\'watchProgressFill\').style.width=\'0%\';\n  document.getElementById(\'watchLockedCard\').style.display=\'block\';\n  document.getElementById(\'watchUnlockedCard\').style.display=\'none\';\n  if(wAnimId)cancelAnimationFrame(wAnimId);\n  wAnimId=requestAnimationFrame(wAnimFrame);\n}\n\nwindow.addEventListener(\'resize\',()=>{\n  if(document.getElementById(\'screen-watch\').classList.contains(\'active\')){\n    wSetup();\n  }\n});\n\n\nfunction showToast(msg){\n  const t=document.getElementById(\'toast\');\n  t.textContent=msg;\n  t.style.display=\'block\';\n  setTimeout(()=>t.style.display=\'none\',2800);\n}\n\nfunction showScreen(name,navEl){\n  document.querySelectorAll(\'.screen\').forEach(s=>s.classList.remove(\'active\'));\n  document.getElementById(\'screen-\'+name).classList.add(\'active\');\n  if(navEl){\n    document.querySelectorAll(\'.nav-item\').forEach(n=>n.classList.remove(\'active\'));\n    navEl.classList.add(\'active\');\n  }\n  document.getElementById(\'appShell\').scrollTop=0;\n  const scr=document.getElementById(\'screen-\'+name);\n  if(scr)scr.scrollTop=0;\n}\n\nfunction goBack(name){\n  const navBtn=document.querySelector(\'.nav-item[data-screen="\'+name+\'"]\');\n  showScreen(name,navBtn);\n}\n\nlet currentPlayId=null;\nconst playNames={\n  \'bandeja-hold\':\'Bandeja hold at net\',\n  \'cross-lob\':\'Cross-court lob\',\n  \'serve-net-rush\':\'Serve + net rush\',\n  \'chiquita-advance\':\'Chiquita + advance\',\n  \'vibora-glass\':\'Vibora to side glass\',\n  \'around-post\':\'Around the post\'\n};\n\nfunction watchPlay(playId){\n  currentPlayId=playId;\n  document.getElementById(\'watchTitle\').textContent=playNames[playId]||\'Padel play\';\n  document.getElementById(\'watchLockedCard\').style.display=\'block\';\n  document.getElementById(\'watchUnlockedCard\').style.display=\'none\';\n  showScreen(\'watch\',null);\n  setTimeout(()=>{\n    wSetup();\n    wStartAnim();\n  },50);\n}\n\nfunction goToQuizFromWatch(){\n  quizContext=\'play\';\n  enterQuizScreen();\n}\n\nfunction goToQuiz(){\n  quizContext=\'daily\';\n  enterQuizScreen();\n}\n\nfunction goToQuizFromNav(navEl){\n  quizContext=\'daily\';\n  enterQuizScreen(navEl);\n}\n\nfunction enterQuizScreen(navEl){\n  resetQuizScreen();\n  if(isQuizLocked()){\n    showScreen(\'quiz-active\',navEl||document.querySelector(\'.nav-item[data-screen="quiz-active"]\'));\n    showQuizLockedState();\n  } else {\n    pickRandomQuiz();\n    showScreen(\'quiz-active\',navEl||document.querySelector(\'.nav-item[data-screen="quiz-active"]\'));\n  }\n}\n\nfunction resetQuizScreen(){\n  document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n    o.classList.remove(\'correct-sel\');\n    o.classList.remove(\'wrong-sel\');\n    o.style.pointerEvents=\'\';\n    o.style.cursor=\'\';\n  });\n  const reward=document.getElementById(\'quizReward\');\n  reward.style.display=\'none\';\n  reward.style.flexDirection=\'\';\n  reward.style.alignItems=\'\';\n  reward.style.gap=\'\';\n  reward.style.background=\'\';\n  reward.style.borderColor=\'\';\n  document.getElementById(\'quizProTag\').style.display=\'inline-flex\';\n  if(quizCountdownInterval){clearInterval(quizCountdownInterval);quizCountdownInterval=null;}\n}\n\nconst QUIZ_BANK_TACTICAL=[\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"Opponent lobs over your head at net. What\'s the correct response?",\n    opts:["Smash immediately","Bandeja, hold net position","Sprint back to baseline"],\n    correct:1,\n    explanation:"The bandeja is the right call — it gives you a controlled overhead that keeps you at the net. Smashing risks losing position; sprinting back gives your opponents the net for free."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"You\'re pinned at the baseline under pressure. What\'s the highest-percentage shot?",\n    opts:["A flat drive down the middle","A deep lob to reset the point","Run around for a forehand smash"],\n    correct:1,\n    explanation:"A deep lob is the classic defensive reset in padel — it buys time, forces opponents off the net, and lets you recover position. A flat drive under pressure is low-percentage."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"Your partner is pulled wide to the side glass. What should you do at net?",\n    opts:["Stay in your original position","Shift toward the middle to cover the open court","Move to the same side as your partner"],\n    correct:1,\n    explanation:"When your partner is dragged wide, you must shift centrally to cover the diagonal. Staying put leaves the middle open; moving the same way as your partner leaves the other side completely exposed."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"You\'ve just hit a strong lob and your opponents are scrambling. What\'s next?",\n    opts:["Relax and wait for their return","Advance to net immediately behind the lob","Stay back in case they counter-lob"],\n    correct:1,\n    explanation:"A good lob is your chance to take the net. Advance behind it immediately — if you stay back you hand the initiative back to your opponents even after winning the exchange."\n  }\n];\n\nconst QUIZ_BANK_NEWS=[\n  {\n    type:"news",\n    pro:"Padel world ranking",\n    q:"As of mid-2026, who holds the world No.1 men\'s padel ranking?",\n    opts:["Galán & Chingotto","Tapia & Coello","Lebrón & Augsburger"],\n    correct:1,\n    explanation:"Tapia & Coello have dominated the ATP/Premier Padel circuit since 2024, consistently ranked No.1. Galán & Lebrón split as a pair, reforming with new partners."\n  },\n  {\n    type:"news",\n    pro:"Padel records",\n    q:"What is the longest winning streak in professional padel history?",\n    opts:["47 consecutive match wins","30 consecutive match wins","60 consecutive match wins"],\n    correct:0,\n    explanation:"Belasteguín & Díaz held a 47-match winning streak — one of the most dominant runs in the history of any racket sport, spanning multiple consecutive tournaments."\n  },\n  {\n    type:"news",\n    pro:"Padel history",\n    q:"Which player held the world No.1 ranking for a record 16 consecutive seasons?",\n    opts:["Fernando Belasteguín","Juan Lebrón","Alejandro Galán"],\n    correct:0,\n    explanation:"Fernando Belasteguín held No.1 from 2002 to 2018 — 16 consecutive seasons. It remains the longest dominance in padel history and rivals any achievement in racket sports."\n  },\n  {\n    type:"news",\n    pro:"Padel world ranking",\n    q:"Which country has the most players in the men\'s world top 100 as of 2026?",\n    opts:["Argentina","Spain","Italy"],\n    correct:1,\n    explanation:"Spain leads the men\'s top 100 with the most represented players, driven by a massive club infrastructure and professional circuit. Argentina is a close second with a strong tradition of padel."\n  },\n  {\n    type:"news",\n    pro:"Padel women\'s ranking",\n    q:"Which pair leads the women\'s world ranking in 2026?",\n    opts:["Sánchez & Josemaría","Triay & Brea","Mapi & Majo Sánchez Alayeto"],\n    correct:1,\n    explanation:"Triay & Brea have been the dominant women\'s pair since 2022, winning multiple Premier Padel titles. Gemma Triay is widely regarded as the best women\'s player in the world."\n  }\n];\n\nconst QUIZ_BANK=[...QUIZ_BANK_TACTICAL,...QUIZ_BANK_NEWS];\n\nlet currentQuizIdx=0;\n\nfunction pickRandomQuiz(){\n  currentQuizIdx=Math.floor(Math.random()*QUIZ_BANK.length);\n  const quiz=QUIZ_BANK[currentQuizIdx];\n  const tag=document.getElementById(\'quizProTag\');\n  tag.textContent=quiz.pro;\n  tag.className=quiz.type===\'news\'?\'quiz-pro-tag news-tag\':\'quiz-pro-tag\';\n  const qEl=document.getElementById(\'quizQuestion\');\n  qEl.textContent=quiz.q;\n  qEl.dataset.explanation=quiz.explanation||\'\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  quiz.opts.forEach((opt,i)=>{\n    const div=document.createElement(\'div\');\n    div.className=\'quiz-opt\';\n    div.dataset.correct=(i===quiz.correct)?\'true\':\'false\';\n    div.textContent=opt;\n    div.onclick=()=>selectQuizOpt(div,i===quiz.correct);\n    container.appendChild(div);\n  });\n}\n\nfunction skipCheckin(){\n  showToast(\'No problem — come back anytime to confirm practice\');\n  setTimeout(()=>showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\')),700);\n}\n\nlet quizAnswered=false;\nlet quizContext=\'daily\';\nlet quizWrongCount=0;\nlet quizCountdownInterval=null;\nconst QUIZ_LOCKOUT_MS=60*60*1000;\nconst QUIZ_LOCKOUT_KEY=\'orbis_quiz_lockout_until\';\nconst QUIZ_WRONG_KEY=\'orbis_quiz_wrong_count\';\n\nfunction getQuizLockoutUntil(){\n  const v=localStorage.getItem(QUIZ_LOCKOUT_KEY);\n  return v?parseInt(v,10):0;\n}\n\nfunction isQuizLocked(){\n  return getQuizLockoutUntil()>Date.now();\n}\n\nfunction getQuizWrongCount(){\n  const v=localStorage.getItem(QUIZ_WRONG_KEY);\n  return v?parseInt(v,10):0;\n}\n\nfunction setQuizWrongCount(n){\n  localStorage.setItem(QUIZ_WRONG_KEY,String(n));\n}\n\nfunction lockQuizForOneHour(){\n  const until=Date.now()+QUIZ_LOCKOUT_MS;\n  localStorage.setItem(QUIZ_LOCKOUT_KEY,String(until));\n  setQuizWrongCount(0);\n}\n\nfunction clearQuizLockout(){\n  localStorage.removeItem(QUIZ_LOCKOUT_KEY);\n  setQuizWrongCount(0);\n}\n\nfunction formatCountdown(ms){\n  const totalSec=Math.max(0,Math.ceil(ms/1000));\n  const m=Math.floor(totalSec/60);\n  const s=totalSec%60;\n  return (m<10?\'0\':\'\')+m+\':\'+(s<10?\'0\':\'\')+s;\n}\n\nfunction showQuizLockedState(){\n  document.getElementById(\'quizProTag\').style.display=\'none\';\n  document.getElementById(\'quizQuestion\').textContent=\'Quiz locked after 2 missed answers\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  document.getElementById(\'quizReward\').style.display=\'none\';\n  const lockCard=document.createElement(\'div\');\n  lockCard.className=\'quiz-lock-card\';\n  lockCard.innerHTML=\'<div class="quiz-lock-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="quiz-lock-text">Try again in</div><div class="quiz-lock-timer" id="quizLockTimer">60:00</div>\';\n  container.appendChild(lockCard);\n  if(quizCountdownInterval)clearInterval(quizCountdownInterval);\n  quizCountdownInterval=setInterval(()=>{\n    const remaining=getQuizLockoutUntil()-Date.now();\n    if(remaining<=0){\n      clearInterval(quizCountdownInterval);\n      clearQuizLockout();\n      pickRandomQuiz();\n      return;\n    }\n    const timerEl=document.getElementById(\'quizLockTimer\');\n    if(timerEl)timerEl.textContent=formatCountdown(remaining);\n  },1000);\n}\n\nfunction selectQuizOpt(el,isCorrect){\n  if(quizAnswered)return;\n  quizAnswered=true;\n\n  // Disable all options immediately\n  document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n    o.style.pointerEvents=\'none\';\n    o.style.cursor=\'default\';\n  });\n\n  if(isCorrect){\n    el.classList.add(\'correct-sel\');\n    setQuizWrongCount(0);\n    const reward=document.getElementById(\'quizReward\');\n    reward.innerHTML=\'<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Correct — +20 XP earned\';\n    reward.style.display=\'flex\';\n    setTimeout(()=>{\n      quizAnswered=false;\n      if(quizContext===\'play\'){\n        showScreen(\'checkin\',null);\n        document.getElementById(\'locStepA\').style.display=\'block\';\n        document.getElementById(\'locStepB\').style.display=\'none\';\n      } else {\n        showQuizResultCard();\n      }\n    },1400);\n  } else {\n    el.classList.add(\'wrong-sel\');\n    const wrongCount=getQuizWrongCount()+1;\n    setQuizWrongCount(wrongCount);\n\n    // Reveal the correct answer immediately\n    document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n      if(o.dataset.correct===\'true\') o.classList.add(\'correct-sel\');\n    });\n\n    // Show explanation and a Continue button\n    const reward=document.getElementById(\'quizReward\');\n    const explanation=document.getElementById(\'quizQuestion\').dataset.explanation||\'\';\n    reward.style.display=\'flex\';\n    reward.style.flexDirection=\'column\';\n    reward.style.alignItems=\'flex-start\';\n    reward.style.gap=\'10px\';\n    reward.style.background=\'rgba(248,113,113,.08)\';\n    reward.style.borderColor=\'rgba(248,113,113,.25)\';\n    reward.innerHTML=`\n      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#f87171;">\n        <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n        Not quite\n      </div>\n      ${explanation?`<div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;">${explanation}</div>`:\'\'}\n      <div style="width:100%;background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px;border-radius:9px;text-align:center;cursor:pointer;"\n           onclick="afterWrongAnswer()">Got it — continue</div>\n    `;\n\n    if(wrongCount>=2){\n      lockQuizForOneHour();\n    }\n  }\n}\n\nfunction afterWrongAnswer(){\n  quizAnswered=false;\n  const isLocked=getQuizLockoutUntil()>Date.now();\n  if(isLocked){\n    showQuizLockedState();\n  } else {\n    showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\'));\n  }\n}\n\nfunction showQuizResultCard(){\n  document.getElementById(\'quizProTag\').style.display=\'none\';\n  document.getElementById(\'quizQuestion\').textContent=\'\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  document.getElementById(\'quizReward\').style.display=\'none\';\n  const resultCard=document.createElement(\'div\');\n  resultCard.className=\'quiz-result-card\';\n  resultCard.innerHTML=\'<div class="quiz-result-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="quiz-result-title">Daily quiz complete</div><div class="quiz-result-xp">+20 XP earned</div><div class="quiz-result-btn" id="quizResultHomeBtn">Back to home</div>\';\n  container.appendChild(resultCard);\n  document.getElementById(\'quizResultHomeBtn\').onclick=()=>{\n    showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\'));\n  };\n}\n\nfunction confirmByLocation(){\n  showToast(\'Practice confirmed by location — +15 XP, streak extended\');\n  setTimeout(()=>showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\')),900);\n}\n\nfunction askCoachConfirm(){\n  document.getElementById(\'locStepA\').style.display=\'none\';\n  document.getElementById(\'locStepB\').style.display=\'block\';\n}\n\nfunction selectPlaysFilter(el){\n  document.querySelectorAll(\'.filter-chip\').forEach(c=>c.classList.remove(\'active\'));\n  el.classList.add(\'active\');\n  filterPlaysList();\n}\n\nfunction filterPlaysList(){\n  const query=document.getElementById(\'playsSearch\').value.trim().toLowerCase();\n  const activeFilter=document.querySelector(\'.filter-chip.active\').dataset.lv;\n  const items=document.querySelectorAll(\'.lib-item\');\n  let visibleCount=0;\n  items.forEach(item=>{\n    const matchesQuery=!query||item.dataset.name.includes(query);\n    const matchesLevel=activeFilter===\'all\'||item.dataset.lv===activeFilter;\n    const show=matchesQuery&&matchesLevel;\n    item.style.display=show?\'flex\':\'none\';\n    if(show)visibleCount++;\n  });\n  document.getElementById(\'playsEmpty\').style.display=visibleCount===0?\'block\':\'none\';\n}\n\n</script>\n</body>\n</html>\n')
+    return HTMLResponse(content='<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbis AI — Padel Coaching Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#3d1a6e;
+  --navy2:#2a1050;
+  --lime:#3ecf7e;
+  --lime-dim:rgba(62,207,126,.12);
+  --lime-border:rgba(62,207,126,.25);
+  --court:#1a4d7a;
+  --bg-dark:#080b14;
+  --bg-mid:#0f1420;
+  --bg-light:#f5f3fa;
+  --surface:#fff;
+  --text-dark:#0f0a1e;
+  --text-mid:#5a4a7a;
+  --text-muted:#9a8aaa;
+  --border:#e4dff2;
+}
+html{scroll-behavior:smooth;}
+body{font-family:\'Inter\',system-ui,sans-serif;background:var(--bg-dark);color:#fff;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,11,20,.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-logo svg{width:28px;height:28px;}
+.nav-logo-text{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em;}
+.nav-logo-text span{color:var(--lime);}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-tab{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;
+  color:rgba(255,255,255,.55);cursor:pointer;border:none;background:none;
+  font-family:inherit;transition:color .15s;}
+.nav-tab:hover,.nav-tab.active{color:#fff;}
+.nav-tab.active{background:rgba(255,255,255,.08);}
+.nav-cta{padding:7px 16px;background:var(--lime);color:#0a2a16;font-size:12.5px;
+  font-weight:700;border-radius:20px;border:none;cursor:pointer;font-family:inherit;
+  transition:opacity .15s;}
+.nav-cta:hover{opacity:.9;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:80px 24px 60px;position:relative;overflow:hidden;
+  background:var(--bg-dark);}
+.hero-bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;background:radial-gradient(ellipse,rgba(61,26,110,.45) 0%,transparent 70%);
+  pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;
+  background:var(--lime-dim);border:1px solid var(--lime-border);
+  border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;
+  color:var(--lime);letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px;}
+.hero h1{font-size:clamp(38px,6vw,72px);font-weight:900;line-height:1.05;
+  letter-spacing:-.03em;text-align:center;max-width:800px;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:var(--lime);}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.55);line-height:1.6;
+  text-align:center;max-width:520px;margin-bottom:36px;}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;}
+.btn-lime{padding:14px 28px;background:var(--lime);color:#0a2a16;font-size:14px;
+  font-weight:800;border-radius:10px;border:none;cursor:pointer;font-family:inherit;
+  transition:opacity .15s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+.btn-lime:hover{opacity:.9;}
+.btn-outline{padding:13px 24px;background:transparent;color:#fff;font-size:14px;
+  font-weight:600;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
+  cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;
+  align-items:center;gap:7px;transition:border-color .15s;}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);}
+.hero-trust{font-size:11.5px;color:rgba(255,255,255,.3);text-align:center;}
+
+/* Hero court card */
+.hero-court-wrap{width:100%;max-width:680px;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 80px rgba(0,0,0,.5);
+  position:relative;}
+.hero-court-label{position:absolute;top:12px;left:12px;z-index:2;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border-radius:20px;
+  padding:4px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.1);}
+.hero-court-play{position:absolute;top:12px;right:12px;z-index:2;
+  background:var(--lime-dim);border:1px solid var(--lime-border);
+  border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--lime);}
+#heroCanvas{display:block;width:100%;aspect-ratio:16/9;}
+.hero-shot-label{background:rgba(8,11,20,.9);padding:10px 18px;
+  font-size:12px;font-weight:600;color:rgba(255,255,255,.7);text-align:center;
+  border-top:1px solid rgba(255,255,255,.06);}
+.hero-shot-label strong{color:#fff;}
+
+/* ── SOCIAL PROOF STRIP ── */
+.proof-strip{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);padding:18px 24px;
+  display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;}
+.proof-item{display:flex;align-items:center;gap:8px;font-size:12px;
+  color:rgba(255,255,255,.4);font-weight:500;}
+.proof-item strong{color:rgba(255,255,255,.8);font-weight:700;}
+.proof-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);}
+
+/* ── SECTIONS ── */
+.section{padding:96px 24px;}
+.section-inner{max-width:1000px;margin:0 auto;}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:14px;}
+.section-title{font-size:clamp(28px,4vw,46px);font-weight:900;line-height:1.1;
+  letter-spacing:-.02em;margin-bottom:16px;}
+.section-sub{font-size:16px;line-height:1.65;color:rgba(255,255,255,.5);
+  max-width:560px;margin-bottom:48px;}
+
+/* ── BENEFITS (dark) ── */
+.benefits{background:var(--bg-dark);}
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.benefit-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:24px;transition:border-color .2s;}
+.benefit-card:hover{border-color:rgba(62,207,126,.25);}
+.benefit-icon{width:40px;height:40px;border-radius:10px;background:var(--lime-dim);
+  border:1px solid var(--lime-border);display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;}
+.benefit-icon svg{width:20px;height:20px;stroke:var(--lime);fill:none;stroke-width:2;}
+.benefit-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;}
+.benefit-body{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;}
+
+/* ── PLAYER APP DEMO ── */
+.demo-section{background:var(--bg-mid);}
+.demo-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.demo-phone{background:var(--navy2);border-radius:20px;border:1px solid rgba(255,255,255,.08);
+  overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.4);}
+.demo-phone-top{background:var(--navy);padding:14px 16px 12px;}
+.demo-phone-greeting{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);}
+.demo-phone-greeting span{color:var(--lime);}
+.demo-phone-xp{display:flex;align-items:center;justify-content:space-between;
+  margin-top:10px;}
+.demo-xp-val{font-size:22px;font-weight:900;color:var(--lime);}
+.demo-xp-label{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;}
+.demo-xp-bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:6px;overflow:hidden;}
+.demo-xp-fill{height:100%;width:68%;background:var(--lime);border-radius:2px;}
+.demo-phone-body{padding:14px 16px;}
+.demo-quiz-card{background:linear-gradient(135deg,#1a5c38,#0d2818);border-radius:12px;
+  padding:14px;margin-bottom:12px;}
+.demo-quiz-tag{font-size:9px;font-weight:700;color:var(--lime);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:6px;}
+.demo-quiz-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:10px;}
+.demo-quiz-btn{display:inline-flex;align-items:center;gap:5px;background:var(--lime);
+  color:#0a2a16;font-size:11px;font-weight:700;padding:6px 12px;border-radius:7px;}
+.demo-plays-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.demo-play-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);
+  border-radius:9px;padding:9px 11px;margin-bottom:6px;}
+.demo-play-icon{width:28px;height:28px;background:rgba(62,207,126,.12);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.demo-play-icon svg{width:14px;height:14px;stroke:var(--lime);fill:none;stroke-width:2;}
+.demo-play-name{font-size:11.5px;font-weight:700;color:#fff;}
+.demo-play-level{font-size:9.5px;color:rgba(255,255,255,.35);}
+.demo-play-check{margin-left:auto;width:18px;height:18px;border-radius:50%;
+  background:rgba(62,207,126,.2);display:flex;align-items:center;justify-content:center;}
+.demo-play-check svg{width:10px;height:10px;stroke:var(--lime);fill:none;stroke-width:3;}
+
+.demo-text{}
+.demo-text .eyebrow{color:var(--lime);}
+.demo-text .section-title{color:#fff;}
+.demo-text .section-sub{color:rgba(255,255,255,.5);}
+.demo-features{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+.demo-feature{display:flex;align-items:flex-start;gap:12px;}
+.demo-feature-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);
+  flex-shrink:0;margin-top:6px;}
+.demo-feature-text{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.5;}
+.demo-feature-text strong{color:#fff;}
+
+/* ── MARKETPLACE (dark) ── */
+.marketplace{background:var(--bg-dark);}
+.marketplace-card{background:linear-gradient(135deg,rgba(61,26,110,.4),rgba(15,20,32,.8));
+  border:1px solid rgba(124,77,224,.3);border-radius:20px;padding:32px;
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;}
+.mp-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);
+  border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:5px 12px;
+  font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:16px;}
+.mp-title{font-size:26px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px;letter-spacing:-.02em;}
+.mp-sub{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:20px;}
+.mp-earn{display:flex;align-items:center;gap:10px;background:rgba(62,207,126,.08);
+  border:1px solid var(--lime-border);border-radius:10px;padding:12px 16px;}
+.mp-earn-val{font-size:20px;font-weight:900;color:var(--lime);}
+.mp-earn-label{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;}
+.mp-rows{display:flex;flex-direction:column;gap:8px;}
+.mp-row{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;padding:11px 14px;}
+.mp-row-name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7);}
+.mp-status{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;}
+.mp-status.approved{background:rgba(62,207,126,.15);color:var(--lime);}
+.mp-status.pending{background:rgba(245,158,11,.12);color:#f59e0b;}
+.mp-status.review{background:rgba(124,77,224,.15);color:#b08fff;}
+
+/* ── COACH SECTION (light) ── */
+.coach-section{background:var(--bg-light);}
+.coach-section .eyebrow{color:var(--navy);}
+.coach-section .section-title{color:var(--text-dark);}
+.coach-section .section-sub{color:var(--text-mid);}
+.coach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.coach-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;}
+.coach-card-icon{width:36px;height:36px;border-radius:9px;background:#f0edf8;
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.coach-card-icon svg{width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;}
+.coach-card-title{font-size:13.5px;font-weight:800;color:var(--text-dark);margin-bottom:6px;}
+.coach-card-body{font-size:12px;color:var(--text-mid);line-height:1.55;}
+.coach-demo-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px;}
+.coach-link{padding:10px 18px;border-radius:9px;font-size:12.5px;font-weight:700;
+  text-decoration:none;border:1.5px solid var(--navy);color:var(--navy);transition:all .15s;}
+.coach-link:hover{background:var(--navy);color:#fff;}
+.coach-link.primary{background:var(--navy);color:#fff;}
+.coach-link.primary:hover{opacity:.85;}
+
+/* ── WAITLIST CTA ── */
+.cta-section{background:linear-gradient(135deg,var(--navy2),var(--bg-dark));
+  padding:96px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:300px;background:radial-gradient(ellipse,rgba(61,26,110,.6),transparent 70%);
+  pointer-events:none;}
+.cta-section .section-title{color:#fff;max-width:540px;margin:0 auto 12px;}
+.cta-section .section-sub{color:rgba(255,255,255,.45);margin:0 auto 36px;}
+.waitlist-form{display:flex;gap:10px;max-width:440px;margin:0 auto 14px;flex-wrap:wrap;justify-content:center;}
+.waitlist-input{flex:1;min-width:200px;padding:13px 16px;border-radius:10px;
+  border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+  color:#fff;font-size:14px;font-family:inherit;outline:none;}
+.waitlist-input::placeholder{color:rgba(255,255,255,.3);}
+.waitlist-input:focus{border-color:var(--lime);}
+.waitlist-btn{padding:13px 24px;background:var(--lime);color:#0a2a16;font-size:14px;
+  font-weight:800;border-radius:10px;border:none;cursor:pointer;font-family:inherit;
+  white-space:nowrap;}
+.cta-trust{font-size:11.5px;color:rgba(255,255,255,.25);}
+.waitlist-success{display:none;text-align:center;padding:20px;}
+.waitlist-success-icon{width:48px;height:48px;border-radius:50%;background:var(--lime-dim);
+  border:1px solid var(--lime-border);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;}
+.waitlist-success-icon svg{width:24px;height:24px;stroke:var(--lime);fill:none;stroke-width:2.5;}
+.waitlist-success-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px;}
+.waitlist-success-sub{font-size:13px;color:rgba(255,255,255,.45);}
+
+/* ── FOOTER ── */
+footer{background:var(--bg-dark);border-top:1px solid rgba(255,255,255,.06);
+  padding:32px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#fff;}
+.footer-logo span{color:var(--lime);}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-link{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s;}
+.footer-link:hover{color:rgba(255,255,255,.7);}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.2);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .demo-inner{grid-template-columns:1fr;}
+  .marketplace-card{grid-template-columns:1fr;}
+  .proof-strip{gap:16px;}
+  .nav-links .nav-tab{display:none;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">
+    <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="18" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="8" stroke="#3ecf7e" stroke-width="4"/></svg>
+    <span class="nav-logo-text">Orbis <span>AI</span></span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-tab active" onclick="setTab(\'players\',this)">For players</button>
+    <button class="nav-tab" onclick="setTab(\'coaches\',this)">For coaches</button>
+    <button class="nav-cta" onclick="scrollToWaitlist()">Join waitlist</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero-players">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    For padel players
+  </div>
+  <h1>Learn padel tactics<br>like a <em>pro trains.</em></h1>
+  <p class="hero-sub">Daily tactics, animated plays, and a trivia quiz that builds real court IQ — in 2 minutes a day.</p>
+  <div class="hero-actions">
+    <a href="/demo/player" class="btn-lime">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
+      Try the player app
+    </a>
+    <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist →</button>
+  </div>
+  <p class="hero-trust">Free early access · No credit card · Limited spots</p>
+  <br><br>
+  <!-- Live court -->
+  <div class="hero-court-wrap">
+    <div class="hero-court-label">Orbis AI · Live play</div>
+    <div class="hero-court-play" id="heroPlayLabel">+300 plays</div>
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-shot-label" id="heroShotLabel">Watch your students learn <strong>serve + net rush</strong> in seconds, not sentences</div>
+  </div>
+</section>
+
+<!-- HERO COACHES (hidden by default) -->
+<section class="hero" id="hero-coaches" style="display:none;">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    For padel coaches
+  </div>
+  <h1>Stop drawing plays<br>on a napkin. <em>Show them animated.</em></h1>
+  <p class="hero-sub">Orbis AI gives padel coaches an animated tactical simulator, AI video analysis, and a roster built for how academies actually run.</p>
+  <div class="hero-actions">
+    <a href="/demo/coach" class="btn-lime">See coach demo →</a>
+    <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+  </div>
+  <p class="hero-trust">Free early access · No credit card · Limited spots</p>
+</section>
+
+<!-- PLAYER SECTIONS (toggled by tab) -->
+<div id="section-players">
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item"><strong>+300</strong> animated plays</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>FIP Academy</strong> framework</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>2 min</strong> daily session</div>
+  <div class="proof-dot"></div>
+  <div class="proof-item">Built for <strong>padel-first</strong></div>
+  <div class="proof-dot"></div>
+  <div class="proof-item"><strong>35M+</strong> padel players worldwide</div>
+</div>
+
+<!-- BENEFITS -->
+<section class="section benefits">
+  <div class="section-inner">
+    <div class="eyebrow">Why Orbis</div>
+    <h2 class="section-title">Your court IQ.<br>Upgraded daily.</h2>
+    <p class="section-sub">Most padel players improve their fitness. Almost none improve their tactical reading. Orbis fixes that.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="benefit-title">Daily padel trivia</div>
+        <div class="benefit-body">A new question every day — pros, rules, and tactics. Two minutes that actually make you think differently on court.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        </div>
+        <div class="benefit-title">Animated plays library</div>
+        <div class="benefit-body">+300 animated tactical plays — from basic serve + net rush to advanced vibora sequences. Watch, understand, execute.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+        </div>
+        <div class="benefit-title">Your personal skill path</div>
+        <div class="benefit-body">Progress from Serve to Net Rush to Bandeja to Vibora. XP, streaks, and badges that track your real tactical evolution.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="benefit-title">Coach-verified practice</div>
+        <div class="benefit-body">Practiced a tactic on court? Confirm it with GPS or ask your coach to verify. Earn extra XP for real on-court reps.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYER APP DEMO -->
+<section class="section demo-section">
+  <div class="section-inner">
+    <div class="demo-inner">
+      <!-- Phone mockup -->
+      <div class="demo-phone">
+        <div class="demo-phone-top">
+          <div class="demo-phone-greeting">Hey, <span>Carlos</span></div>
+          <div class="demo-phone-xp">
+            <div>
+              <div class="demo-xp-label">Total XP</div>
+              <div class="demo-xp-val">840</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="demo-xp-label">Next reward at</div>
+              <div style="font-size:11px;font-weight:700;color:#fff;">1,000 XP</div>
+            </div>
+          </div>
+          <div class="demo-xp-bar"><div class="demo-xp-fill"></div></div>
+        </div>
+        <div class="demo-phone-body">
+          <div class="demo-quiz-card">
+            <div class="demo-quiz-tag">⚡ Daily quiz</div>
+            <div class="demo-quiz-title">Today\'s padel trivia</div>
+            <div class="demo-quiz-btn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+              Start — +20 XP
+            </div>
+          </div>
+          <div class="demo-plays-label">Practice these next</div>
+          <div class="demo-play-row">
+            <div class="demo-play-icon"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+            <div>
+              <div class="demo-play-name">Bandeja hold at net</div>
+              <div class="demo-play-level">Intermediate · 12,400 players learned this</div>
+            </div>
+          </div>
+          <div class="demo-play-row">
+            <div class="demo-play-icon"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+            <div>
+              <div class="demo-play-name">Cross-court lob</div>
+              <div class="demo-play-level">Beginner · 28,900 players learned this</div>
+            </div>
+            <div class="demo-play-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+        </div>
+      </div>
+      <!-- Text -->
+      <div class="demo-text">
+        <div class="eyebrow">The player app</div>
+        <h2 class="section-title" style="color:#fff;">Your padel brain.<br>In your pocket.</h2>
+        <p class="section-sub">Open it before practice, after a match, or on the way to the club. Two minutes of daily padel IQ that compounds over time.</p>
+        <div class="demo-features">
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Daily trivia</strong> — tactics, pro rankings, rules. One question, one explanation, +20 XP.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Watch animated plays</strong> — see exactly how a bandeja or vibora sequence unfolds, step by step.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>Earn XP for on-court practice</strong> — confirm with GPS or coach verification for bonus points.</div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-dot"></div>
+            <div class="demo-feature-text"><strong>7-day streak tracker</strong> — build the habit that turns good players into tactical players.</div>
+          </div>
+        </div>
+        <a href="/demo/player" class="btn-lime">Try the app now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE -->
+<section class="section marketplace">
+  <div class="section-inner">
+    <div class="eyebrow">The marketplace</div>
+    <h2 class="section-title">Tactics created by coaches.<br>Learned by you.</h2>
+    <p class="section-sub" style="margin-bottom:32px;">Every play in the library was submitted and approved by a certified padel coach. The best tactics rise to the top.</p>
+    <div class="marketplace-card">
+      <div>
+        <div class="mp-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          How it works
+        </div>
+        <div class="mp-title">Coaches submit.<br>You learn.<br>They earn.</div>
+        <p class="mp-sub">Coaches describe tactics in their own words. Orbis Core builds the animation. Once approved, it joins the library and the coach earns every time it gets used.</p>
+        <div class="mp-earn">
+          <div>
+            <div class="mp-earn-val">€5</div>
+          </div>
+          <div class="mp-earn-label">per 1,000 plays viewed<br><span style="color:rgba(255,255,255,.25);font-size:10px;">coaches earn every time you learn</span></div>
+        </div>
+      </div>
+      <div class="mp-rows">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Latest tactics</div>
+        <div class="mp-row">
+          <span class="mp-row-name">Fake bandeja, real chiquita</span>
+          <span class="mp-status approved">Approved</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Cross vibora into the glass</span>
+          <span class="mp-status pending">Pending</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Double lob recovery</span>
+          <span class="mp-status review">In review</span>
+        </div>
+        <div class="mp-row">
+          <span class="mp-row-name">Around the post — left side</span>
+          <span class="mp-status approved">Approved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /section-players -->
+
+<!-- COACHES SECTION -->
+<section id="section-coaches" style="display:none;">
+
+  <!-- Coach hero -->
+  <div style="background:var(--bg-dark);padding:96px 24px 64px;">
+    <div class="section-inner">
+      <div class="eyebrow">For padel coaches</div>
+      <h2 class="section-title">The platform built for<br>how padel academies<br><em style="font-style:normal;color:var(--lime);">actually run.</em></h2>
+      <p class="section-sub">Tactical simulator, student roster, session evaluations, and AI video analysis — all in one place, built padel-first from day one.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/demo/coach" class="btn-lime">See the live coach demo →</a>
+        <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 1: Tactical simulator + tactic creator -->
+  <div style="background:var(--bg-mid);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Simulator mockup -->
+        <div style="background:#0a1520;border-radius:16px;border:1px solid rgba(255,255,255,.08);overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.4);">
+          <div style="background:#111827;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);">
+            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);">Orbis AI · Tactical simulator</span>
+            <span style="font-size:10px;font-weight:700;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:20px;padding:2px 8px;">+300 plays</span>
+          </div>
+          <!-- Mini court SVG -->
+          <div style="background:#1a4d7a;aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 400 300" style="width:100%;height:100%;position:absolute;top:0;left:0;">
+              <!-- Court -->
+              <polygon points="80,20 320,20 390,280 10,280" fill="#2e6cb0" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+              <!-- Net -->
+              <line x1="45" y1="150" x2="355" y2="150" stroke="rgba(255,255,255,0.9)" stroke-width="3"/>
+              <!-- Service lines -->
+              <line x1="28" y1="57" x2="372" y2="57" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+              <line x1="18" y1="243" x2="382" y2="243" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+              <line x1="200" y1="57" x2="200" y2="150" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <line x1="200" y1="150" x2="200" y2="243" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <!-- Players Y -->
+              <ellipse cx="148" cy="232" rx="16" ry="5" fill="rgba(0,0,0,0.4)"/>
+              <rect x="133" y="200" width="30" height="32" rx="2" fill="#1a0a2e"/>
+              <ellipse cx="148" cy="200" rx="15" ry="5" fill="#7c4de0"/>
+              <text x="148" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="white">Y1</text>
+              <ellipse cx="252" cy="232" rx="16" ry="5" fill="rgba(0,0,0,0.4)"/>
+              <rect x="237" y="200" width="30" height="32" rx="2" fill="#1a0a2e"/>
+              <ellipse cx="252" cy="200" rx="15" ry="5" fill="#3ecf7e"/>
+              <text x="252" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="white">Y2</text>
+              <!-- Players O -->
+              <ellipse cx="140" cy="78" rx="14" ry="4" fill="rgba(0,0,0,0.4)"/>
+              <rect x="127" y="50" width="26" height="28" rx="2" fill="#50000e"/>
+              <ellipse cx="140" cy="50" rx="13" ry="4" fill="#dc2626"/>
+              <text x="140" y="65" text-anchor="middle" font-size="9" font-weight="bold" fill="white">O1</text>
+              <ellipse cx="260" cy="78" rx="14" ry="4" fill="rgba(0,0,0,0.4)"/>
+              <rect x="247" y="50" width="26" height="28" rx="2" fill="#50000e"/>
+              <ellipse cx="260" cy="50" rx="13" ry="4" fill="#dc2626"/>
+              <text x="260" y="65" text-anchor="middle" font-size="9" font-weight="bold" fill="white">O2</text>
+              <!-- Ball path: serve + net rush -->
+              <path d="M252,215 Q200,140 200,30" stroke="#3ecf7e" stroke-width="2" stroke-dasharray="5,4" fill="none"/>
+              <circle cx="200" cy="30" r="7" fill="#d4e820" stroke="#9aac00" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-top:1px solid rgba(255,255,255,.06);">
+            <span style="font-size:11px;color:rgba(255,255,255,.5);">Watch your students learn <strong style="color:#fff;">serve + net rush</strong> in seconds</span>
+          </div>
+          <!-- Tactic creator row -->
+          <div style="padding:10px 14px;background:rgba(61,26,110,.15);border-top:1px solid rgba(124,77,224,.2);">
+            <div style="font-size:9.5px;font-weight:700;color:#b08fff;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Create your own tactic</div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(255,255,255,.4);">Describe a rally in your own words...</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:5px 8px;font-size:10px;color:rgba(255,255,255,.3);">Fake bandeja, real chiquita</div>
+              <div style="background:#7c4de0;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;">Build →</div>
+            </div>
+          </div>
+        </div>
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Tactical simulator</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">+300 plays.<br>Or build your own.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">Show students exactly how a bandeja, vibora, or serve + net rush sequence unfolds — animated, step by step. And if you have a tactic that works for your students, describe it in plain words and Orbis Core builds the animation for you.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">FIP Academy Level 0–4</strong> — every play grounded in the official padel coaching standard</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Create your own tactics</strong> — describe a rally and Orbis Core builds the animation. Once approved, it joins the library</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Earn €5 per 1,000 uses</strong> — every time another coach\'s student watches your tactic, you get paid</div>
+            </div>
+          </div>
+          <a href="/demo/simulator" class="btn-lime">Open simulator →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 2: Student roster -->
+  <div style="background:var(--bg-dark);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Student roster</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">Every student.<br>Every session.<br>Under control.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">10 students or 100 — your full roster in one place with categoría tags, session frequency, and next class at a glance. No more WhatsApp threads to track who trained when.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Categoría tags</strong> — 1ª Pro through 5ª Amateur, filter your roster by level instantly</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Session history</strong> — see how many sessions each student has logged and when they last trained</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Weekly class view</strong> — all your classes laid out day by day, individual and group</div>
+            </div>
+          </div>
+          <a href="/demo/coach" class="btn-lime">See coach hub →</a>
+        </div>
+        <!-- Roster mockup -->
+        <div style="background:#fff;border-radius:16px;border:1px solid #e4dff2;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.3);">
+          <div style="background:#3d1a6e;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:600;">Good morning, Toni 🎾</div>
+              <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">Padel Lab Madrid · 10 students</div>
+            </div>
+            <div style="background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--lime);">Orbis Core active</div>
+          </div>
+          <div style="padding:12px 14px;">
+            <div style="font-size:9.5px;font-weight:700;color:#9a8aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">My students</div>
+            <!-- Student rows -->
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#3d1a6e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">F</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Fernando de los Rios</div>
+                  <div style="font-size:10px;color:#9a8aaa;">3ª · 2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Thu 26, 10:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#7c4de0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">M</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Marta Iglesias</div>
+                  <div style="font-size:10px;color:#9a8aaa;">1ª Pro · +2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Wed 25, 09:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#f7f5fb;border-radius:9px;padding:9px 11px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#2e6cb0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">P</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:700;color:#0f0a1e;">Pablo Santos</div>
+                  <div style="font-size:10px;color:#9a8aaa;">1ª Pro · +2x/week · Individual</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:9px;color:#9a8aaa;">Next class</div>
+                  <div style="font-size:10px;font-weight:700;color:#3d1a6e;">Wed 25, 17:00</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:center;padding:8px;font-size:10px;color:#9a8aaa;">+ 7 more students</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 3: Evaluation forms -->
+  <div style="background:var(--bg-mid);padding:80px 24px;">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+        <!-- Eval mockup -->
+        <div style="background:#fff;border-radius:16px;border:1px solid #e4dff2;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.3);">
+          <div style="background:#3d1a6e;padding:10px 14px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;">Fernando de los Rios — Evaluation</div>
+            <div style="font-size:9.5px;color:rgba(255,255,255,.5);margin-top:2px;">Session: Thu Jun 26 · 10:00 · Individual</div>
+          </div>
+          <div style="padding:12px 14px;">
+            <!-- Score summary -->
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.6</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Technical</div>
+              </div>
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.3</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Tactical</div>
+              </div>
+              <div style="flex:1;background:#f7f5fb;border-radius:8px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:900;color:#3d1a6e;">3.5</div>
+                <div style="font-size:8.5px;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;">Overall</div>
+              </div>
+            </div>
+            <!-- Progress trend -->
+            <div style="font-size:9.5px;font-weight:700;color:#9a8aaa;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Progress — last 4 sessions</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:40px;margin-bottom:12px;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.1</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:62%;opacity:.4;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">May 29</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.2</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:64%;opacity:.55;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">Jun 5</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#9a8aaa;">3.4</div>
+                <div style="width:100%;background:#3d1a6e;border-radius:3px 3px 0 0;height:68%;opacity:.75;"></div>
+                <div style="font-size:7.5px;color:#c4bedb;">Jun 12</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:8px;color:#3ecf7e;font-weight:700;">3.5</div>
+                <div style="width:100%;background:#3ecf7e;border-radius:3px 3px 0 0;height:70%;"></div>
+                <div style="font-size:7.5px;color:#3ecf7e;font-weight:600;">Jun 26</div>
+              </div>
+            </div>
+            <!-- Coach note -->
+            <div style="background:#f7f5fb;border-radius:8px;padding:9px 11px;font-size:10.5px;color:#5a4a7a;line-height:1.5;">
+              Good improvement on net positioning — holding the volley zone better. Still rushing the bandeja under pressure. Worth revisiting wall-bounce contact-point drill.
+            </div>
+          </div>
+        </div>
+        <!-- Text -->
+        <div>
+          <div class="eyebrow">Session evaluations</div>
+          <h3 style="font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px;">Finally know<br>if your students<br>are actually improving.</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;">Score every session across technical and tactical dimensions. Watch progress build over time. No more relying on memory when a student asks "am I getting better?"</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Coach + student dual eval</strong> — both sides score the same session, you see the gap</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Progress chart</strong> — 4-session trend per student, per skill dimension</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:7px;"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.5;"><strong style="color:#fff;">Coach notes per session</strong> — write your observations, they stay attached to the eval forever</div>
+            </div>
+          </div>
+          <a href="/demo/coach" class="btn-lime">See evaluations in action →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coach CTA -->
+  <div style="background:linear-gradient(135deg,var(--navy2),var(--bg-dark));padding:64px 24px;text-align:center;">
+    <div class="section-inner" style="max-width:600px;">
+      <div class="eyebrow" style="color:var(--lime);margin-bottom:16px;">Early access for coaches</div>
+      <h3 style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">Ready to run your academy smarter?</h3>
+      <p style="font-size:15px;color:rgba(255,255,255,.45);margin-bottom:28px;">Join coaches across Europe and LatAm getting early access to Orbis AI. Free to start, no credit card required.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/demo/coach" class="btn-lime">See the live demo →</a>
+        <button class="btn-outline" onclick="scrollToWaitlist()">Join waitlist</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg width="22" height="22" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="18" stroke="#3ecf7e" stroke-width="4"/><circle cx="32" cy="32" r="8" stroke="#3ecf7e" stroke-width="4"/></svg>
+    Orbis <span>AI</span>
+  </div>
+  <div class="footer-links">
+    <a href="/demo/player" class="footer-link">Player app</a>
+    <a href="/demo/coach" class="footer-link">Coach hub</a>
+    <a href="/demo/simulator" class="footer-link">Simulator</a>
+    <a href="/demo/video" class="footer-link">Video analysis</a>
+    <a href="/login" class="footer-link">Sign in</a>
+  </div>
+  <div class="footer-copy">© 2026 Orbis AI · Madrid, Spain</div>
+</footer>
+
+<script>
+// ── TAB SWITCH ────────────────────────────────────────
+function setTab(tab, el){
+  document.querySelectorAll(\'.nav-tab\').forEach(t=>t.classList.remove(\'active\'));
+  el.classList.add(\'active\');
+  document.getElementById(\'hero-players\').style.display   = tab===\'players\'?\'flex\':\'none\';
+  document.getElementById(\'hero-coaches\').style.display   = tab===\'coaches\'?\'flex\':\'none\';
+  document.getElementById(\'section-players\').style.display = tab===\'players\'?\'block\':\'none\';
+  document.getElementById(\'section-coaches\').style.display = tab===\'coaches\'?\'block\':\'none\';
+  window.scrollTo({top:0,behavior:\'smooth\'});
+}
+
+function scrollToWaitlist(){
+  document.querySelector(\'footer\').scrollIntoView({behavior:\'smooth\'});
+}
+
+// ── WAITLIST ──────────────────────────────────────────
+async function submitWL(){
+  const email = document.getElementById(\'wlEmail\').value.trim();
+  if(!email || !email.includes(\'@\')){ alert(\'Please enter a valid email.\'); return; }
+  try{
+    const res = await fetch(\'/api/waitlist\',{
+      method:\'POST\',
+      headers:{\'Content-Type\':\'application/json\'},
+      body: JSON.stringify({name:\'\',email,country:\'\',city:\'\',sport:\'padel\'})
+    });
+    if(res.ok){
+      document.getElementById(\'waitlistFormWrap\').style.display=\'none\';
+      document.getElementById(\'waitlistSuccess\').style.display=\'block\';
+    }
+  } catch(e){
+    // fallback — show success anyway for demo
+    document.getElementById(\'waitlistFormWrap\').style.display=\'none\';
+    document.getElementById(\'waitlistSuccess\').style.display=\'block\';
+  }
+}
+
+// ── HERO COURT ANIMATION ──────────────────────────────
+const PLAYS={
+\'bandeja-hold\':{
+  sY:[{x:.32,y:.57},{x:.68,y:.57}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:\'<strong>Bandeja hold</strong> — overhead control, stay at net\',
+  shots:[
+    {l:\'Cross-court volley\',h:\'Y\',f:{x:.32,y:.57},c:{x:.55,y:.35},t:{x:.72,y:.12},ht:.05,d:800,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:\'Opponents LOB\',h:\'O\',f:{x:.72,y:.12},c:{x:.5,y:.4},t:{x:.5,y:.76},ht:.82,d:1500,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:\'BANDEJA wide\',h:\'Y\',f:{x:.68,y:.76},c:{x:.88,y:.45},t:{x:.92,y:.12},ht:.12,d:900,yP:[{x:.32,y:.57},{x:.68,y:.78}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+},
+\'cross-lob\':{
+  sY:[{x:.32,y:.84},{x:.68,y:.84}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:\'<strong>Cross-court lob</strong> — reset from baseline, take the net\',
+  shots:[
+    {l:\'Opponents drive left\',h:\'O\',f:{x:.72,y:.14},c:{x:.45,y:.5},t:{x:.32,y:.8},ht:.08,d:850,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:\'Deep cross LOB\',h:\'Y\',f:{x:.32,y:.8},c:{x:.72,y:.3},t:{x:.85,y:.07},ht:.85,d:1500,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+},
+\'serve-net-rush\':{
+  sY:[{x:.32,y:.88},{x:.68,y:.88}],sO:[{x:.28,y:.14},{x:.72,y:.14}],
+  label:\'<strong>Serve + net rush</strong> — attack the net behind your serve\',
+  shots:[
+    {l:\'Serve down the T\',h:\'Y\',f:{x:.68,y:.88},c:{x:.5,y:.65},t:{x:.5,y:.12},ht:.15,d:900,yP:[{x:.32,y:.88},{x:.68,y:.88}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},
+    {l:\'Both sprint to net\',h:\'M\',f:{x:.5,y:.12},t:{x:.5,y:.12},ht:0,d:700,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}
+  ]
+}
+};
+
+const PLAY_IDS = Object.keys(PLAYS);
+let hCanvas,hCW,hCH,hShot=0,hShotStart=null,hPlaying=false,hAnimId=null,hPlayIdx=0,hCurrentId=\'serve-net-rush\';
+
+function hSetup(){
+  hCanvas=document.getElementById(\'heroCanvas\');
+  if(!hCanvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=hCanvas.parentElement.clientWidth;
+  const h=Math.round(w*9/16);
+  hCanvas.width=w*dpr;hCanvas.height=h*dpr;
+  hCanvas.style.width=w+\'px\';hCanvas.style.height=h+\'px\';
+  hCanvas.getContext(\'2d\').setTransform(dpr,0,0,dpr,0,0);
+  hCW=w;hCH=h;
+}
+
+function hSc(nx,ny){
+  const tLx=hCW*0.22,tLy=hCH*0.06,tRx=hCW*0.78;
+  const bLx=hCW*0.04,bLy=hCH*0.94,bRx=hCW*0.96;
+  const lx=tLx+(bLx-tLx)*ny,rx=tRx+(bRx-tRx)*ny;
+  return{x:lx+(rx-lx)*nx,y:tLy+(bLy-tLy)*ny};
+}
+function hLerp(a,b,t){return a+(b-a)*t;}
+function hEase(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+function hBez(p0,p1,p2,t){
+  return{x:(1-t)*(1-t)*p0.x+2*(1-t)*t*p1.x+t*t*p2.x,
+         y:(1-t)*(1-t)*p0.y+2*(1-t)*t*p1.y+t*t*p2.y};
+}
+function hDrawCourt(ctx){
+  const tLx=hCW*0.22,tRx=hCW*0.78,tY=hCH*0.06;
+  const bLx=hCW*0.04,bRx=hCW*0.96,bY=hCH*0.94;
+  ctx.fillStyle=\'#1a4d7a\';ctx.fillRect(0,0,hCW,hCH);
+  ctx.beginPath();ctx.moveTo(tLx,tY);ctx.lineTo(tRx,tY);ctx.lineTo(bRx,bY);ctx.lineTo(bLx,bY);ctx.closePath();
+  ctx.fillStyle=\'#2e6cb0\';ctx.fill();
+  ctx.strokeStyle=\'rgba(255,255,255,.9)\';ctx.lineWidth=2;ctx.stroke();
+  const nL=hSc(0,.5),nR=hSc(1,.5);
+  ctx.beginPath();ctx.moveTo(nL.x,nL.y);ctx.lineTo(nR.x,nR.y);
+  ctx.strokeStyle=\'rgba(255,255,255,.95)\';ctx.lineWidth=3;ctx.stroke();
+  [[0,.15],[0,.85]].forEach(([x,y])=>{
+    const l=hSc(0,y),r=hSc(1,y);
+    ctx.beginPath();ctx.moveTo(l.x,l.y);ctx.lineTo(r.x,r.y);
+    ctx.strokeStyle=\'rgba(255,255,255,.35)\';ctx.lineWidth=1.2;ctx.stroke();
+  });
+  const cN=hSc(.5,.5),cS1=hSc(.5,.15),cS2=hSc(.5,.85);
+  ctx.strokeStyle=\'rgba(255,255,255,.25)\';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(cS1.x,cS1.y);ctx.lineTo(cN.x,cN.y);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cN.x,cN.y);ctx.lineTo(cS2.x,cS2.y);ctx.stroke();
+}
+function hPS(ny){return Math.round(hCW*(0.028+ny*0.022));}
+function hDrawPlayer(ctx,nx,ny,fill,ring,label){
+  const p=hSc(nx,ny),r=hPS(ny),bodyH=r*1.6;
+  ctx.beginPath();ctx.ellipse(p.x,p.y+r*.25,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle=\'rgba(0,0,0,.4)\';ctx.fill();
+  ctx.beginPath();ctx.moveTo(p.x-r,p.y);ctx.lineTo(p.x+r,p.y);
+  ctx.lineTo(p.x+r*.9,p.y-bodyH);ctx.lineTo(p.x-r*.9,p.y-bodyH);ctx.closePath();
+  ctx.fillStyle=fill;ctx.fill();
+  ctx.beginPath();ctx.ellipse(p.x,p.y-bodyH,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle=ring;ctx.fill();
+  ctx.fillStyle=\'rgba(255,255,255,.95)\';
+  ctx.font=\'bold \'+Math.round(r*.75)+\'px Inter,sans-serif\';
+  ctx.textAlign=\'center\';ctx.textBaseline=\'middle\';
+  ctx.fillText(label,p.x,p.y-bodyH+r*.08);
+}
+function hDrawBall(ctx,nx,ny,h){
+  const p=hSc(nx,ny),pr=hPS(ny),lift=h*hCH*0.14,r=pr*.42+h*pr*.3;
+  ctx.beginPath();ctx.ellipse(p.x,p.y,r*.9,r*.32,0,0,Math.PI*2);
+  ctx.fillStyle=\'rgba(0,0,0,\'+(0.35-h*.15)+\')\';ctx.fill();
+  ctx.beginPath();ctx.arc(p.x,p.y-lift,r,0,Math.PI*2);
+  ctx.fillStyle=\'#d4e820\';ctx.fill();
+  ctx.strokeStyle=\'#9aac00\';ctx.lineWidth=1;ctx.stroke();
+}
+function hRender(t){
+  const ctx=hCanvas.getContext(\'2d\');
+  ctx.clearRect(0,0,hCW,hCH);
+  hDrawCourt(ctx);
+  const play=PLAYS[hCurrentId];
+  const shots=play.shots;
+  const et=hEase(Math.min(t,1));
+  const s=shots[Math.min(hShot,shots.length-1)];
+  const prevY=hShot===0?play.sY:(shots[hShot-1].yP||play.sY);
+  const prevO=hShot===0?play.sO:(shots[hShot-1].oP||play.sO);
+  const curY=s.yP||prevY;const curO=s.oP||prevO;
+  const py=curY.map((p,i)=>({x:hLerp(prevY[i].x,p.x,et),y:hLerp(prevY[i].y,p.y,et)}));
+  const po=curO.map((p,i)=>({x:hLerp(prevO[i].x,p.x,et),y:hLerp(prevO[i].y,p.y,et)}));
+  po.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,\'#50000e\',\'#dc2626\',[\'O1\',\'O2\'][i]));
+  py.forEach((p,i)=>hDrawPlayer(ctx,p.x,p.y,\'#1a0a2e\',i===1?\'#3ecf7e\':\'#7c4de0\',[\'Y1\',\'Y2\'][i]));
+  if(hShot<shots.length&&s.h!==\'M\'){
+    const bp=hBez(s.f,s.c,s.t,et);
+    const bh=(s.ht||0)*Math.sin(et*Math.PI);
+    hDrawBall(ctx,bp.x,bp.y,bh);
+  }else if(hShot>0){
+    const last=shots[Math.min(hShot-1,shots.length-1)];
+    hDrawBall(ctx,last.t.x,last.t.y,0);
+  }
+}
+function hAnimFrame(ts){
+  const play=PLAYS[hCurrentId];
+  const shots=play.shots;
+  if(!hShotStart)hShotStart=ts;
+  const s=shots[hShot];
+  const t=Math.min((ts-hShotStart)/s.d,1);
+  hRender(t);
+  if(t>=1){
+    hShot++;
+    if(hShot>=shots.length){
+      // pause then switch play
+      hPlaying=false;
+      setTimeout(()=>{
+        hPlayIdx=(hPlayIdx+1)%PLAY_IDS.length;
+        hCurrentId=PLAY_IDS[hPlayIdx];
+        document.getElementById(\'heroShotLabel\').innerHTML=PLAYS[hCurrentId].label;
+        hShot=0;hShotStart=null;hPlaying=true;
+        hAnimId=requestAnimationFrame(hAnimFrame);
+      },2000);
+      return;
+    }
+    hShotStart=null;
+  }
+  if(hPlaying)hAnimId=requestAnimationFrame(hAnimFrame);
+}
+function hStart(){
+  hSetup();
+  if(!hCanvas)return;
+  hShot=0;hShotStart=null;hPlaying=true;
+  document.getElementById(\'heroShotLabel\').innerHTML=PLAYS[hCurrentId].label;
+  hAnimId=requestAnimationFrame(hAnimFrame);
+}
+window.addEventListener(\'resize\',()=>{hSetup();});
+window.addEventListener(\'load\',()=>{ setTimeout(hStart,100); });
+</script>
+</body>
+</html>
+');font-family:\'Inter\',system-ui,sans-serif;color:var(--text);overscroll-behavior:none;}\n.app-shell{max-width:420px;margin:0 auto;min-height:100vh;background:var(--surface);display:flex;flex-direction:column;position:relative;box-shadow:0 0 40px rgba(61,26,110,.08);padding-bottom:64px;}\n\n.top{background:var(--navy);padding:16px 18px 14px;color:#fff;flex-shrink:0;}\n.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}\n.greeting{font-size:14px;font-weight:700;}\n.greeting span{color:var(--lime);}\n.streak{display:flex;align-items:center;gap:5px;background:rgba(255,159,28,.18);border:1px solid rgba(255,159,28,.4);border-radius:20px;padding:4px 10px;font-size:11.5px;font-weight:700;color:var(--amber);}\n.icon-xs{width:12px;height:12px;flex-shrink:0;}\n.icon-sm{width:16px;height:16px;flex-shrink:0;}\n\n.xp-total-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:10px;}\n.xp-total-card{flex-shrink:0;text-align:center;}\n.xp-total-label{font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;}\n.xp-total-val{font-size:18px;font-weight:800;color:var(--lime);}\n.xp-total-next{flex:1;}\n.xp-total-next-label{font-size:8.5px;color:rgba(255,255,255,.4);}\n.xp-total-next-val{font-size:10.5px;font-weight:700;color:#fff;margin-bottom:4px;}\n.xp-total-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}\n.xp-total-fill{height:100%;background:var(--lime);border-radius:3px;}\n.xp-row{display:flex;gap:8px;}\n.xp-card{flex:1;background:rgba(255,255,255,.08);border-radius:10px;padding:8px 9px;}\n.xp-label{display:flex;align-items:center;gap:4px;font-size:8.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}\n.xp-label i{font-size:10px;}\n.xp-bar-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-top:5px;}\n.xp-bar-fill{height:100%;border-radius:3px;transition:width .3s;}\n.xp-val{font-size:10.5px;font-weight:700;color:#fff;}\n\n.screen{display:none;padding-bottom:24px;}\n.screen.active{display:block;}\n\n.section-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);margin:0 0 12px;padding:0 18px;}\n.section-title i{font-size:15px;color:var(--purple);}\n.section-title:first-child{margin-top:18px;}\n\n.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;border-top:0.5px solid var(--border);background:#fff;flex-shrink:0;z-index:20;max-width:420px;}\n.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;font-size:9px;color:var(--text3);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;}\n.nav-item.active{color:var(--navy);}\n.nav-icon{width:18px;height:18px;}\n\n.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:9px;font-size:12.5px;font-weight:600;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap;max-width:90%;text-align:center;}\n.quiz-card{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:16px;padding:18px;position:relative;overflow:hidden;cursor:pointer;}\n.quiz-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(62,207,126,.18);border:1px solid rgba(62,207,126,.35);border-radius:20px;padding:3px 9px;font-size:9.5px;font-weight:700;color:var(--lime);margin-bottom:10px;}\n.qb-icon{font-size:12px;}\n.quiz-title{font-size:14.5px;font-weight:700;color:#fff;margin-bottom:5px;}\n.quiz-sub{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;}\n.quiz-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;}\n.qbtn-icon{font-size:12px;}\n\n.streak-cal{display:flex;gap:6px;}\n.day{flex:1;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}\n.day.done{background:var(--lime-pale);color:var(--lime-dark);}\n.day.today{background:var(--navy);color:#fff;}\n.day.future{background:#f0eef8;color:#c4bedb;}\n\n.tree{position:relative;}\n.tree-row{display:flex;align-items:center;gap:0;position:relative;margin-bottom:4px;}\n.tree-node{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:3px solid transparent;position:relative;z-index:2;}\n.tn-icon{font-size:18px;}\n.tree-node.done{background:var(--lime-pale);border-color:var(--lime);color:var(--lime-dark);}\n.tree-node.active{background:var(--navy);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px rgba(124,77,224,.18);}\n.tree-node.locked{background:#f0eef8;border-color:var(--border);color:#c4bedb;}\n.tree-line{flex:1;height:3px;background:var(--border);margin:0 -2px;}\n.tree-line.done{background:var(--lime);}\n.tree-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);padding:0 2px;margin-top:4px;}\n\n.play-row{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:10px 12px;cursor:pointer;}\n.play-list-wrap{padding:0 18px;display:flex;flex-direction:column;gap:8px;}\n.play-icon{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--border);}\n.play-name{font-size:12.5px;font-weight:700;color:var(--text);}\n.play-meta{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);margin-top:1px;}\n.pm-icon{font-size:11px;}\n.play-check{margin-left:auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}\n.play-check.done{background:var(--lime-pale);color:var(--lime-dark);}\n.play-check.todo{background:#fff;border:1.5px solid var(--border);}\n.pc-icon{font-size:11px;}\n\n.search-box{position:relative;}\n.search-icon-svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);}\n.search-box input{width:100%;border:1px solid var(--border);border-radius:9px;padding:9px 12px 9px 32px;font-size:12.5px;font-family:inherit;outline:none;}\n.search-box input:focus{border-color:var(--navy);}\n\n.filter-row{display:flex;gap:6px;overflow-x:auto;}\n.filter-chip{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:#fff;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;}\n.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}\n\n.empty-state,.empty-hint{text-align:center;padding:30px 24px;font-size:12px;color:var(--text3);}\n\n.watch-top{background:var(--navy);height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;}\n.watch-back{color:rgba(255,255,255,.7);width:16px;height:16px;cursor:pointer;}\n.watch-title{font-size:12.5px;font-weight:700;color:#fff;}\n.xp-pill{display:flex;align-items:center;gap:4px;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.3);border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--lime);}\n.xpp-icon{font-size:11px;}\n\n.watch-court{background:#1a4d7a;height:220px;position:relative;overflow:hidden;}\n#watchCanvas{display:block;width:100%;height:100%;}\n.watch-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);}\n.watch-progress-fill{height:100%;background:var(--lime);width:0%;transition:width .1s linear;}\n\n.step-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}\n.step-icon{font-size:13px;}\n.locked-card{background:#f7f5fb;border:1.5px dashed #d4cfe8;border-radius:12px;padding:16px;text-align:center;}\n.locked-icon{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:17px;color:var(--text3);}\n.li-icon{font-size:17px;}\n.locked-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}\n.locked-sub{font-size:11px;color:var(--text3);line-height:1.5;}\n.watch-cta-btn{margin-top:12px;background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px;border-radius:9px;cursor:pointer;}\n.zero-note{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#c4915c;background:#fff7ed;border:1px solid #fde4c4;border-radius:8px;padding:9px 11px;margin-top:14px;}\n.zn-icon{font-size:14px;flex-shrink:0;}\n\n.quiz-frame{background:var(--text);padding:20px 18px;min-height:240px;display:flex;flex-direction:column;}\n.quiz-q{font-size:14px;font-weight:700;color:#fff;margin-bottom:16px;line-height:1.45;}\n.quiz-opt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;font-size:12.5px;color:rgba(255,255,255,.8);margin-bottom:9px;cursor:pointer;}\n.quiz-opt.correct-sel{background:rgba(62,207,126,.18);border-color:var(--lime);color:var(--lime);font-weight:700;}\n.quiz-opt.wrong-sel{background:rgba(248,113,113,.12);border-color:#f87171;color:#f87171;}\n.quiz-reward{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(62,207,126,.12);border:1px solid rgba(62,207,126,.3);border-radius:10px;padding:11px;font-size:12.5px;font-weight:700;color:var(--lime);}\n\n.loc-found{background:linear-gradient(135deg,#1a5c38 0%,#0d2818 100%);border-radius:14px;padding:18px;text-align:center;}\n.loc-pin{width:42px;height:42px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:19px;color:var(--lime);}\n.lp-icon{font-size:19px;}\n.loc-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:5px;}\n.loc-club{font-size:11.5px;color:var(--lime);font-weight:600;margin-bottom:4px;}\n.loc-sub{font-size:10.5px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:14px;}\n\n.tier-list{display:flex;flex-direction:column;gap:8px;text-align:left;}\n.tier-card{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;}\n.tier-card.recommended{border-color:var(--purple);background:rgba(124,77,224,.12);}\n.tier-badge{position:absolute;top:-7px;right:10px;background:var(--purple);color:#fff;font-size:8px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;}\n.tier-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}\n.ti-icon{font-size:14px;}\n.tier-icon.loc{background:rgba(62,207,126,.15);color:var(--lime);}\n.tier-icon.coach{background:rgba(124,77,224,.2);color:#a78bfa;}\n.tier-text{flex:1;}\n.tier-name{font-size:11.5px;font-weight:700;color:#fff;}\n.tier-desc{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:1px;}\n.tier-xp{font-size:12px;font-weight:800;color:var(--lime);white-space:nowrap;}\n.tier-card.skip{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03);}\n.tier-icon.skip-icon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);}\n.tier-card.skip .tier-name{color:rgba(255,255,255,.55);}\n.tier-card.skip .tier-desc{color:rgba(255,255,255,.3);}\n.tier-xp.skip-xp{color:rgba(255,255,255,.35);font-size:10.5px;font-weight:600;}\n\n.quiz-pro-tag{display:inline-flex;align-items:center;background:rgba(124,77,224,.15);border:1px solid rgba(124,77,224,.3);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#a78bfa;margin-bottom:14px;}\n.quiz-pro-tag.news-tag{background:rgba(62,207,126,.15);border-color:rgba(62,207,126,.3);color:var(--lime);}\n\n.quiz-lock-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}\n.quiz-lock-icon{width:46px;height:46px;border-radius:50%;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#f87171;}\n.quiz-lock-text{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px;}\n.quiz-lock-timer{font-size:28px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;}\n\n.quiz-result-card{text-align:center;padding:30px 16px;margin-top:auto;margin-bottom:auto;}\n.quiz-result-icon{width:46px;height:46px;border-radius:50%;background:rgba(62,207,126,.15);border:1px solid rgba(62,207,126,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--lime);}\n.quiz-result-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}\n.quiz-result-xp{font-size:20px;font-weight:800;color:var(--lime);margin-bottom:18px;}\n.quiz-result-btn{background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px 22px;border-radius:9px;display:inline-block;cursor:pointer;}\n\n.coach-pending{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}\n.coach-avatar{width:46px;height:46px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:700;color:var(--lime-dark);}\n.coach-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}\n.coach-sub{font-size:11px;color:var(--text3);line-height:1.55;margin-bottom:12px;}\n.coach-status{display:inline-flex;align-items:center;gap:6px;background:#fef3c7;border:1px solid #fcd989;border-radius:20px;padding:5px 12px;font-size:10.5px;font-weight:700;color:#92400e;}\n.cs-icon{font-size:12px;}\n.fallback-note{margin-top:14px;font-size:11px;color:var(--text3);text-decoration:underline;cursor:pointer;}\n\n.profile-card{text-align:center;margin-bottom:20px;}\n.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--lime-pale);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;font-weight:700;color:var(--lime-dark);}\n.profile-name{font-size:15px;font-weight:700;color:var(--text);}\n.profile-sub{font-size:11px;color:var(--text3);margin-top:2px;}\n.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}\n.profile-stat{background:#f7f5fb;border-radius:11px;padding:14px 8px;text-align:center;}\n.profile-stat-val{font-size:18px;font-weight:800;color:var(--navy);}\n.profile-stat-label{font-size:9.5px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.04em;}\n.profile-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;}\n.profile-coach-card{display:flex;align-items:center;gap:11px;background:#f7f5fb;border-radius:11px;padding:12px 14px;}\n.profile-coach-avatar{width:36px;height:36px;border-radius:50%;background:var(--lime-pale);color:var(--lime-dark);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}\n.profile-coach-name{font-size:12.5px;font-weight:700;color:var(--text);}\n.profile-coach-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}\n\n</style>\n</head>\n<body>\n<div class="app-shell" id="appShell">\n\n  <div class="toast" id="toast"></div>\n\n    <div class="top">\n    <div class="top-row">\n      <div class="greeting">Hey, <span>Carlos</span></div>\n      <div class="streak">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>\n        <span id="streakCount">12</span> day streak\n      </div>\n    </div>\n    <div class="xp-total-row">\n      <div class="xp-total-card">\n        <div class="xp-total-label">Total XP</div>\n        <div class="xp-total-val" id="totalXpVal">840</div>\n      </div>\n      <div class="xp-total-next">\n        <div class="xp-total-next-label">Next reward at</div>\n        <div class="xp-total-next-val">1,000 XP</div>\n        <div class="xp-total-track"><div class="xp-total-fill" id="xpTotalFill" style="width:84%;"></div></div>\n      </div>\n    </div>\n    <div class="xp-row">\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>\n          Net play\n        </div>\n        <div class="xp-val">Level 4</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpNet" style="width:70%;background:var(--lime);"></div></div>\n      </div>\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>\n          Defense\n        </div>\n        <div class="xp-val">Level 2</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpDefense" style="width:35%;background:var(--purple);"></div></div>\n      </div>\n      <div class="xp-card">\n        <div class="xp-label">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n          Serve\n        </div>\n        <div class="xp-val">Level 3</div>\n        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpServe" style="width:55%;background:var(--amber);"></div></div>\n      </div>\n    </div>\n  </div>\n\n    <div class="screen active" id="screen-home">\n    <div style="padding:18px 18px 0;">\n      <div class="quiz-card" onclick="goToQuiz()">\n        <div class="quiz-badge">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n          Daily quiz\n        </div>\n        <div class="quiz-title" id="quizHomeTitle">Today\'s padel trivia</div>\n        <div class="quiz-sub">Test your knowledge — tactics, pros &amp; rules &middot; +20 XP &middot; 2 min</div>\n        <div class="quiz-btn">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21"/></svg>\n          Start\n        </div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>\n      This week\n    </div>\n    <div style="padding:0 18px 22px;">\n      <div class="streak-cal">\n        <div class="day done">M</div>\n        <div class="day done">T</div>\n        <div class="day done">W</div>\n        <div class="day done">T</div>\n        <div class="day today">F</div>\n        <div class="day future">S</div>\n        <div class="day future">S</div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>\n      Your skill path\n    </div>\n    <div style="padding:0 18px 22px;">\n      <div class="tree">\n        <div class="tree-row">\n          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n          <div class="tree-line done"></div>\n          <div class="tree-node done"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n          <div class="tree-line done"></div>\n          <div class="tree-node active"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>\n          <div class="tree-line"></div>\n          <div class="tree-node locked"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>\n        </div>\n        <div class="tree-meta">\n          <span>Serve</span><span>Net rush</span><span>Bandeja</span><span>Vibora</span>\n        </div>\n      </div>\n    </div>\n\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>\n      Practice these next\n    </div>\n    <div class="play-list-wrap">\n      <div class="play-row" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon">\n          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n        </div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta">\n            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>\n            Intermediate &middot; 12,400 players learned this\n          </div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row" onclick="watchPlay(\'cross-lob\')">\n        <div class="play-icon">\n          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n        </div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Cross-court lob</div>\n          <div class="play-meta">\n            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>\n            Beginner &middot; 28,900 players learned this\n          </div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-plays">\n    <div style="padding:18px 18px 12px;">\n      <div class="search-box">\n        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>\n        <input type="text" placeholder="Search plays..." id="playsSearch" oninput="filterPlaysList()">\n      </div>\n    </div>\n    <div class="filter-row" style="padding:0 18px 14px;">\n      <div class="filter-chip active" data-lv="all" onclick="selectPlaysFilter(this)">All</div>\n      <div class="filter-chip" data-lv="beginner" onclick="selectPlaysFilter(this)">Beginner</div>\n      <div class="filter-chip" data-lv="intermediate" onclick="selectPlaysFilter(this)">Intermediate</div>\n      <div class="filter-chip" data-lv="advanced" onclick="selectPlaysFilter(this)">Advanced</div>\n    </div>\n\n    <div class="play-list-wrap" id="playsListContainer">\n      <div class="play-row lib-item" data-lv="beginner" data-name="serve net rush" onclick="watchPlay(\'serve-net-rush\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Serve + net rush</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Beginner &middot; 31,200 players learned this</div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n      <div class="play-row lib-item" data-lv="beginner" data-name="cross court lob" onclick="watchPlay(\'cross-lob\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Cross-court lob</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Beginner &middot; 28,900 players learned this</div>\n        </div>\n        <div class="play-check done"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n      </div>\n      <div class="play-row lib-item" data-lv="intermediate" data-name="bandeja hold at net" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; 12,400 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="intermediate" data-name="chiquita advance" onclick="watchPlay(\'chiquita-advance\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Chiquita + advance</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; 9,800 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="advanced" data-name="vibora side glass" onclick="watchPlay(\'vibora-glass\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Vibora to side glass</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Advanced &middot; 4,100 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n      <div class="play-row lib-item" data-lv="advanced" data-name="around the post" onclick="watchPlay(\'around-post\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Around the post</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Advanced &middot; 2,600 players learned this</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n    </div>\n    <div class="empty-state" id="playsEmpty" style="display:none;">No plays match your search.</div>\n  </div>\n\n  <div class="screen" id="screen-watch">\n    <div class="watch-top">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'plays\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title" id="watchTitle">Bandeja hold at net</div>\n      <div style="width:16px;"></div>\n    </div>\n    <div class="watch-court" id="watchCourt">\n      <canvas id="watchCanvas"></canvas>\n      <div class="watch-progress"><div class="watch-progress-fill" id="watchProgressFill"></div></div>\n    </div>\n    <div style="padding:16px 18px;">\n      <div class="step-label">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>\n        Step 1 of 3\n      </div>\n      <div class="locked-card" id="watchLockedCard">\n        <div class="locked-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>\n        <div class="locked-title">Watch to unlock the quiz</div>\n        <div class="locked-sub">Watch the full play once, then the quiz unlocks below.</div>\n      </div>\n      <div class="locked-card" id="watchUnlockedCard" style="display:none;">\n        <div class="locked-icon" style="background:var(--lime-pale);color:var(--lime-dark);"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>\n        <div class="locked-title">Quiz unlocked</div>\n        <div class="locked-sub">You\'ve watched the full play. Take the quiz to earn XP.</div>\n        <div class="watch-cta-btn" onclick="goToQuizFromWatch()">Take the quiz</div>\n      </div>\n      <div class="zero-note">\n        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>\n        Watching alone earns 0 XP &mdash; XP comes from the quiz and verified on-court practice.\n      </div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-quiz-active">\n    <div class="watch-top" style="background:var(--text);">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'home\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title">Quick check</div>\n      <div class="xp-pill">\n        <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n        +20 XP\n      </div>\n    </div>\n    <div class="quiz-frame">\n      <div class="quiz-pro-tag" id="quizProTag">Inspired by Tapia &amp; Coello\'s net play</div>\n      <div class="quiz-q" id="quizQuestion">Opponent lobs over your head at net. What\'s the correct response?</div>\n      <div id="quizOptsContainer">\n        <div class="quiz-opt" data-correct="false" onclick="selectQuizOpt(this,false)">Smash immediately</div>\n        <div class="quiz-opt" data-correct="true" onclick="selectQuizOpt(this,true)">Bandeja, hold net position</div>\n        <div class="quiz-opt" data-correct="false" onclick="selectQuizOpt(this,false)">Sprint back to baseline</div>\n      </div>\n      <div class="quiz-reward" id="quizReward" style="display:none;"></div>\n    </div>\n  </div>\n\n  <div class="screen" id="screen-checkin">\n    <div class="watch-top" style="background:var(--text);">\n      <svg class="icon-sm watch-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="goBack(\'home\')"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n      <div class="watch-title">Confirm practice</div>\n      <div style="width:16px;"></div>\n    </div>\n    <div style="padding:18px;">\n\n      <div class="loc-found" id="locStepA">\n        <div class="loc-pin"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>\n        <div class="loc-title">We detected you\'re at a padel club</div>\n        <div class="loc-club">Padel Lab Madrid</div>\n        <div class="loc-sub">Choose how you\'d like to confirm you drilled this tactic today.</div>\n\n        <div class="tier-list">\n          <div class="tier-card" onclick="confirmByLocation()">\n            <div class="tier-icon loc"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Confirm by location</div>\n              <div class="tier-desc">Self-reported, verified by GPS</div>\n            </div>\n            <div class="tier-xp">+15 XP</div>\n          </div>\n          <div class="tier-card recommended" onclick="askCoachConfirm()">\n            <div class="tier-badge">More XP</div>\n            <div class="tier-icon coach"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Ask my coach to confirm</div>\n              <div class="tier-desc">Sent to your coach for a quick yes or no</div>\n            </div>\n            <div class="tier-xp high">+40 XP</div>\n          </div>\n          <div class="tier-card skip" onclick="skipCheckin()">\n            <div class="tier-icon skip-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>\n            <div class="tier-text">\n              <div class="tier-name">Skip for now</div>\n              <div class="tier-desc">Neither option fits right now</div>\n            </div>\n            <div class="tier-xp skip-xp">No XP</div>\n          </div>\n        </div>\n      </div>\n\n      <div class="coach-pending" id="locStepB" style="display:none;">\n        <div class="coach-avatar">T</div>\n        <div class="coach-title">Sent to Toni Alcala</div>\n        <div class="coach-sub">Your coach will get a quick prompt to confirm you drilled this tactic in today\'s session.</div>\n        <div class="coach-status">\n          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>\n          Awaiting confirmation\n        </div>\n        <div class="fallback-note" onclick="confirmByLocation()">Or confirm now with location for +15 XP instead</div>\n      </div>\n\n    </div>\n  </div>\n\n  <div class="screen" id="screen-saved">\n    <div class="section-title">\n      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>\n      Your saved plays\n    </div>\n    <div class="play-list-wrap">\n      <div class="play-row" onclick="watchPlay(\'bandeja-hold\')">\n        <div class="play-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>\n        <div style="flex:1;min-width:0;">\n          <div class="play-name">Bandeja hold at net</div>\n          <div class="play-meta"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Intermediate &middot; saved 3 days ago</div>\n        </div>\n        <div class="play-check todo"></div>\n      </div>\n    </div>\n    <div class="empty-hint">Save plays from the library to build your personal practice list.</div>\n  </div>\n\n  <div class="screen" id="screen-profile">\n    <div style="padding:24px 18px;">\n      <div class="profile-card">\n        <div class="profile-avatar">C</div>\n        <div class="profile-name">Carlos Mendez</div>\n        <div class="profile-sub">Member since Jun 2026</div>\n      </div>\n      <div class="profile-stats">\n        <div class="profile-stat">\n          <div class="profile-stat-val">12</div>\n          <div class="profile-stat-label">Day streak</div>\n        </div>\n        <div class="profile-stat">\n          <div class="profile-stat-val">840</div>\n          <div class="profile-stat-label">Total XP</div>\n        </div>\n        <div class="profile-stat">\n          <div class="profile-stat-val">9</div>\n          <div class="profile-stat-label">Plays learned</div>\n        </div>\n      </div>\n      <div class="profile-section-title">Coach</div>\n      <div class="profile-coach-card">\n        <div class="profile-coach-avatar">T</div>\n        <div>\n          <div class="profile-coach-name">Toni Alcala</div>\n          <div class="profile-coach-sub">Padel Lab Madrid</div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n    <div class="bottom-nav">\n    <button class="nav-item active" data-screen="home" onclick="showScreen(\'home\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>\n      Home\n    </button>\n    <button class="nav-item" data-screen="plays" onclick="showScreen(\'plays\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>\n      Plays\n    </button>\n    <button class="nav-item" data-screen="quiz-active" onclick="goToQuizFromNav(this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>\n      Quiz\n    </button>\n    <button class="nav-item" data-screen="saved" onclick="showScreen(\'saved\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>\n      Saved\n    </button>\n    <button class="nav-item" data-screen="profile" onclick="showScreen(\'profile\',this)">\n      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>\n      Profile\n    </button>\n  </div>\n\n\n</div>\n\n<script>\n// ── MINI SIMULATOR ENGINE for Watch screen ──────────────────────────────────\nconst WATCH_PLAYS={\n\'bandeja-hold\':{\n  sY:[{x:.32,y:.57},{x:.68,y:.57}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'You attack — cross-court volley\',h:\'Y\',f:{x:.32,y:.57},c:{x:.55,y:.35},t:{x:.72,y:.12},ht:.05,d:800,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Opponents LOB over your head\',h:\'O\',f:{x:.72,y:.12},c:{x:.5,y:.4},t:{x:.5,y:.76},ht:.82,d:1500,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'BANDEJA — wide to side glass\',h:\'Y\',f:{x:.68,y:.76},c:{x:.88,y:.45},t:{x:.92,y:.12},ht:.12,d:900,yP:[{x:.32,y:.57},{x:.68,y:.78}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'cross-lob\':{\n  sY:[{x:.32,y:.84},{x:.68,y:.84}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents drive to your left\',h:\'O\',f:{x:.72,y:.14},c:{x:.45,y:.5},t:{x:.32,y:.8},ht:.08,d:850,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Deep cross-court LOB\',h:\'Y\',f:{x:.32,y:.8},c:{x:.72,y:.3},t:{x:.85,y:.07},ht:.85,d:1500,yP:[{x:.32,y:.84},{x:.68,y:.84}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'serve-net-rush\':{\n  sY:[{x:.32,y:.88},{x:.68,y:.88}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Serve down the T\',h:\'Y\',f:{x:.68,y:.88},c:{x:.5,y:.65},t:{x:.5,y:.12},ht:.15,d:900,yP:[{x:.32,y:.88},{x:.68,y:.88}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'Both sprint to net\',h:\'M\',f:{x:.5,y:.12},t:{x:.5,y:.12},ht:0,d:700,yP:[{x:.32,y:.57},{x:.68,y:.57}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'chiquita-advance\':{\n  sY:[{x:.3,y:.74},{x:.7,y:.74}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents attack — fast low ball\',h:\'O\',f:{x:.28,y:.14},c:{x:.35,y:.5},t:{x:.35,y:.7},ht:.04,d:700,yP:[{x:.3,y:.74},{x:.7,y:.74}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'CHIQUITA — low at net feet\',h:\'Y\',f:{x:.35,y:.7},c:{x:.32,y:.52},t:{x:.3,y:.3},ht:.04,d:750,yP:[{x:.3,y:.74},{x:.7,y:.74}],oP:[{x:.28,y:.14},{x:.72,y:.14}]}\n  ]\n},\n\'vibora-glass\':{\n  sY:[{x:.28,y:.62},{x:.7,y:.6}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents LOB — high ball center\',h:\'O\',f:{x:.72,y:.12},c:{x:.58,y:.38},t:{x:.62,y:.56},ht:.82,d:1400,yP:[{x:.28,y:.62},{x:.7,y:.6}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'VIBORA — to side glass\',h:\'Y\',f:{x:.62,y:.54},c:{x:.97,y:.4},t:{x:.97,y:.1},ht:.07,d:650,yP:[{x:.28,y:.62},{x:.7,y:.6}],oP:[{x:.28,y:.14},{x:.72,y:.14}],w:true}\n  ]\n},\n\'around-post\':{\n  sY:[{x:.3,y:.82},{x:.68,y:.82}],sO:[{x:.28,y:.14},{x:.72,y:.14}],\n  shots:[\n    {l:\'Opponents angle wide left\',h:\'O\',f:{x:.32,y:.14},c:{x:.1,y:.45},t:{x:.06,y:.74},ht:.08,d:850,yP:[{x:.3,y:.82},{x:.68,y:.82}],oP:[{x:.28,y:.14},{x:.72,y:.14}]},\n    {l:\'AROUND THE POST!\',h:\'Y\',f:{x:.06,y:.74},c:{x:-.02,y:.52},t:{x:.08,y:.2},ht:.04,d:900,yP:[{x:.06,y:.75},{x:.68,y:.82}],oP:[{x:.28,y:.14},{x:.72,y:.14}],w:true}\n  ]\n}\n};\n\nlet wCanvas,wCW,wCH,wShot=0,wShotStart=null,wPlaying=false,wAnimId=null;\n\nfunction wSetup(){\n  wCanvas=document.getElementById(\'watchCanvas\');\n  if(!wCanvas)return;\n  const wrap=document.getElementById(\'watchCourt\');\n  const dpr=window.devicePixelRatio||1;\n  const w=wrap.clientWidth;\n  const h=wrap.clientHeight;\n  wCanvas.width=w*dpr;wCanvas.height=h*dpr;\n  wCanvas.style.width=w+\'px\';wCanvas.style.height=h+\'px\';\n  wCanvas.getContext(\'2d\').setTransform(dpr,0,0,dpr,0,0);\n  wCW=w;wCH=h;\n}\n\nfunction wSc(nx,ny){\n  const tLx=wCW*0.22,tLy=wCH*0.06,tRx=wCW*0.78,tRy=wCH*0.06;\n  const bLx=wCW*0.04,bLy=wCH*0.94,bRx=wCW*0.96,bRy=wCH*0.94;\n  const lx=tLx+(bLx-tLx)*ny,rx=tRx+(bRx-tRx)*ny;\n  const px=lx+(rx-lx)*nx;\n  const py=tLy+(bLy-tLy)*ny;\n  return{x:px,y:py};\n}\n\nfunction wLerp(a,b,t){return a+(b-a)*t;}\nfunction wEase(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}\nfunction wBez(p0,p1,p2,t){\n  return{x:(1-t)*(1-t)*p0.x+2*(1-t)*t*p1.x+t*t*p2.x,\n         y:(1-t)*(1-t)*p0.y+2*(1-t)*t*p1.y+t*t*p2.y};\n}\n\nfunction wDrawCourt(ctx){\n  const tLx=wCW*0.22,tRx=wCW*0.78,tY=wCH*0.06;\n  const bLx=wCW*0.04,bRx=wCW*0.96,bY=wCH*0.94;\n  ctx.fillStyle=\'#1a4d7a\';ctx.fillRect(0,0,wCW,wCH);\n  ctx.beginPath();ctx.moveTo(tLx,tY);ctx.lineTo(tRx,tY);ctx.lineTo(bRx,bY);ctx.lineTo(bLx,bY);ctx.closePath();\n  ctx.fillStyle=\'#2e6cb0\';ctx.fill();\n  ctx.strokeStyle=\'rgba(255,255,255,0.9)\';ctx.lineWidth=2.5;ctx.stroke();\n  const nL=wSc(0,0.5),nR=wSc(1,0.5);\n  ctx.beginPath();ctx.moveTo(nL.x,nL.y);ctx.lineTo(nR.x,nR.y);\n  ctx.strokeStyle=\'rgba(255,255,255,0.95)\';ctx.lineWidth=3.5;ctx.stroke();\n  const sL1=wSc(0,0.15),sR1=wSc(1,0.15),sL2=wSc(0,0.85),sR2=wSc(1,0.85);\n  ctx.strokeStyle=\'rgba(255,255,255,0.4)\';ctx.lineWidth=1.5;\n  ctx.beginPath();ctx.moveTo(sL1.x,sL1.y);ctx.lineTo(sR1.x,sR1.y);ctx.stroke();\n  ctx.beginPath();ctx.moveTo(sL2.x,sL2.y);ctx.lineTo(sR2.x,sR2.y);ctx.stroke();\n  const cN=wSc(.5,.5),cS1=wSc(.5,.15),cS2=wSc(.5,.85);\n  ctx.strokeStyle=\'rgba(255,255,255,0.3)\';ctx.lineWidth=1.2;\n  ctx.beginPath();ctx.moveTo(cS1.x,cS1.y);ctx.lineTo(cN.x,cN.y);ctx.stroke();\n  ctx.beginPath();ctx.moveTo(cN.x,cN.y);ctx.lineTo(cS2.x,cS2.y);ctx.stroke();\n}\n\nfunction wPlayerSize(ny){return Math.round(wCW*(0.03+ny*0.024));}\n\nfunction wDrawPlayer(ctx,nx,ny,fill,ring,label){\n  const p=wSc(nx,ny);\n  const r=wPlayerSize(ny);\n  const bodyH=r*1.6;\n  ctx.beginPath();ctx.ellipse(p.x,p.y+r*0.25,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(0,0,0,0.45)\';ctx.fill();\n  ctx.beginPath();\n  ctx.moveTo(p.x-r,p.y);ctx.lineTo(p.x+r,p.y);\n  ctx.lineTo(p.x+r*0.9,p.y-bodyH);ctx.lineTo(p.x-r*0.9,p.y-bodyH);\n  ctx.closePath();ctx.fillStyle=fill;ctx.fill();\n  ctx.beginPath();ctx.ellipse(p.x,p.y-bodyH,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=ring;ctx.fill();\n  ctx.fillStyle=\'rgba(255,255,255,0.95)\';\n  ctx.font=\'bold \'+Math.round(r*0.75)+\'px Inter,sans-serif\';\n  ctx.textAlign=\'center\';ctx.textBaseline=\'middle\';\n  ctx.fillText(label,p.x,p.y-bodyH+r*0.08);\n}\n\nfunction wDrawBall(ctx,nx,ny,h){\n  const p=wSc(nx,ny);\n  const pr=wPlayerSize(ny);\n  const lift=h*wCH*0.14;\n  const r=pr*0.42+h*pr*0.3;\n  ctx.beginPath();ctx.ellipse(p.x,p.y,r*0.9,r*0.32,0,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(0,0,0,\'+(0.38-h*0.18)+\')\';ctx.fill();\n  ctx.beginPath();ctx.arc(p.x,p.y-lift,r,0,Math.PI*2);\n  ctx.fillStyle=\'#d4e820\';ctx.fill();\n  ctx.strokeStyle=\'#9aac00\';ctx.lineWidth=1.2;ctx.stroke();\n}\n\nfunction wRender(t){\n  const ctx=wCanvas.getContext(\'2d\');\n  ctx.clearRect(0,0,wCW,wCH);\n  wDrawCourt(ctx);\n  const play=WATCH_PLAYS[currentPlayId]||WATCH_PLAYS[\'bandeja-hold\'];\n  const shots=play.shots;\n  const et=wEase(Math.min(t,1));\n  const s=shots[Math.min(wShot,shots.length-1)];\n  const prevY=wShot===0?play.sY:(shots[wShot-1].yP||play.sY);\n  const prevO=wShot===0?play.sO:(shots[wShot-1].oP||play.sO);\n  const curY=s.yP||prevY;const curO=s.oP||prevO;\n  const py=curY.map((p,i)=>({x:wLerp(prevY[i].x,p.x,et),y:wLerp(prevY[i].y,p.y,et)}));\n  const po=curO.map((p,i)=>({x:wLerp(prevO[i].x,p.x,et),y:wLerp(prevO[i].y,p.y,et)}));\n  po.forEach((p,i)=>wDrawPlayer(ctx,p.x,p.y,\'#50000e\',\'#dc2626\',[\'O1\',\'O2\'][i]));\n  py.forEach((p,i)=>wDrawPlayer(ctx,p.x,p.y,\'#1a0a2e\',i===1?\'#3ecf7e\':\'#7c4de0\',[\'Y1\',\'Y2\'][i]));\n  if(wShot<shots.length&&s.h!==\'M\'){\n    const bp=wBez(s.f,s.c,s.t,et);\n    const h=(s.ht||0)*Math.sin(et*Math.PI);\n    wDrawBall(ctx,bp.x,bp.y,h);\n  } else if(wShot>0){\n    const last=shots[Math.min(wShot-1,shots.length-1)];\n    wDrawBall(ctx,last.t.x,last.t.y,0);\n  }\n}\n\nfunction wAnimFrame(ts){\n  const play=WATCH_PLAYS[currentPlayId]||WATCH_PLAYS[\'bandeja-hold\'];\n  const shots=play.shots;\n  if(!wShotStart)wShotStart=ts;\n  const s=shots[wShot];\n  const t=Math.min((ts-wShotStart)/s.d,1);\n  wRender(t);\n  const total=shots.reduce((a,x)=>a+x.d,0);\n  const done=shots.slice(0,wShot).reduce((a,x)=>a+x.d,0)+(ts-wShotStart);\n  document.getElementById(\'watchProgressFill\').style.width=Math.min(done/total*100,100)+\'%\';\n  if(t>=1){\n    wShot++;\n    if(wShot>=shots.length){\n      wPlaying=false;\n      document.getElementById(\'watchLockedCard\').style.display=\'none\';\n      document.getElementById(\'watchUnlockedCard\').style.display=\'block\';\n      showToast(\'Play watched — quiz unlocked\');\n      return;\n    }\n    wShotStart=null;\n  }\n  if(wPlaying)wAnimId=requestAnimationFrame(wAnimFrame);\n}\n\nfunction wStartAnim(){\n  wShot=0;wShotStart=null;wPlaying=true;\n  document.getElementById(\'watchProgressFill\').style.width=\'0%\';\n  document.getElementById(\'watchLockedCard\').style.display=\'block\';\n  document.getElementById(\'watchUnlockedCard\').style.display=\'none\';\n  if(wAnimId)cancelAnimationFrame(wAnimId);\n  wAnimId=requestAnimationFrame(wAnimFrame);\n}\n\nwindow.addEventListener(\'resize\',()=>{\n  if(document.getElementById(\'screen-watch\').classList.contains(\'active\')){\n    wSetup();\n  }\n});\n\n\nfunction showToast(msg){\n  const t=document.getElementById(\'toast\');\n  t.textContent=msg;\n  t.style.display=\'block\';\n  setTimeout(()=>t.style.display=\'none\',2800);\n}\n\nfunction showScreen(name,navEl){\n  document.querySelectorAll(\'.screen\').forEach(s=>s.classList.remove(\'active\'));\n  document.getElementById(\'screen-\'+name).classList.add(\'active\');\n  if(navEl){\n    document.querySelectorAll(\'.nav-item\').forEach(n=>n.classList.remove(\'active\'));\n    navEl.classList.add(\'active\');\n  }\n  document.getElementById(\'appShell\').scrollTop=0;\n  const scr=document.getElementById(\'screen-\'+name);\n  if(scr)scr.scrollTop=0;\n}\n\nfunction goBack(name){\n  const navBtn=document.querySelector(\'.nav-item[data-screen="\'+name+\'"]\');\n  showScreen(name,navBtn);\n}\n\nlet currentPlayId=null;\nconst playNames={\n  \'bandeja-hold\':\'Bandeja hold at net\',\n  \'cross-lob\':\'Cross-court lob\',\n  \'serve-net-rush\':\'Serve + net rush\',\n  \'chiquita-advance\':\'Chiquita + advance\',\n  \'vibora-glass\':\'Vibora to side glass\',\n  \'around-post\':\'Around the post\'\n};\n\nfunction watchPlay(playId){\n  currentPlayId=playId;\n  document.getElementById(\'watchTitle\').textContent=playNames[playId]||\'Padel play\';\n  document.getElementById(\'watchLockedCard\').style.display=\'block\';\n  document.getElementById(\'watchUnlockedCard\').style.display=\'none\';\n  showScreen(\'watch\',null);\n  setTimeout(()=>{\n    wSetup();\n    wStartAnim();\n  },50);\n}\n\nfunction goToQuizFromWatch(){\n  quizContext=\'play\';\n  enterQuizScreen();\n}\n\nfunction goToQuiz(){\n  quizContext=\'daily\';\n  enterQuizScreen();\n}\n\nfunction goToQuizFromNav(navEl){\n  quizContext=\'daily\';\n  enterQuizScreen(navEl);\n}\n\nfunction enterQuizScreen(navEl){\n  resetQuizScreen();\n  if(isQuizLocked()){\n    showScreen(\'quiz-active\',navEl||document.querySelector(\'.nav-item[data-screen="quiz-active"]\'));\n    showQuizLockedState();\n  } else {\n    pickRandomQuiz();\n    showScreen(\'quiz-active\',navEl||document.querySelector(\'.nav-item[data-screen="quiz-active"]\'));\n  }\n}\n\nfunction resetQuizScreen(){\n  document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n    o.classList.remove(\'correct-sel\');\n    o.classList.remove(\'wrong-sel\');\n    o.style.pointerEvents=\'\';\n    o.style.cursor=\'\';\n  });\n  const reward=document.getElementById(\'quizReward\');\n  reward.style.display=\'none\';\n  reward.style.flexDirection=\'\';\n  reward.style.alignItems=\'\';\n  reward.style.gap=\'\';\n  reward.style.background=\'\';\n  reward.style.borderColor=\'\';\n  document.getElementById(\'quizProTag\').style.display=\'inline-flex\';\n  if(quizCountdownInterval){clearInterval(quizCountdownInterval);quizCountdownInterval=null;}\n}\n\nconst QUIZ_BANK_TACTICAL=[\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"Opponent lobs over your head at net. What\'s the correct response?",\n    opts:["Smash immediately","Bandeja, hold net position","Sprint back to baseline"],\n    correct:1,\n    explanation:"The bandeja is the right call — it gives you a controlled overhead that keeps you at the net. Smashing risks losing position; sprinting back gives your opponents the net for free."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"You\'re pinned at the baseline under pressure. What\'s the highest-percentage shot?",\n    opts:["A flat drive down the middle","A deep lob to reset the point","Run around for a forehand smash"],\n    correct:1,\n    explanation:"A deep lob is the classic defensive reset in padel — it buys time, forces opponents off the net, and lets you recover position. A flat drive under pressure is low-percentage."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"Your partner is pulled wide to the side glass. What should you do at net?",\n    opts:["Stay in your original position","Shift toward the middle to cover the open court","Move to the same side as your partner"],\n    correct:1,\n    explanation:"When your partner is dragged wide, you must shift centrally to cover the diagonal. Staying put leaves the middle open; moving the same way as your partner leaves the other side completely exposed."\n  },\n  {\n    type:"tactical",\n    pro:"Tactical scenario",\n    q:"You\'ve just hit a strong lob and your opponents are scrambling. What\'s next?",\n    opts:["Relax and wait for their return","Advance to net immediately behind the lob","Stay back in case they counter-lob"],\n    correct:1,\n    explanation:"A good lob is your chance to take the net. Advance behind it immediately — if you stay back you hand the initiative back to your opponents even after winning the exchange."\n  }\n];\n\nconst QUIZ_BANK_NEWS=[\n  {\n    type:"news",\n    pro:"Padel world ranking",\n    q:"As of mid-2026, who holds the world No.1 men\'s padel ranking?",\n    opts:["Galán & Chingotto","Tapia & Coello","Lebrón & Augsburger"],\n    correct:1,\n    explanation:"Tapia & Coello have dominated the ATP/Premier Padel circuit since 2024, consistently ranked No.1. Galán & Lebrón split as a pair, reforming with new partners."\n  },\n  {\n    type:"news",\n    pro:"Padel records",\n    q:"What is the longest winning streak in professional padel history?",\n    opts:["47 consecutive match wins","30 consecutive match wins","60 consecutive match wins"],\n    correct:0,\n    explanation:"Belasteguín & Díaz held a 47-match winning streak — one of the most dominant runs in the history of any racket sport, spanning multiple consecutive tournaments."\n  },\n  {\n    type:"news",\n    pro:"Padel history",\n    q:"Which player held the world No.1 ranking for a record 16 consecutive seasons?",\n    opts:["Fernando Belasteguín","Juan Lebrón","Alejandro Galán"],\n    correct:0,\n    explanation:"Fernando Belasteguín held No.1 from 2002 to 2018 — 16 consecutive seasons. It remains the longest dominance in padel history and rivals any achievement in racket sports."\n  },\n  {\n    type:"news",\n    pro:"Padel world ranking",\n    q:"Which country has the most players in the men\'s world top 100 as of 2026?",\n    opts:["Argentina","Spain","Italy"],\n    correct:1,\n    explanation:"Spain leads the men\'s top 100 with the most represented players, driven by a massive club infrastructure and professional circuit. Argentina is a close second with a strong tradition of padel."\n  },\n  {\n    type:"news",\n    pro:"Padel women\'s ranking",\n    q:"Which pair leads the women\'s world ranking in 2026?",\n    opts:["Sánchez & Josemaría","Triay & Brea","Mapi & Majo Sánchez Alayeto"],\n    correct:1,\n    explanation:"Triay & Brea have been the dominant women\'s pair since 2022, winning multiple Premier Padel titles. Gemma Triay is widely regarded as the best women\'s player in the world."\n  }\n];\n\nconst QUIZ_BANK=[...QUIZ_BANK_TACTICAL,...QUIZ_BANK_NEWS];\n\nlet currentQuizIdx=0;\n\nfunction pickRandomQuiz(){\n  currentQuizIdx=Math.floor(Math.random()*QUIZ_BANK.length);\n  const quiz=QUIZ_BANK[currentQuizIdx];\n  const tag=document.getElementById(\'quizProTag\');\n  tag.textContent=quiz.pro;\n  tag.className=quiz.type===\'news\'?\'quiz-pro-tag news-tag\':\'quiz-pro-tag\';\n  const qEl=document.getElementById(\'quizQuestion\');\n  qEl.textContent=quiz.q;\n  qEl.dataset.explanation=quiz.explanation||\'\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  quiz.opts.forEach((opt,i)=>{\n    const div=document.createElement(\'div\');\n    div.className=\'quiz-opt\';\n    div.dataset.correct=(i===quiz.correct)?\'true\':\'false\';\n    div.textContent=opt;\n    div.onclick=()=>selectQuizOpt(div,i===quiz.correct);\n    container.appendChild(div);\n  });\n}\n\nfunction skipCheckin(){\n  showToast(\'No problem — come back anytime to confirm practice\');\n  setTimeout(()=>showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\')),700);\n}\n\nlet quizAnswered=false;\nlet quizContext=\'daily\';\nlet quizWrongCount=0;\nlet quizCountdownInterval=null;\nconst QUIZ_LOCKOUT_MS=60*60*1000;\nconst QUIZ_LOCKOUT_KEY=\'orbis_quiz_lockout_until\';\nconst QUIZ_WRONG_KEY=\'orbis_quiz_wrong_count\';\n\nfunction getQuizLockoutUntil(){\n  const v=localStorage.getItem(QUIZ_LOCKOUT_KEY);\n  return v?parseInt(v,10):0;\n}\n\nfunction isQuizLocked(){\n  return getQuizLockoutUntil()>Date.now();\n}\n\nfunction getQuizWrongCount(){\n  const v=localStorage.getItem(QUIZ_WRONG_KEY);\n  return v?parseInt(v,10):0;\n}\n\nfunction setQuizWrongCount(n){\n  localStorage.setItem(QUIZ_WRONG_KEY,String(n));\n}\n\nfunction lockQuizForOneHour(){\n  const until=Date.now()+QUIZ_LOCKOUT_MS;\n  localStorage.setItem(QUIZ_LOCKOUT_KEY,String(until));\n  setQuizWrongCount(0);\n}\n\nfunction clearQuizLockout(){\n  localStorage.removeItem(QUIZ_LOCKOUT_KEY);\n  setQuizWrongCount(0);\n}\n\nfunction formatCountdown(ms){\n  const totalSec=Math.max(0,Math.ceil(ms/1000));\n  const m=Math.floor(totalSec/60);\n  const s=totalSec%60;\n  return (m<10?\'0\':\'\')+m+\':\'+(s<10?\'0\':\'\')+s;\n}\n\nfunction showQuizLockedState(){\n  document.getElementById(\'quizProTag\').style.display=\'none\';\n  document.getElementById(\'quizQuestion\').textContent=\'Quiz locked after 2 missed answers\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  document.getElementById(\'quizReward\').style.display=\'none\';\n  const lockCard=document.createElement(\'div\');\n  lockCard.className=\'quiz-lock-card\';\n  lockCard.innerHTML=\'<div class="quiz-lock-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="quiz-lock-text">Try again in</div><div class="quiz-lock-timer" id="quizLockTimer">60:00</div>\';\n  container.appendChild(lockCard);\n  if(quizCountdownInterval)clearInterval(quizCountdownInterval);\n  quizCountdownInterval=setInterval(()=>{\n    const remaining=getQuizLockoutUntil()-Date.now();\n    if(remaining<=0){\n      clearInterval(quizCountdownInterval);\n      clearQuizLockout();\n      pickRandomQuiz();\n      return;\n    }\n    const timerEl=document.getElementById(\'quizLockTimer\');\n    if(timerEl)timerEl.textContent=formatCountdown(remaining);\n  },1000);\n}\n\nfunction selectQuizOpt(el,isCorrect){\n  if(quizAnswered)return;\n  quizAnswered=true;\n\n  // Disable all options immediately\n  document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n    o.style.pointerEvents=\'none\';\n    o.style.cursor=\'default\';\n  });\n\n  if(isCorrect){\n    el.classList.add(\'correct-sel\');\n    setQuizWrongCount(0);\n    const reward=document.getElementById(\'quizReward\');\n    reward.innerHTML=\'<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Correct — +20 XP earned\';\n    reward.style.display=\'flex\';\n    setTimeout(()=>{\n      quizAnswered=false;\n      if(quizContext===\'play\'){\n        showScreen(\'checkin\',null);\n        document.getElementById(\'locStepA\').style.display=\'block\';\n        document.getElementById(\'locStepB\').style.display=\'none\';\n      } else {\n        showQuizResultCard();\n      }\n    },1400);\n  } else {\n    el.classList.add(\'wrong-sel\');\n    const wrongCount=getQuizWrongCount()+1;\n    setQuizWrongCount(wrongCount);\n\n    // Reveal the correct answer immediately\n    document.querySelectorAll(\'.quiz-opt\').forEach(o=>{\n      if(o.dataset.correct===\'true\') o.classList.add(\'correct-sel\');\n    });\n\n    // Show explanation and a Continue button\n    const reward=document.getElementById(\'quizReward\');\n    const explanation=document.getElementById(\'quizQuestion\').dataset.explanation||\'\';\n    reward.style.display=\'flex\';\n    reward.style.flexDirection=\'column\';\n    reward.style.alignItems=\'flex-start\';\n    reward.style.gap=\'10px\';\n    reward.style.background=\'rgba(248,113,113,.08)\';\n    reward.style.borderColor=\'rgba(248,113,113,.25)\';\n    reward.innerHTML=`\n      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#f87171;">\n        <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>\n        Not quite\n      </div>\n      ${explanation?`<div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;">${explanation}</div>`:\'\'}\n      <div style="width:100%;background:var(--lime);color:#0a2a16;font-size:12.5px;font-weight:700;padding:10px;border-radius:9px;text-align:center;cursor:pointer;"\n           onclick="afterWrongAnswer()">Got it — continue</div>\n    `;\n\n    if(wrongCount>=2){\n      lockQuizForOneHour();\n    }\n  }\n}\n\nfunction afterWrongAnswer(){\n  quizAnswered=false;\n  const isLocked=getQuizLockoutUntil()>Date.now();\n  if(isLocked){\n    showQuizLockedState();\n  } else {\n    showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\'));\n  }\n}\n\nfunction showQuizResultCard(){\n  document.getElementById(\'quizProTag\').style.display=\'none\';\n  document.getElementById(\'quizQuestion\').textContent=\'\';\n  const container=document.getElementById(\'quizOptsContainer\');\n  container.innerHTML=\'\';\n  document.getElementById(\'quizReward\').style.display=\'none\';\n  const resultCard=document.createElement(\'div\');\n  resultCard.className=\'quiz-result-card\';\n  resultCard.innerHTML=\'<div class="quiz-result-icon"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="quiz-result-title">Daily quiz complete</div><div class="quiz-result-xp">+20 XP earned</div><div class="quiz-result-btn" id="quizResultHomeBtn">Back to home</div>\';\n  container.appendChild(resultCard);\n  document.getElementById(\'quizResultHomeBtn\').onclick=()=>{\n    showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\'));\n  };\n}\n\nfunction confirmByLocation(){\n  showToast(\'Practice confirmed by location — +15 XP, streak extended\');\n  setTimeout(()=>showScreen(\'home\',document.querySelector(\'.nav-item[data-screen="home"]\')),900);\n}\n\nfunction askCoachConfirm(){\n  document.getElementById(\'locStepA\').style.display=\'none\';\n  document.getElementById(\'locStepB\').style.display=\'block\';\n}\n\nfunction selectPlaysFilter(el){\n  document.querySelectorAll(\'.filter-chip\').forEach(c=>c.classList.remove(\'active\'));\n  el.classList.add(\'active\');\n  filterPlaysList();\n}\n\nfunction filterPlaysList(){\n  const query=document.getElementById(\'playsSearch\').value.trim().toLowerCase();\n  const activeFilter=document.querySelector(\'.filter-chip.active\').dataset.lv;\n  const items=document.querySelectorAll(\'.lib-item\');\n  let visibleCount=0;\n  items.forEach(item=>{\n    const matchesQuery=!query||item.dataset.name.includes(query);\n    const matchesLevel=activeFilter===\'all\'||item.dataset.lv===activeFilter;\n    const show=matchesQuery&&matchesLevel;\n    item.style.display=show?\'flex\':\'none\';\n    if(show)visibleCount++;\n  });\n  document.getElementById(\'playsEmpty\').style.display=visibleCount===0?\'block\':\'none\';\n}\n\n</script>\n</body>\n</html>\n')
 
 from mangum import Mangum
 handler = Mangum(app)
